@@ -1,8 +1,8 @@
 # PlayerData_Shared
 
-Fælles kilde for ting, der **skal være identiske på tværs af platforme**, og som derfor ikke må have fire uafhængige mestre.
+Fælles kilde for ting, der skal være identiske på tværs af platforme, og som derfor ikke må have flere uafhængige mestre.
 
-Trækkes ind som git submodule i `PlayerData_iOS`, `PlayerData_Android` og `PlayerData_Backend`, pinnet til en commit. En platform opgraderer bevidst og kan se, hvad der ændrede sig.
+Trækkes ind som git submodule i klient- og server-repoerne, pinnet til en commit. En platform opgraderer bevidst og kan se i diffen, hvad der ændrede sig.
 
 ## Indhold
 
@@ -12,16 +12,28 @@ logic/vectors/    Testvektorer. Facit, alle platforme asserter imod.
 
 ## Hvorfor repoet findes
 
-Backend regenererede vektorfilen, og **begge klienters kopi blev forældet inden for timer**. Begge tests var grønne mod en vektor, der ikke testede det, den var udvidet til at teste (2026-09-30, Issue #15).
+Facit blev regenereret ét sted, og kopierne hos de øvrige platforme blev forældet inden for timer. Alle tests var grønne — mod en vektor, der ikke længere testede det, den var udvidet til at teste.
 
-Et submodule forhindrer utilsigtet forældelse. Det forhindrer **ikke**, at nogen pinner til en gammel commit og glemmer det — derfor skriver generatoren kravene ind i selve vektorfilen som et `kontrakt`-objekt, så hver platform asserter mod kildens egne krav i stedet for mod tal, de har skrevet af.
+Fejlen var ikke, at nogen glemte at kopiere. Fejlen var, at en kopi kan være forældet uden at det kan ses.
 
-De to mekanismer løser hvert sit og skal begge blive.
+## To mekanismer, ikke én
 
-## Hvad der IKKE ligger her endnu
+Et submodule forhindrer **utilsigtet** forældelse. Det forhindrer ikke, at nogen pinner til en gammel commit og glemmer det.
 
-- **Design-tokens** — kræver først en beslutning om, hvordan `Theme.swift` og `Theme.kt` genereres
-- **API-kontrakten** — ligger i `PlayerData_Backend`, hvor koden henviser til den. Flytter, når der er en grund
-- **`claude-md/`** — ligger midlertidigt i `PlayerData_Backend`. Hører her på sigt
+Derfor skriver generatoren kravene ind i selve vektorfilen som et `kontrakt`-objekt, så hver platform asserter mod kildens egne krav i stedet for mod tal, de har skrevet af. En kopi kan så ikke bestå sin egen forældede kontrakt.
 
-Mindst mulig ny struktur til at løse et bevist problem.
+De to løser hvert sit problem og skal begge blive.
+
+## To fælder, et submodule ikke fjerner
+
+**Et submodule følger ikke med en almindelig `git clone`.** Brug `--recurse-submodules`, eller `git submodule update --init` bagefter. I CI: `submodules: true` på checkout-trinnet — standarden er `false`, og resultatet er en tom mappe, ikke en fejl.
+
+**Byggesystemer sporer ikke en fil, du læser fra disken i en test**, medmindre du siger det. Deklarér vektorfilen som eksplicit inddata til testopgaven. Ellers står opgaven up-to-date efter en submodule-opdatering og består mod den gamle vektor.
+
+Et submodule flytter kilden. Det fjerner ikke en cache, der ikke ved, at kilden har flyttet sig.
+
+## Sådan efterprøver du, at din test faktisk læser den
+
+Ændr en forventet værdi i vektorfilen, kør testen, og se den blive rød. Stil den tilbage.
+
+Består testen uændret, læser den ikke filen — og så beviser den ingenting.
