@@ -1672,3 +1672,24 @@ Fundet blev ikke fanget af et værktøj, en test eller Koordinator (der selv hav
 **Hvorfor den hører her, og ikke kun hos den platform der fandt den:** alle denne fils øvrige lektioner handler om et VÆRKTØJ, der ikke kiggede — en grøn test, et genbrugt resultat, en liste der kun så de ældste hundrede kort. Dem bygger man sig ud af med et bedre værktøj. Denne handler om, at en rettelse kan være BEVIST korrekt og stadig forkert, fordi beviset kun dækker den retning, man selv tænkte på — intet værktøj fanger det, kun en anden læser med en anden vinkel på samme kode. Det er selve argumentet for at to platforme afstemmer AFGRÆNSNINGEN, ikke kun koden, før en delt regel landes.
 
 **Beslægtet, samme udveksling:** Android havde en etårig kodekommentar, der sagde præcis det rigtige om GPS-rækker ("de hører til ÉN kamp, og blev de stående, kunne man se den forrige kamps løbedistance på den nye") — skrevet, rigtig, og ALDRIG koblet til selve kampskiftet. Koordinator sammenlignede den med Androids egne `antalPerioder`/`harPause` (en konstant, der kun blev læst af en test, aldrig af den kode den skulle styre) — samme fejlklasse begge gange: en regel der er skrevet ned et sted, men ikke forbundet til det, den rent faktisk skal beskytte mod, er ikke forskellig fra en regel der aldrig blev skrevet.
+
+### En ukendt/omdøbt nøgle har tre udfald, ikke ét — og det højlydte er det sikreste
+
+Backend, 2026-10-04, tre uafhængige incidenter samme nat, hver med en ANDEN konsekvens af samme grundfejl ("klienten mødte en nøgle, dens model ikke kendte i den form"):
+
+```
+1. ikke-optionelt felt     decode af HELE svaret kaster — synligt med det
+   (standings' haste-fund)  samme, fundet og rettet på ni minutter
+2. opslag på en streng-    returnerer nil/null — funktionen stopper TAVST,
+   nøgle (et map/dict)      ingen fejl nogen steder
+   (push.py's "kamp")       (et deep-link ville have været dødt — man trykker
+                            på en notifikation, der ikke gør noget, og
+                            trykker igen, uden at vide hvorfor)
+3. felt MED en standard-   decoder til 0/en tom liste — skærmen er bare
+   værdi (Androids egne     tom eller viser et forkert tal, ingen fejl
+   prognose-felter)         nogen steder
+```
+
+**Rækkefølgen ovenfor ER en sikkerheds-rangering, ikke kun en liste.** Et kast er det BEDSTE af de tre udfald, selvom det er det mest dramatiske — det kan ikke undgås at blive set. De to andre ligner normal drift. Det er hele grunden til, at dual-keying (send BÅDE det gamle og det nye navn, se "En standardværdi, der er et plausibelt svar, skjuler et manglende felt" og "Et felt der bliver nullable er et kontraktbrud" ovenfor) er den rigtige standard-reaktion på en omdøbning, UANSET hvilken af de tre former man selv tror klienten bruger for det pågældende felt — man kan ikke vide det uden at læse klientens kode, og selv når man gør, er det let at fejlgætte (se "En ren checkout er ikke en aktuel checkout" og "Et felt kan lyve om hvad der faktisk læses" i denne fils øvrige afsnit).
+
+**Ikke at forveksle med `PlayerData_Backend#114`.** #114 handler om en ANDEN fejl på den MODSATTE side af samme spørgsmål: et delt dokument, en klient afkoder til sin egen model og SKRIVER HELE TILBAGE (`kamp_opstilling`/`kamp_kamphaendelser`) — der forsvinder et felt, modellen ikke kender, fordi afkodning→model→genkodning per definition taber det, ingen vagt kan se. De tre udfald herover handler om at LÆSE et ENKELT, server-til-klient-svar (et API-respons, en push-payload) — ingen tilbageskrivning involveret, og mekanismen, der retter det (dual-key + en planlagt fjernelse), er en anden end #114's (bær ukendte nøgler uændret igennem). Begge er ægte, begge handler om "en nøgle klienten ikke genkender" — men de er to forskellige mekanismer på to forskellige dele af kredsløbet, og en rettelse af den ene løser ikke den anden.
