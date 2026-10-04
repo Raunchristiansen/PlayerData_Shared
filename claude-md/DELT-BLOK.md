@@ -1673,6 +1673,48 @@ Fundet blev ikke fanget af et værktøj, en test eller Koordinator (der selv hav
 
 **Beslægtet, samme udveksling:** Android havde en etårig kodekommentar, der sagde præcis det rigtige om GPS-rækker ("de hører til ÉN kamp, og blev de stående, kunne man se den forrige kamps løbedistance på den nye") — skrevet, rigtig, og ALDRIG koblet til selve kampskiftet. Koordinator sammenlignede den med Androids egne `antalPerioder`/`harPause` (en konstant, der kun blev læst af en test, aldrig af den kode den skulle styre) — samme fejlklasse begge gange: en regel der er skrevet ned et sted, men ikke forbundet til det, den rent faktisk skal beskytte mod, er ikke forskellig fra en regel der aldrig blev skrevet.
 
+### En overgang, der er sikker for LÆSNING af én nøgle, er usikker for ITERATION over nøglerne
+
+04-10-2026. Dual-keying — serveren sender både den gamle og den nye nøgle, indtil
+alle klienter har skiftet — bar syv ombæringer igennem på én dag uden et enkelt
+brud. Stillingstabellen, prognosen, seks endepunkter, hele statistikken.
+
+**Og den indførte en fejl, ingen havde forudset, i en app ingen havde rørt.**
+
+```
+serveren sender    {"Ukendt hold": 3, "unknown_team": 3, "A1": 12, ...}
+
+et OPSLAG          stats["unknown_team"]        -> 3     rigtigt
+en ITERATION       stats.keys.sorted()          -> "Ukendt hold" OG
+                                                   "unknown_team" som
+                                                   TO forskellige hold
+en SUMMERING       stats.values.sum()           -> taeller dobbelt
+```
+
+Android havde fejlen **live i to timer** — holdvælgeren viste to hold, hvor der
+var ét. Ingen havde ændret Android-kode. Serveren begyndte bare at sende en
+nøgle mere.
+
+**Og de tre opregningssteder var ikke til at finde ved at læse opslagene.** De
+stod i `TraeningSektion:44`, `KampeSektion:178` og `KampeSektion:75`, og det
+sidste manglede i koordinatorens egen måling.
+
+**Hvad det foreskriver:** når du dual-keyer et svar, så find hver klients
+ITERATIONER over de nøgler — ikke kun deres opslag. `.keys`, `.map`, en
+`for`-løkke over et dict, en summering af værdierne. Et opslag er sikkert under
+dual-keying; alt, der behandler nøglesættet som en LISTE, er det ikke.
+
+**Og ét skridt mere, som iOS og Android begge fandt uafhængigt:** en foldning,
+der fjerner dubletten, er ikke nok, hvis kaldstedet også bruger nøglen som
+ETIKET. Androids `PillPicker(hold.map { it to it })` ville have vist
+`all_teams` ordret til forælderen — dubletten væk, ny fejl ind. Deres egne ord:
+
+> Modellen havde fået nøglen; skærmen havde ikke fået teksten.
+
+**Og foldningen bliver død kode, i samme øjeblik den gamle nøgle fjernes.** Den
+er ikke neutral når den er ubrugt — den er en konkurrerende definition, som
+afsnittet om døde mængder ovenfor beskriver. Fjern den i samme omgang.
+
 ### En ukendt/omdøbt nøgle har tre udfald, ikke ét — og det højlydte er det sikreste
 
 Backend, 2026-10-04, tre uafhængige incidenter samme nat, hver med en ANDEN konsekvens af samme grundfejl ("klienten mødte en nøgle, dens model ikke kendte i den form"):
