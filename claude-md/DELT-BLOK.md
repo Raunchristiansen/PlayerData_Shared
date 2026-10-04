@@ -16,6 +16,14 @@
      Sidst ændret: 2026-10-04
      =================================================================== -->
 
+<!-- ===================================================================
+     DELT BLOK — identisk i alle fire PlayerData-repos.
+     Rettes en regel her, skal den rettes i ALLE fire.
+     Flyttes til PlayerData_Shared, når det repo findes (Issue #15),
+     så denne duplikering forsvinder.
+     Sidst ændret: 2026-09-30
+     =================================================================== -->
+
 ## Fælles regler på tværs af PlayerData
 
 ### Issue-konventionen
@@ -479,6 +487,34 @@ Der findes en femte session, `PlayerData App - Koordinator`. Den ejer intet repo
 
 **Modsig den, når den tager fejl.** Det er forventet adfærd, ikke tålt. Den har ikke jeres kodekontekst og gætter nogle gange forkert på mekanismen — det skete to gange den 29. september, og begge korrektioner gjorde arbejdet bedre. Efterprøv, før I følger.
 
+### En test skrevet ud fra samme misforståelse som koden bekræfter misforståelsen
+
+Android, 04-10-2026, under #60. Deres test brugte
+
+    assertNull(Kamptype.fra("Pokalkamp"))
+
+som eksempel på en **ukendt** værdi. `Pokalkamp` er serverens egen type
+(`db.py:1053`), og den bærer en regel: kun stævne- og pokalkampe kan gå i
+forlænget spilletid. Koden troede, den ikke fandtes. Testen troede det samme.
+
+**Testen var grøn, fordi de var enige — ikke fordi de havde ret.**
+
+Den blev rød, da typen kom ind, og det var sådan fejlen blev fundet: ikke af
+testen, men af at virkeligheden ændrede sig under den.
+
+Det er en grad værre end afsnittet ovenfor om et nødfald, der er enigt med
+kilden. Dér var kilden rigtig og testen blind. **Her var begge forkerte, og der
+fandtes ingen tredje part at måle mod** — undtagen serverens katalog.
+
+**Hvad det foreskriver:** en test, der hævder, at noget IKKE findes — `nil`,
+`null`, `assertNull`, "ukendt værdi" — skal måle mod kataloget, ikke mod hvad
+forfatteren tror. En negativ hævdelse er netop den slags, der kan være grøn af
+enighed.
+
+Og konsekvensen af at have fulgt troen: `fra("Pokalkamp")` → `null`, og forlænget
+spilletid var **stille** holdt op med at blive tilbudt. Ingen fejl, ingen rød
+test, bare en knap der ikke kom.
+
 ### Få testen til at fejle, før du stoler på at den består
 
 Ødelæg med vilje det, testen skal fange, og bekræft at den bliver rød. Ret det tilbage. Det koster to minutter.
@@ -751,6 +787,42 @@ gh issue view 42 -R ejer/repo --json comments -q '.comments[-1].body' | grep -c 
 Samme familie som resten af afsnittene her: handlingen meldte sig som lykkedes, og kun
 resultatet kunne afsloere, at den ikke var det.
 
+### En ren checkout er ikke en aktuel checkout
+
+04-10-2026 konkluderede to sessioner uafhængigt, at iOS læste forældede danske
+nøgler i `FaellesKamp.swift`, og at delte kampe derfor var brudt. Begge læste
+filen **på disken**. Begge målinger var rigtige for det, de læste.
+
+    e41bbef  10:25   oprettet_af_family_id, "kampe", "stoevner"
+    3bc507f  12:40   rettet til created_by_family_id, "matches", "tournaments"
+    198767e  14:49   Build 25
+
+Den ene session havde en klon 15 commits bagud; det fælles måletræ var checket
+ud fire timer bagud. **`git status` var tom i begge.** En gammel checkout har
+intet kendetegn: ingen advarsel, intet i filen, og et rent arbejdstræ ser
+præcis ud som et aktuelt.
+
+Konsekvensen var tæt på at blive dyr: en hasteundersøgelse af delte kampe, som
+virkede, fordi rettelsen havde ligget i to timer og var med i både Build 24 og
+25.
+
+**Mål med `origin/HEAD` efter et `git fetch`**, aldrig ved at læse den
+udcheckede fil:
+
+    git -C <træ> fetch -q origin
+    git -C <træ> grep -n '<mønster>' origin/HEAD -- <sti>
+    git -C <træ> show origin/HEAD:<sti>
+
+Og det gælder især et træ, der ikke er dit eget. Låner du en anden sessions
+klon til at måle i, har du ingen anelse om, hvornår den sidst blev hentet — og
+den, der ejer den, har heller ikke, hvis den bruges til at læse i frem for at
+arbejde i.
+
+**Rapportér commit-id'et med målingen.** En måling uden sit commit kan ikke
+efterprøves, og to sessioner, der er uenige, kan ikke finde ud af hvorfor. Det
+var netop det, der afgjorde denne: begge havde ret, og id'et var det eneste,
+der kunne vise det.
+
 ### En måling, der ikke kan se fejlen, er ikke en måling
 
 Den stærkeste form, der er kommet ud af projektet, og Android byggede den som
@@ -935,6 +1007,31 @@ noten, falder den anden.
 begrundelsen en del af koden** — ikke en kommentar ved siden af den. Og det, der
 er en del af koden, skal kunne fejle.
 
+### Mål, læs, skriv derefter — et tal kan se målt ud, fordi det står ved siden af en måling
+
+Android, 04-10-2026, **to gange på en time**. Commit-beskeden sagde "25 → 22
+filer"; filtallet stod stille på 25. To commits senere sagde den "123 → 109,
+filer 25 → 23"; det rigtige var 114 og 24.
+
+Begge gange var målingen rigtig og kørte i **samme kommando som committen** — så
+beskeden var skrevet, før målingen havde svaret. Deres egen diagnose:
+
+> Det er ikke sjusk i aflæsningen — det er rækkefølgen, der er forkert: **mål,
+> læs, skriv derefter.** Jeg deler kommandoen op fremover, så beskeden ikke kan
+> skrives før svaret findes.
+
+**Et tal i en commit-besked ved siden af en grøn måling ser målt ud.** Det er
+samme fælde som resten af dette dokument, bare vendt indad: ikke en forkert
+måling, men et tal der aldrig blev læst.
+
+Og de fandt en anden ting ved at tjekke: de havde **skiftet enheden undervejs**
+ved at tilføje `Pokalkamp` til værdisættet, så serien kunne have talt 13 værdier
+mod 12. De målte begge veje og fik det samme — fordi den eneste Pokalkamp-
+sammenligning var den, de lige havde migreret. **Serien var sammenlignelig ved
+held, ikke ved omtanke**, og det var kun målingen af begge, der viste det.
+
+**Skift aldrig værdisættet midt i en serie uden at måle den gamle vej også.**
+
 ### Fire optællinger af samme ting, og enheden var forkert hele vejen
 
 Den klareste udgave af afsnittet nedenfor, målt over to timer 03-10-2026. Fire
@@ -1041,6 +1138,33 @@ steder som en anden slags værdi. Et bart ord er for almindeligt at fælde på.
 Rettelsen var at matche **andet argument til `live(`**, altså den ene form, hvor et
 fragment bliver en sti, og at generere snapshottet af serverens egne stier under
 `/live/`. Det er forskellen på at rette otte tilfælde og at lukke en klasse.
+
+### En liste fortæller hvilke værdier der findes, aldrig hvad de betyder i din kode
+
+Androids formulering, 04-10-2026, efter at have fået en ordforrådsliste fra
+koordinatoren og alligevel næsten brudt en regel:
+
+> En liste fortæller hvilke værdier der findes, aldrig hvad de betyder i din
+> kode. **Det er den halvdel, ingen afsender kan levere.**
+
+`cup_match` / `"Pokalkamp"` stod på listen. Det, der ikke stod — og ikke kunne
+stå — var at værdien bærer en regel: kun stævne- og pokalkampe kan gå i forlænget
+spilletid, og reglen bor i klientens egen kode (`DatainputLogik:111`).
+
+**Byg en enum på serverens katalog, ikke på en liste i en besked.** Og læs din
+egen kodes brug af værdien ved siden af kataloget — de to halvdele er begge
+nødvendige, og ingen kanal leverer dem samlet.
+
+**Og listen var selv ufuldstændig.** Koordinatorens optælling hvilede på et
+håndskrevet værdisæt med 12 af kataloget 22 værdier. Målt i samme træ, samme
+kommando, kun værdisættet forskelligt: **925 mod 1177 forekomster.** De
+udeladte bar 252, heraf `"Træning"` alene 90 — og `"Træning"` var en af de tre
+fælder, koordinatoren selv havde advaret om. **Advarslen om hullet kom fra et
+instrument, der havde det.**
+
+Samme form som "Et håndskrevet mønster er selv et måleinstrument" nedenfor, men
+med den tilføjelse, at et værdisæt skrevet af hukommelsen er en denylist over
+det, man kom i tanke om.
 
 ### Sprogreglen, fuldt afgjort 03-10-2026
 
