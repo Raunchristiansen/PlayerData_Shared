@@ -152,6 +152,34 @@ Skelnen afgjorde to spørgsmål på én aften 2026-09-30: om aktivitetstypernes 
 2. **En version.** Cachen skal kunne fortælle sin alder. Et let versionskald ved opstart er nok
 3. **Synlighed.** En cache, der ikke kan fortælle sin alder, er en cache, man ikke kan opdage er forkert
 
+### Et gentaget fund er et signal om, at man leder på det forkerte lag
+
+Koordinatoren, 04-10-2026. `check-parent-cards.sh` meldte **tre gange på én dag**,
+at `Backend#134` var lukket med åbne børn. Tre gange blev kortet genåbnet. Tre
+gange lukkede det igen inden for en time.
+
+Først den tredje gang blev issuets **tidslinje** læst:
+
+```
+10:38  ClosedEvent     en person
+15:47  ClosedEvent     via ProjectV2      <- tavlens automatik
+17:25  ClosedEvent     via ProjectV2      <- igen
+```
+
+**Projektets indbyggede regel lukker et element markeret `Done`.** Kortets
+`Status`-felt stod på `Done`, så hver genåbning blev rullet tilbage af tavlen —
+ikke af nogen.
+
+> Et gentaget fund er et signal om, at man leder på det forkerte lag.
+
+**Vagten var rigtig hver gang.** Den målte det, den skulle. Fejlen var, at
+rettelsen blev gentaget i stedet for at blive undersøgt: tre identiske svar på tre
+identiske handlinger er ikke tre fund, det er **ét fund om handlingen.**
+
+Rigtig rækkefølge, da mekanismen var kendt: sæt `Status` til noget andet end
+`Done` **først**, derefter genåbn. Og det samme gælder enhver automatik, der
+observerer et felt: **en handling, systemet fortryder, er ikke en handling.**
+
 ### Et udsagn splittes på kilde. En måling gør ikke
 
 `#53`s kampvalgs-matrix havde to spørgsmål, der lignede hinanden, men fik modsatte
@@ -515,6 +543,31 @@ Og konsekvensen af at have fulgt troen: `fra("Pokalkamp")` → `null`, og forlæ
 spilletid var **stille** holdt op med at blive tilbudt. Ingen fejl, ingen rød
 test, bare en knap der ikke kom.
 
+### En vagt, der afviser et svar, siger ikke hvilket felt der afviste det
+
+Android og iOS fandt den uafhængigt 04-10-2026, i samme opgave på to platforme.
+
+Androids første vagt i `#74` vendte alle tre felter på én gang. **De genindsatte
+tolerancen på ÉT felt — og testen forblev grøn**, fordi svaret stadig blev afvist
+af et af de to andre.
+
+> En vagt, der afviser et svar, siger ikke hvilket felt der afviste det. Skal den
+> kunne se ÉT felt falde tilbage, skal **hvert felt prøves for sig.**
+
+Efter rettelsen: tolerance genindsat på `has_break`, `has_yellow_cards` eller
+`unambiguous` giver 3 faldne tests **hver**. Målt, ikke antaget.
+
+iOS kom til samme sted i `#64`: deres vagt prøver nu hvert af de otte felter for
+sig, og en genindsat tolerance på `Aktivitetstype.active` eller
+`FormRegel.required` fældes hver for sig.
+
+**Det er en konjunktion forklædt som en kontrol.** `A && B && C` fælder, hvis
+mindst én fejler — så den kan ikke skelne "A er brudt" fra "C er brudt", og den er
+blind for, at A er brudt, så længe C stadig fælder.
+
+**Samme form som Androids `fuld > stump * 5` i `#64`:** et udtryk, der er sandt af
+mere end én grund, kan ikke pinne nogen af dem.
+
 ### Få testen til at fejle, før du stoler på at den består
 
 Ødelæg med vilje det, testen skal fange, og bekræft at den bliver rød. Ret det tilbage. Det koster to minutter.
@@ -823,6 +876,35 @@ efterprøves, og to sessioner, der er uenige, kan ikke finde ud af hvorfor. Det
 var netop det, der afgjorde denne: begge havde ret, og id'et var det eneste,
 der kunne vise det.
 
+### Tavshed er værre end tolerance — et `?: return` på et afkodningsresultat
+
+Android, 04-10-2026, under `#74`. Kortet bad dem fjerne en tolerant parser, nu
+serveren sendte rigtige booleans. Sabotageinstruktionen var: *fjern `0`/`1`-grenen
+og prøv en fixtur med `0` — den SKAL kaste nu.*
+
+**Den kastede ikke. Der var to tolerancer dybere.**
+
+`afkod()` slugte fejlen i `runCatching { }.getOrNull()`, og `opdater()` havde TO
+tavse `?: return` — én for netværket, én for afkodningen. Deres formulering:
+
+> **Strenghed gør kun en regression synlig, hvis nogen SER fejlen.** Et `?: return`
+> på et afkodningsresultat forvandler strenghed til tavshed — og tavshed er værre
+> end tolerance, for tolerance virker da i det mindste.
+
+Havde de kun fjernet serializeren, ville en serverregression have betydet
+*"aldersreglerne opdateres bare aldrig."* **Det er en nedgradering, ikke en
+skærpelse.**
+
+**Rettelsen er at skille de to returneringer:** offline er normalt og tavst; et
+svar, der ER kommet og ikke kan læses, sætter et felt, brugerfladen viser. Og de
+efterprøvede ledningen frem for at antage den — `beskrivelse` tegnes faktisk i
+Indstillinger. **En markør, intet tegner, er samme fejl et niveau oppe.**
+
+**Hvad det foreskriver:** når du gør en model strengere, så find hvert sted
+mellem afkodningen og skærmen, hvor fejlen kan forsvinde. En `try?`, et
+`runCatching`, et `?:`, et `catch {}` uden rapport. Strengheden er kun værd noget
+til det første af dem.
+
 ### En måling, der ikke kan se fejlen, er ikke en måling
 
 Den stærkeste form, der er kommet ud af projektet, og Android byggede den som
@@ -1070,6 +1152,34 @@ Og den praktiske: **tæl aldrig et sted i kode med `grep | wc -l`.** Et råt tal
 skelner ikke mellem en kommentar, en læsning, en skrivning og en erklæring — og
 de fire kræver vidt forskelligt arbejde. Androids diagnose er den bedste
 formulering: **et tal, der ikke skelner mellem de ting, det tæller.**
+
+### En ny udfaldskode er en ny betydning i et rum, der allerede var i brug
+
+Android, 04-10-2026, og de fandt den på deres EGEN vagt fra tre timer tidligere.
+
+De indførte `IKKE_MAALT = 2` for at skelne *"kunne ikke måle"* fra *"målt og
+forældet"*. Men `return 2` havde betydet **FORÆLDET** siden scriptet blev skrevet.
+
+**Så en rigtig forældelse blev meldt som `advar` i stedet for `fejlet`** — gaten
+var nedgraderet til en advarsel, og intet så forkert ud.
+
+> En ny udfaldskode er en ny BETYDNING i et rum, der allerede var i brug. Vælger
+> man et tal, der betød noget andet, bliver den gamle betydning **omskrevet i
+> stilhed** — og en gate, der skulle fælde, advarer i stedet.
+
+**De fangede den ved at sabotere BEGGE grene.** Den første commit prøvede kun den
+manglende fil og antog den anden. Og de efterprøvede gennem `ci.sh`, ikke kun på
+scriptets egen udfaldskode:
+
+```
+forældet nødfald    -> 1 -> FEJL
+manglende kontrakt  -> 2 -> ADVAR
+alt i orden         -> 0 -> OK
+```
+
+**Det gælder enhver udfaldskode, enhver enum-værdi og enhver sentinel.** Tilføjer
+du en, så mål hvad de bestående betød først — og sabotér hver gren, ikke den du
+lige skrev.
 
 ### Et håndskrevet mønster er selv et måleinstrument
 
