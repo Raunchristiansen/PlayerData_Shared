@@ -1,0 +1,1394 @@
+{
+  "absence_reasons": [
+    {
+      "active": true,
+      "display_da": "Kamp",
+      "key": "match",
+      "legacy_value": "Kamp",
+      "legitimate_absence": true,
+      "sort_order": 1
+    },
+    {
+      "active": true,
+      "display_da": "Skole",
+      "key": "school",
+      "legacy_value": "Skole",
+      "legitimate_absence": true,
+      "sort_order": 2
+    },
+    {
+      "active": true,
+      "display_da": "Skade",
+      "key": "injury",
+      "legacy_value": "Skade",
+      "legitimate_absence": true,
+      "sort_order": 3
+    },
+    {
+      "active": true,
+      "display_da": "Andet",
+      "key": "other",
+      "legacy_value": "Andet",
+      "legitimate_absence": false,
+      "sort_order": 4
+    }
+  ],
+  "activity_types": [
+    {
+      "active": true,
+      "category": "match",
+      "display_da": "Turneringskamp",
+      "is_physical": true,
+      "key": "league_match",
+      "legacy_type": "Turneringskamp",
+      "match_number_prefix": null,
+      "source": "dbu"
+    },
+    {
+      "active": true,
+      "category": "match",
+      "display_da": "Pokalkamp",
+      "is_physical": true,
+      "key": "cup_match",
+      "legacy_type": "Pokalkamp",
+      "match_number_prefix": null,
+      "source": "dbu"
+    },
+    {
+      "active": true,
+      "category": "match",
+      "display_da": "Træningskamp",
+      "is_physical": true,
+      "key": "friendly_match",
+      "legacy_type": "Træningskamp",
+      "match_number_prefix": "T",
+      "source": "manual"
+    },
+    {
+      "active": true,
+      "category": "match",
+      "display_da": "Stævnekamp",
+      "is_physical": true,
+      "key": "tournament_match",
+      "legacy_type": "Stævnekamp",
+      "match_number_prefix": "S",
+      "source": "manual"
+    },
+    {
+      "active": true,
+      "category": "training",
+      "display_da": "Klubtræning",
+      "is_physical": true,
+      "key": "club_training",
+      "legacy_type": "Træning",
+      "match_number_prefix": null,
+      "source": "manual"
+    },
+    {
+      "active": true,
+      "category": "training",
+      "display_da": "Mentaltræning",
+      "is_physical": false,
+      "key": "mental_training",
+      "legacy_type": "Mentaltræning",
+      "match_number_prefix": null,
+      "source": "manual"
+    },
+    {
+      "active": true,
+      "category": "training",
+      "display_da": "VEO gennemgang",
+      "is_physical": false,
+      "key": "veo_review",
+      "legacy_type": "VEO Gennemgang",
+      "match_number_prefix": null,
+      "source": "manual"
+    },
+    {
+      "active": false,
+      "category": "match",
+      "display_da": "Stævne",
+      "is_physical": true,
+      "key": "tournament",
+      "legacy_type": "Stævne",
+      "match_number_prefix": null,
+      "source": "manual"
+    }
+  ],
+  "age_rules": [
+    {
+      "age_group": "U6",
+      "default_format": null,
+      "has_break": false,
+      "has_yellow_cards": false,
+      "period_minutes": 10,
+      "periods": 1,
+      "source": "derived",
+      "unambiguous": false
+    },
+    {
+      "age_group": "U7",
+      "default_format": null,
+      "has_break": false,
+      "has_yellow_cards": false,
+      "period_minutes": 10,
+      "periods": 1,
+      "source": "derived",
+      "unambiguous": false
+    },
+    {
+      "age_group": "U8",
+      "default_format": null,
+      "has_break": true,
+      "has_yellow_cards": false,
+      "period_minutes": 15,
+      "periods": 2,
+      "source": "derived",
+      "unambiguous": false
+    },
+    {
+      "age_group": "U9",
+      "default_format": null,
+      "has_break": true,
+      "has_yellow_cards": false,
+      "period_minutes": 15,
+      "periods": 2,
+      "source": "derived",
+      "unambiguous": false
+    },
+    {
+      "age_group": "U10",
+      "default_format": null,
+      "has_break": true,
+      "has_yellow_cards": false,
+      "period_minutes": 15,
+      "periods": 2,
+      "source": "derived",
+      "unambiguous": false
+    },
+    {
+      "age_group": "U11",
+      "default_format": 8,
+      "has_break": true,
+      "has_yellow_cards": false,
+      "period_minutes": 20,
+      "periods": 2,
+      "source": "confirmed",
+      "unambiguous": true
+    },
+    {
+      "age_group": "U12",
+      "default_format": 8,
+      "has_break": true,
+      "has_yellow_cards": false,
+      "period_minutes": 30,
+      "periods": 2,
+      "source": "confirmed",
+      "unambiguous": true
+    },
+    {
+      "age_group": "U13",
+      "default_format": 8,
+      "has_break": true,
+      "has_yellow_cards": true,
+      "period_minutes": 30,
+      "periods": 2,
+      "source": "confirmed",
+      "unambiguous": false
+    },
+    {
+      "age_group": "U14",
+      "default_format": 11,
+      "has_break": true,
+      "has_yellow_cards": true,
+      "period_minutes": 35,
+      "periods": 2,
+      "source": "confirmed",
+      "unambiguous": true
+    },
+    {
+      "age_group": "U15",
+      "default_format": 11,
+      "has_break": true,
+      "has_yellow_cards": true,
+      "period_minutes": 35,
+      "periods": 2,
+      "source": "confirmed",
+      "unambiguous": true
+    },
+    {
+      "age_group": "U16",
+      "default_format": 11,
+      "has_break": true,
+      "has_yellow_cards": true,
+      "period_minutes": 40,
+      "periods": 2,
+      "source": "confirmed",
+      "unambiguous": true
+    },
+    {
+      "age_group": "U17",
+      "default_format": 11,
+      "has_break": true,
+      "has_yellow_cards": true,
+      "period_minutes": 40,
+      "periods": 2,
+      "source": "confirmed",
+      "unambiguous": true
+    },
+    {
+      "age_group": "U19",
+      "default_format": 11,
+      "has_break": true,
+      "has_yellow_cards": true,
+      "period_minutes": 45,
+      "periods": 2,
+      "source": "confirmed",
+      "unambiguous": true
+    },
+    {
+      "age_group": "Senior",
+      "default_format": 11,
+      "has_break": true,
+      "has_yellow_cards": true,
+      "period_minutes": 45,
+      "periods": 2,
+      "source": "confirmed",
+      "unambiguous": true
+    },
+    {
+      "age_group": "Oldboys",
+      "default_format": 11,
+      "has_break": true,
+      "has_yellow_cards": true,
+      "period_minutes": 45,
+      "periods": 2,
+      "source": "confirmed",
+      "unambiguous": true
+    },
+    {
+      "age_group": "Veteran",
+      "default_format": 11,
+      "has_break": true,
+      "has_yellow_cards": true,
+      "period_minutes": 45,
+      "periods": 2,
+      "source": "confirmed",
+      "unambiguous": true
+    },
+    {
+      "age_group": "UNKNOWN",
+      "default_format": 11,
+      "has_break": true,
+      "has_yellow_cards": true,
+      "period_minutes": 45,
+      "periods": 2,
+      "source": "confirmed",
+      "unambiguous": true
+    }
+  ],
+  "environments": [
+    {
+      "display_da": "Rigtigt",
+      "hostname": "playerdata-stage.raunchristiansen.dk",
+      "key": "stage",
+      "push_works": true,
+      "requires_environment_picker": false
+    },
+    {
+      "display_da": "Leg",
+      "hostname": "playerdata-dev.raunchristiansen.dk",
+      "key": "dev",
+      "push_works": false,
+      "requires_environment_picker": true
+    }
+  ],
+  "field_value_legality": [
+    {
+      "activity_type_key": "club_training",
+      "field_key": "detail_level",
+      "value": "detailed"
+    },
+    {
+      "activity_type_key": "club_training",
+      "field_key": "detail_level",
+      "value": "simple"
+    },
+    {
+      "activity_type_key": "mental_training",
+      "field_key": "detail_level",
+      "value": "simple"
+    },
+    {
+      "activity_type_key": "veo_review",
+      "field_key": "detail_level",
+      "value": "simple"
+    },
+    {
+      "activity_type_key": "league_match",
+      "field_key": "detail_level",
+      "value": "detailed"
+    },
+    {
+      "activity_type_key": "league_match",
+      "field_key": "detail_level",
+      "value": "simple"
+    },
+    {
+      "activity_type_key": "cup_match",
+      "field_key": "detail_level",
+      "value": "detailed"
+    },
+    {
+      "activity_type_key": "cup_match",
+      "field_key": "detail_level",
+      "value": "simple"
+    },
+    {
+      "activity_type_key": "friendly_match",
+      "field_key": "detail_level",
+      "value": "detailed"
+    },
+    {
+      "activity_type_key": "friendly_match",
+      "field_key": "detail_level",
+      "value": "simple"
+    },
+    {
+      "activity_type_key": "tournament_match",
+      "field_key": "detail_level",
+      "value": "detailed"
+    },
+    {
+      "activity_type_key": "tournament_match",
+      "field_key": "detail_level",
+      "value": "simple"
+    },
+    {
+      "activity_type_key": "league_match",
+      "field_key": "selection_status",
+      "value": "selected"
+    },
+    {
+      "activity_type_key": "league_match",
+      "field_key": "selection_status",
+      "value": "not_selected"
+    },
+    {
+      "activity_type_key": "cup_match",
+      "field_key": "selection_status",
+      "value": "selected"
+    },
+    {
+      "activity_type_key": "cup_match",
+      "field_key": "selection_status",
+      "value": "not_selected"
+    },
+    {
+      "activity_type_key": "friendly_match",
+      "field_key": "selection_status",
+      "value": "selected"
+    },
+    {
+      "activity_type_key": "friendly_match",
+      "field_key": "selection_status",
+      "value": "not_selected"
+    },
+    {
+      "activity_type_key": "tournament_match",
+      "field_key": "selection_status",
+      "value": "selected"
+    },
+    {
+      "activity_type_key": "tournament_match",
+      "field_key": "selection_status",
+      "value": "not_selected"
+    },
+    {
+      "activity_type_key": "club_training",
+      "field_key": "selection_status",
+      "value": "attended"
+    },
+    {
+      "activity_type_key": "club_training",
+      "field_key": "selection_status",
+      "value": "absent"
+    },
+    {
+      "activity_type_key": "mental_training",
+      "field_key": "selection_status",
+      "value": "attended"
+    },
+    {
+      "activity_type_key": "mental_training",
+      "field_key": "selection_status",
+      "value": "absent"
+    },
+    {
+      "activity_type_key": "veo_review",
+      "field_key": "selection_status",
+      "value": "attended"
+    },
+    {
+      "activity_type_key": "veo_review",
+      "field_key": "selection_status",
+      "value": "absent"
+    }
+  ],
+  "form_behaviours": [
+    {
+      "display_da": "Fast værdi",
+      "key": "fixed_value"
+    },
+    {
+      "display_da": "Ikke relevant",
+      "key": "not_applicable"
+    },
+    {
+      "display_da": "Vælg fra liste",
+      "key": "pick_from_list"
+    },
+    {
+      "display_da": "Vælg eller opret",
+      "key": "pick_or_create"
+    },
+    {
+      "display_da": "Vælg fra pulje",
+      "key": "pick_from_group"
+    },
+    {
+      "display_da": "Låst af kampvalget",
+      "key": "locked_from_match"
+    },
+    {
+      "display_da": "Brugerens valg",
+      "key": "user_choice"
+    },
+    {
+      "display_da": "Udledt af holdkort",
+      "key": "derived_from_teamsheet"
+    },
+    {
+      "display_da": "Udledt af et andet felt",
+      "key": "derived_from_field"
+    },
+    {
+      "display_da": "Tilbydes",
+      "key": "offered"
+    },
+    {
+      "display_da": "Tilbydes ikke",
+      "key": "not_offered"
+    }
+  ],
+  "form_fields": [
+    {
+      "display_da": "Aktivitet",
+      "key": "activity",
+      "sort_order": 1
+    },
+    {
+      "display_da": "Type",
+      "key": "match_type",
+      "sort_order": 2
+    },
+    {
+      "display_da": "Stævnenavn",
+      "key": "tournament_name",
+      "sort_order": 3
+    },
+    {
+      "display_da": "Pulje",
+      "key": "group",
+      "sort_order": 4
+    },
+    {
+      "display_da": "Kamp",
+      "key": "match",
+      "sort_order": 5
+    },
+    {
+      "display_da": "Modstander",
+      "key": "opponent",
+      "sort_order": 6
+    },
+    {
+      "display_da": "Sted",
+      "key": "venue",
+      "sort_order": 7
+    },
+    {
+      "display_da": "Hold",
+      "key": "team",
+      "sort_order": 8
+    },
+    {
+      "display_da": "Status",
+      "key": "selection_status",
+      "sort_order": 9
+    },
+    {
+      "display_da": "GPS-data",
+      "key": "gps_data",
+      "sort_order": 10
+    },
+    {
+      "display_da": "Detaljegrad",
+      "key": "detail_level",
+      "sort_order": 11
+    },
+    {
+      "display_da": "Tidsregistrering",
+      "key": "time_input_mode",
+      "sort_order": 12
+    },
+    {
+      "display_da": "Afbudsårsag",
+      "key": "absence_reason",
+      "sort_order": 13
+    },
+    {
+      "display_da": "Hvor",
+      "key": "location",
+      "sort_order": 14
+    },
+    {
+      "display_da": "Antal halvlege",
+      "key": "periods",
+      "sort_order": 15
+    },
+    {
+      "display_da": "Forlænget spilletid",
+      "key": "extra_time",
+      "sort_order": 16
+    },
+    {
+      "display_da": "Registrér holdets hændelser",
+      "key": "register_team_events",
+      "sort_order": 17
+    }
+  ],
+  "form_rules": [
+    {
+      "activity_type_key": "league_match",
+      "behaviour_key": "fixed_value",
+      "depends_on_field": null,
+      "field_key": "activity",
+      "fixed_value": "Kamp",
+      "note_da": null,
+      "required": 1,
+      "selection_status": "ALL",
+      "sort_order": 10
+    },
+    {
+      "activity_type_key": "cup_match",
+      "behaviour_key": "fixed_value",
+      "depends_on_field": null,
+      "field_key": "activity",
+      "fixed_value": "Kamp",
+      "note_da": null,
+      "required": 1,
+      "selection_status": "ALL",
+      "sort_order": 10
+    },
+    {
+      "activity_type_key": "friendly_match",
+      "behaviour_key": "fixed_value",
+      "depends_on_field": null,
+      "field_key": "activity",
+      "fixed_value": "Kamp",
+      "note_da": null,
+      "required": 1,
+      "selection_status": "ALL",
+      "sort_order": 10
+    },
+    {
+      "activity_type_key": "tournament_match",
+      "behaviour_key": "fixed_value",
+      "depends_on_field": null,
+      "field_key": "activity",
+      "fixed_value": "Kamp",
+      "note_da": null,
+      "required": 1,
+      "selection_status": "ALL",
+      "sort_order": 10
+    },
+    {
+      "activity_type_key": "club_training",
+      "behaviour_key": "fixed_value",
+      "depends_on_field": null,
+      "field_key": "activity",
+      "fixed_value": "Træning",
+      "note_da": null,
+      "required": 1,
+      "selection_status": "ALL",
+      "sort_order": 10
+    },
+    {
+      "activity_type_key": "mental_training",
+      "behaviour_key": "fixed_value",
+      "depends_on_field": null,
+      "field_key": "activity",
+      "fixed_value": "Træning",
+      "note_da": null,
+      "required": 1,
+      "selection_status": "ALL",
+      "sort_order": 10
+    },
+    {
+      "activity_type_key": "veo_review",
+      "behaviour_key": "fixed_value",
+      "depends_on_field": null,
+      "field_key": "activity",
+      "fixed_value": "Træning",
+      "note_da": null,
+      "required": 1,
+      "selection_status": "ALL",
+      "sort_order": 10
+    },
+    {
+      "activity_type_key": "ALL",
+      "behaviour_key": "user_choice",
+      "depends_on_field": null,
+      "field_key": "match_type",
+      "fixed_value": null,
+      "note_da": null,
+      "required": 1,
+      "selection_status": "ALL",
+      "sort_order": 20
+    },
+    {
+      "activity_type_key": "tournament_match",
+      "behaviour_key": "pick_or_create",
+      "depends_on_field": "opponent",
+      "field_key": "tournament_name",
+      "fixed_value": null,
+      "note_da": null,
+      "required": 1,
+      "selection_status": "ALL",
+      "sort_order": 60
+    },
+    {
+      "activity_type_key": "league_match",
+      "behaviour_key": "not_applicable",
+      "depends_on_field": null,
+      "field_key": "tournament_name",
+      "fixed_value": null,
+      "note_da": null,
+      "required": null,
+      "selection_status": "ALL",
+      "sort_order": null
+    },
+    {
+      "activity_type_key": "cup_match",
+      "behaviour_key": "not_applicable",
+      "depends_on_field": null,
+      "field_key": "tournament_name",
+      "fixed_value": null,
+      "note_da": null,
+      "required": null,
+      "selection_status": "ALL",
+      "sort_order": null
+    },
+    {
+      "activity_type_key": "friendly_match",
+      "behaviour_key": "not_applicable",
+      "depends_on_field": null,
+      "field_key": "tournament_name",
+      "fixed_value": null,
+      "note_da": null,
+      "required": null,
+      "selection_status": "ALL",
+      "sort_order": null
+    },
+    {
+      "activity_type_key": "league_match",
+      "behaviour_key": "pick_from_group",
+      "depends_on_field": null,
+      "field_key": "group",
+      "fixed_value": null,
+      "note_da": null,
+      "required": 1,
+      "selection_status": "ALL",
+      "sort_order": 30
+    },
+    {
+      "activity_type_key": "cup_match",
+      "behaviour_key": "pick_from_group",
+      "depends_on_field": null,
+      "field_key": "group",
+      "fixed_value": null,
+      "note_da": null,
+      "required": 1,
+      "selection_status": "ALL",
+      "sort_order": 30
+    },
+    {
+      "activity_type_key": "friendly_match",
+      "behaviour_key": "pick_or_create",
+      "depends_on_field": null,
+      "field_key": "group",
+      "fixed_value": null,
+      "note_da": null,
+      "required": 1,
+      "selection_status": "ALL",
+      "sort_order": 30
+    },
+    {
+      "activity_type_key": "tournament_match",
+      "behaviour_key": "pick_or_create",
+      "depends_on_field": null,
+      "field_key": "group",
+      "fixed_value": null,
+      "note_da": null,
+      "required": 1,
+      "selection_status": "ALL",
+      "sort_order": 30
+    },
+    {
+      "activity_type_key": "league_match",
+      "behaviour_key": "pick_from_list",
+      "depends_on_field": "group",
+      "field_key": "match",
+      "fixed_value": null,
+      "note_da": null,
+      "required": 1,
+      "selection_status": "ALL",
+      "sort_order": 40
+    },
+    {
+      "activity_type_key": "cup_match",
+      "behaviour_key": "pick_from_list",
+      "depends_on_field": "group",
+      "field_key": "match",
+      "fixed_value": null,
+      "note_da": null,
+      "required": 1,
+      "selection_status": "ALL",
+      "sort_order": 40
+    },
+    {
+      "activity_type_key": "friendly_match",
+      "behaviour_key": "pick_or_create",
+      "depends_on_field": "group",
+      "field_key": "match",
+      "fixed_value": null,
+      "note_da": null,
+      "required": 1,
+      "selection_status": "ALL",
+      "sort_order": 40
+    },
+    {
+      "activity_type_key": "tournament_match",
+      "behaviour_key": "pick_or_create",
+      "depends_on_field": "group",
+      "field_key": "match",
+      "fixed_value": null,
+      "note_da": null,
+      "required": 1,
+      "selection_status": "ALL",
+      "sort_order": 40
+    },
+    {
+      "activity_type_key": "league_match",
+      "behaviour_key": "locked_from_match",
+      "depends_on_field": null,
+      "field_key": "opponent",
+      "fixed_value": null,
+      "note_da": null,
+      "required": 1,
+      "selection_status": "ALL",
+      "sort_order": 50
+    },
+    {
+      "activity_type_key": "cup_match",
+      "behaviour_key": "locked_from_match",
+      "depends_on_field": null,
+      "field_key": "opponent",
+      "fixed_value": null,
+      "note_da": null,
+      "required": 1,
+      "selection_status": "ALL",
+      "sort_order": 50
+    },
+    {
+      "activity_type_key": "friendly_match",
+      "behaviour_key": "locked_from_match",
+      "depends_on_field": null,
+      "field_key": "opponent",
+      "fixed_value": null,
+      "note_da": null,
+      "required": 1,
+      "selection_status": "ALL",
+      "sort_order": 50
+    },
+    {
+      "activity_type_key": "tournament_match",
+      "behaviour_key": "locked_from_match",
+      "depends_on_field": null,
+      "field_key": "opponent",
+      "fixed_value": null,
+      "note_da": null,
+      "required": 1,
+      "selection_status": "ALL",
+      "sort_order": 50
+    },
+    {
+      "activity_type_key": "ALL",
+      "behaviour_key": "not_applicable",
+      "depends_on_field": null,
+      "field_key": "opponent",
+      "fixed_value": null,
+      "note_da": "Træning/familietype: ingen modstander at låse",
+      "required": null,
+      "selection_status": "ALL",
+      "sort_order": null
+    },
+    {
+      "activity_type_key": "league_match",
+      "behaviour_key": "locked_from_match",
+      "depends_on_field": "selection_status",
+      "field_key": "venue",
+      "fixed_value": null,
+      "note_da": null,
+      "required": 1,
+      "selection_status": "ALL",
+      "sort_order": 90
+    },
+    {
+      "activity_type_key": "cup_match",
+      "behaviour_key": "locked_from_match",
+      "depends_on_field": "selection_status",
+      "field_key": "venue",
+      "fixed_value": null,
+      "note_da": null,
+      "required": 1,
+      "selection_status": "ALL",
+      "sort_order": 90
+    },
+    {
+      "activity_type_key": "friendly_match",
+      "behaviour_key": "locked_from_match",
+      "depends_on_field": "selection_status",
+      "field_key": "venue",
+      "fixed_value": null,
+      "note_da": null,
+      "required": 1,
+      "selection_status": "ALL",
+      "sort_order": 90
+    },
+    {
+      "activity_type_key": "tournament_match",
+      "behaviour_key": "locked_from_match",
+      "depends_on_field": "selection_status",
+      "field_key": "venue",
+      "fixed_value": null,
+      "note_da": null,
+      "required": 1,
+      "selection_status": "ALL",
+      "sort_order": 90
+    },
+    {
+      "activity_type_key": "ALL",
+      "behaviour_key": "not_applicable",
+      "depends_on_field": null,
+      "field_key": "venue",
+      "fixed_value": null,
+      "note_da": "Træning/familietype: intet kampvalg at låse fra — se 'location' for familiens eget stedfelt",
+      "required": null,
+      "selection_status": "ALL",
+      "sort_order": null
+    },
+    {
+      "activity_type_key": "league_match",
+      "behaviour_key": "locked_from_match",
+      "depends_on_field": "opponent",
+      "field_key": "team",
+      "fixed_value": null,
+      "note_da": null,
+      "required": 1,
+      "selection_status": "ALL",
+      "sort_order": 70
+    },
+    {
+      "activity_type_key": "cup_match",
+      "behaviour_key": "locked_from_match",
+      "depends_on_field": "opponent",
+      "field_key": "team",
+      "fixed_value": null,
+      "note_da": null,
+      "required": 1,
+      "selection_status": "ALL",
+      "sort_order": 70
+    },
+    {
+      "activity_type_key": "friendly_match",
+      "behaviour_key": "user_choice",
+      "depends_on_field": "opponent",
+      "field_key": "team",
+      "fixed_value": null,
+      "note_da": null,
+      "required": 1,
+      "selection_status": "ALL",
+      "sort_order": 70
+    },
+    {
+      "activity_type_key": "tournament_match",
+      "behaviour_key": "user_choice",
+      "depends_on_field": "tournament_name",
+      "field_key": "team",
+      "fixed_value": null,
+      "note_da": null,
+      "required": 1,
+      "selection_status": "ALL",
+      "sort_order": 70
+    },
+    {
+      "activity_type_key": "ALL",
+      "behaviour_key": "user_choice",
+      "depends_on_field": "selection_status",
+      "field_key": "team",
+      "fixed_value": null,
+      "note_da": "Træning/familietype: intet holdkort at låse til. Påkrævet ⟺ activity_types.is_physical (samme udledning som gps_data/attended, Issue #52) — IKKE en fast værdi: påkrævet for fysiske typer (fx Klubtræning), valgfrit for ikke-fysiske (Mentaltræning/VEO).",
+      "required": null,
+      "selection_status": "ALL",
+      "sort_order": 40
+    },
+    {
+      "activity_type_key": "FAMILY_DEFINED",
+      "behaviour_key": "not_applicable",
+      "depends_on_field": null,
+      "field_key": "team",
+      "fixed_value": null,
+      "note_da": "Familiens egen træningstype har intet hold at vælge mellem — kun de syv universelle typer tilbyder Hold.",
+      "required": null,
+      "selection_status": "ALL",
+      "sort_order": null
+    },
+    {
+      "activity_type_key": "league_match",
+      "behaviour_key": "derived_from_teamsheet",
+      "depends_on_field": "team",
+      "field_key": "selection_status",
+      "fixed_value": null,
+      "note_da": null,
+      "required": 1,
+      "selection_status": "ALL",
+      "sort_order": 80
+    },
+    {
+      "activity_type_key": "cup_match",
+      "behaviour_key": "derived_from_teamsheet",
+      "depends_on_field": "team",
+      "field_key": "selection_status",
+      "fixed_value": null,
+      "note_da": null,
+      "required": 1,
+      "selection_status": "ALL",
+      "sort_order": 80
+    },
+    {
+      "activity_type_key": "friendly_match",
+      "behaviour_key": "user_choice",
+      "depends_on_field": "team",
+      "field_key": "selection_status",
+      "fixed_value": null,
+      "note_da": null,
+      "required": 1,
+      "selection_status": "ALL",
+      "sort_order": 80
+    },
+    {
+      "activity_type_key": "tournament_match",
+      "behaviour_key": "user_choice",
+      "depends_on_field": "team",
+      "field_key": "selection_status",
+      "fixed_value": null,
+      "note_da": null,
+      "required": 1,
+      "selection_status": "ALL",
+      "sort_order": 80
+    },
+    {
+      "activity_type_key": "club_training",
+      "behaviour_key": "user_choice",
+      "depends_on_field": null,
+      "field_key": "selection_status",
+      "fixed_value": null,
+      "note_da": null,
+      "required": 1,
+      "selection_status": "ALL",
+      "sort_order": 30
+    },
+    {
+      "activity_type_key": "mental_training",
+      "behaviour_key": "user_choice",
+      "depends_on_field": null,
+      "field_key": "selection_status",
+      "fixed_value": null,
+      "note_da": null,
+      "required": 1,
+      "selection_status": "ALL",
+      "sort_order": 30
+    },
+    {
+      "activity_type_key": "veo_review",
+      "behaviour_key": "user_choice",
+      "depends_on_field": null,
+      "field_key": "selection_status",
+      "fixed_value": null,
+      "note_da": null,
+      "required": 1,
+      "selection_status": "ALL",
+      "sort_order": 30
+    },
+    {
+      "activity_type_key": "ALL",
+      "behaviour_key": "fixed_value",
+      "depends_on_field": null,
+      "field_key": "selection_status",
+      "fixed_value": "attended",
+      "note_da": "Egen træningstype: altid deltog",
+      "required": null,
+      "selection_status": "ALL",
+      "sort_order": 30
+    },
+    {
+      "activity_type_key": "ALL",
+      "behaviour_key": "offered",
+      "depends_on_field": null,
+      "field_key": "gps_data",
+      "fixed_value": null,
+      "note_da": null,
+      "required": null,
+      "selection_status": "selected",
+      "sort_order": 100
+    },
+    {
+      "activity_type_key": "ALL",
+      "behaviour_key": "not_offered",
+      "depends_on_field": null,
+      "field_key": "gps_data",
+      "fixed_value": null,
+      "note_da": null,
+      "required": null,
+      "selection_status": "not_selected",
+      "sort_order": 100
+    },
+    {
+      "activity_type_key": "ALL",
+      "behaviour_key": "user_choice",
+      "depends_on_field": null,
+      "field_key": "detail_level",
+      "fixed_value": null,
+      "note_da": "Legale værdier: se form_field_value_legality",
+      "required": null,
+      "selection_status": "selected",
+      "sort_order": 110
+    },
+    {
+      "activity_type_key": "ALL",
+      "behaviour_key": "user_choice",
+      "depends_on_field": null,
+      "field_key": "detail_level",
+      "fixed_value": null,
+      "note_da": "Gælder HOLDETS hændelser, ikke barnets egen deltagelse (Issue #77) — legale værdier: se form_field_value_legality",
+      "required": null,
+      "selection_status": "not_selected",
+      "sort_order": 110
+    },
+    {
+      "activity_type_key": "ALL",
+      "behaviour_key": "derived_from_field",
+      "depends_on_field": "detail_level",
+      "field_key": "time_input_mode",
+      "fixed_value": null,
+      "note_da": "Følger detail_level, ikke et selvstændigt valg",
+      "required": null,
+      "selection_status": "selected",
+      "sort_order": 120
+    },
+    {
+      "activity_type_key": "ALL",
+      "behaviour_key": "not_applicable",
+      "depends_on_field": null,
+      "field_key": "time_input_mode",
+      "fixed_value": null,
+      "note_da": null,
+      "required": null,
+      "selection_status": "not_selected",
+      "sort_order": null
+    },
+    {
+      "activity_type_key": "ALL",
+      "behaviour_key": "derived_from_field",
+      "depends_on_field": null,
+      "field_key": "gps_data",
+      "fixed_value": null,
+      "note_da": "activity_types.is_physical (Issue #52) — tilbydes kun hvis typen er fysisk",
+      "required": null,
+      "selection_status": "attended",
+      "sort_order": 70
+    },
+    {
+      "activity_type_key": "ALL",
+      "behaviour_key": "not_applicable",
+      "depends_on_field": null,
+      "field_key": "team",
+      "fixed_value": null,
+      "note_da": "Ingen deltagelse at knytte til et hold",
+      "required": null,
+      "selection_status": "absent",
+      "sort_order": null
+    },
+    {
+      "activity_type_key": "ALL",
+      "behaviour_key": "not_offered",
+      "depends_on_field": null,
+      "field_key": "gps_data",
+      "fixed_value": null,
+      "note_da": "Ingen aktivitet at måle",
+      "required": null,
+      "selection_status": "absent",
+      "sort_order": 70
+    },
+    {
+      "activity_type_key": "ALL",
+      "behaviour_key": "pick_from_list",
+      "depends_on_field": null,
+      "field_key": "absence_reason",
+      "fixed_value": null,
+      "note_da": null,
+      "required": 1,
+      "selection_status": "absent",
+      "sort_order": 50
+    },
+    {
+      "activity_type_key": "ALL",
+      "behaviour_key": "not_applicable",
+      "depends_on_field": null,
+      "field_key": "absence_reason",
+      "fixed_value": null,
+      "note_da": null,
+      "required": null,
+      "selection_status": "attended",
+      "sort_order": null
+    },
+    {
+      "activity_type_key": "ALL",
+      "behaviour_key": "fixed_value",
+      "depends_on_field": null,
+      "field_key": "detail_level",
+      "fixed_value": "simple",
+      "note_da": "Arket viser kun Simpel ved alle afbud",
+      "required": null,
+      "selection_status": "absent",
+      "sort_order": 80
+    },
+    {
+      "activity_type_key": "ALL",
+      "behaviour_key": "user_choice",
+      "depends_on_field": null,
+      "field_key": "detail_level",
+      "fixed_value": null,
+      "note_da": "Legale værdier: se form_field_value_legality",
+      "required": null,
+      "selection_status": "attended",
+      "sort_order": 80
+    },
+    {
+      "activity_type_key": "ALL",
+      "behaviour_key": "fixed_value",
+      "depends_on_field": null,
+      "field_key": "time_input_mode",
+      "fixed_value": "duration",
+      "note_da": "Følger detail_level",
+      "required": null,
+      "selection_status": "absent",
+      "sort_order": 90
+    },
+    {
+      "activity_type_key": "ALL",
+      "behaviour_key": "derived_from_field",
+      "depends_on_field": "detail_level",
+      "field_key": "time_input_mode",
+      "fixed_value": null,
+      "note_da": "Følger detail_level, ikke et selvstændigt valg",
+      "required": null,
+      "selection_status": "attended",
+      "sort_order": 90
+    },
+    {
+      "activity_type_key": "ALL",
+      "behaviour_key": "pick_or_create",
+      "depends_on_field": "team",
+      "field_key": "location",
+      "fixed_value": null,
+      "note_da": "Historik skal være pr. familie, ikke delt (deling-test#19)",
+      "required": 1,
+      "selection_status": "attended",
+      "sort_order": 60
+    },
+    {
+      "activity_type_key": "ALL",
+      "behaviour_key": "pick_or_create",
+      "depends_on_field": "absence_reason",
+      "field_key": "location",
+      "fixed_value": null,
+      "note_da": "Valgfri ved afbud (Issue #72 trin 4) — historik skal være pr. familie, ikke delt (deling-test#19)",
+      "required": 0,
+      "selection_status": "absent",
+      "sort_order": 60
+    }
+  ],
+  "format_rules": [
+    {
+      "format": 8,
+      "red_card": "rest_of_match",
+      "second_yellow": "red",
+      "yellow_card_minutes": 5
+    },
+    {
+      "format": 11,
+      "red_card": "rest_of_match",
+      "second_yellow": "red",
+      "yellow_card_minutes": 10
+    }
+  ],
+  "positions": [
+    {
+      "active": true,
+      "category": "goalkeeper",
+      "display_da": "Målmand",
+      "key": "GK",
+      "legacy_value": "GK",
+      "sort_order": 1
+    },
+    {
+      "active": true,
+      "category": "defence",
+      "display_da": "Venstre back",
+      "key": "LB",
+      "legacy_value": "LB",
+      "sort_order": 2
+    },
+    {
+      "active": true,
+      "category": "defence",
+      "display_da": "Midterforsvarer",
+      "key": "CB",
+      "legacy_value": "CB",
+      "sort_order": 3
+    },
+    {
+      "active": true,
+      "category": "defence",
+      "display_da": "Højre back",
+      "key": "RB",
+      "legacy_value": "RB",
+      "sort_order": 4
+    },
+    {
+      "active": true,
+      "category": "defence",
+      "display_da": "Venstre wingback",
+      "key": "LWB",
+      "legacy_value": "LWB",
+      "sort_order": 5
+    },
+    {
+      "active": true,
+      "category": "defence",
+      "display_da": "Højre wingback",
+      "key": "RWB",
+      "legacy_value": "RWB",
+      "sort_order": 6
+    },
+    {
+      "active": true,
+      "category": "midfield",
+      "display_da": "Defensiv midtbane",
+      "key": "DM",
+      "legacy_value": "DM",
+      "sort_order": 7
+    },
+    {
+      "active": true,
+      "category": "midfield",
+      "display_da": "Central midtbane",
+      "key": "CM",
+      "legacy_value": "CM",
+      "sort_order": 8
+    },
+    {
+      "active": true,
+      "category": "midfield",
+      "display_da": "Offensiv midtbane",
+      "key": "AM",
+      "legacy_value": "AM",
+      "sort_order": 9
+    },
+    {
+      "active": true,
+      "category": "attack",
+      "display_da": "Venstre kant",
+      "key": "LW",
+      "legacy_value": "LW",
+      "sort_order": 10
+    },
+    {
+      "active": true,
+      "category": "attack",
+      "display_da": "Højre kant",
+      "key": "RW",
+      "legacy_value": "RW",
+      "sort_order": 11
+    },
+    {
+      "active": true,
+      "category": "attack",
+      "display_da": "Angriber",
+      "key": "ST",
+      "legacy_value": "ST",
+      "sort_order": 12
+    }
+  ],
+  "selection_statuses": [
+    {
+      "active": true,
+      "display_da": "Udtaget",
+      "key": "selected",
+      "legacy_value": "Udtaget",
+      "sort_order": 1
+    },
+    {
+      "active": true,
+      "display_da": "Ej udtaget",
+      "key": "not_selected",
+      "legacy_value": "Ej udtaget",
+      "sort_order": 2
+    },
+    {
+      "active": true,
+      "display_da": "Deltog",
+      "key": "attended",
+      "legacy_value": "Deltog",
+      "sort_order": 3
+    },
+    {
+      "active": true,
+      "display_da": "Afbud",
+      "key": "absent",
+      "legacy_value": "Afbud",
+      "sort_order": 4
+    },
+    {
+      "active": false,
+      "display_da": "Kamp",
+      "key": "at_match",
+      "legacy_value": "Kamp",
+      "sort_order": 5
+    }
+  ],
+  "version": "b01680ac828042f8"
+}
