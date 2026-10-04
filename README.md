@@ -8,6 +8,10 @@ Trækkes ind som git submodule i klient- og server-repoerne, pinnet til en commi
 
 ```
 logic/vectors/    Testvektorer. Facit, alle platforme asserter imod.
+claude-md/        DELT-BLOK.md — den fælles blok, ét sted (Issue #139).
+contract/         contract.json — API-kontrakten som versioneret build-
+                  time-artefakt (Issue #134), genereret af
+                  PlayerData_Backend/scripts/generer-kontrakt.py.
 ```
 
 ## Hvorfor repoet findes
