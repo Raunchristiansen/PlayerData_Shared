@@ -76,19 +76,59 @@ beslutning — det er navngivningen af den ene ting, og den hoerer i haanden.
 Et ord er daekket, hvis dets **stamme** staar i listen og endelsen er en dansk
 boejning. Maalt, de der faktisk forekommer:
 
+**RETTET 05-10-2026 efter Androids fund. Reglen gaelder KUN FLERTAL.**
+
 ```
-kampe      = kamp + e          haendelser = haendelse + er
-banen      = bane + en         farver     = farve + er
-traenings  = traening + s      puljer     = pulje + er
-spillere   = spiller + e       vaelger    = vaelg + er
-halvlege   = halvleg + e       noegler    = noegle + er
-perioder   = periode + er      traeninger = traening + er
-henter     = hent + er         stoevner   = stoevne + er
-hentet     = hent + et
+FLERTAL — sikker, boejes efter engelsk regel
+  kampe = kamp + e            haendelser = haendelse + er
+  spillere = spiller + e      farver     = farve + er
+  halvlege = halvleg + e      puljer     = pulje + er
+  noegler = noegle + er       perioder   = periode + er
+  traeninger = traening + er  stoevner   = stoevne + er
+
+IKKE FLERTAL — hoerer paa SPRINGE-LISTEN, ikke i reglen
+  vaelger    handlende navneord ELLER nutid   Selector? Selects?
+  henter     nutid                             fetches? Fetcher?
+  hentet     kort tillaegsform                 fetched
+  banen      bestemt form                      thePitch? onPitch?
+  traenings  ejeform                           training's? trainingType?
 ```
 
-Engelsk boejes derefter efter engelsk regel: `kampe -> matches`, inte
-`matche`. **Tilfoej ikke boejninger til selve listen** — stammen plus reglen.
+**Androids fund, og det braekker reglens foerste udgave:**
+
+> `-er` er tre forskellige ting paa dansk — `noegler` (flertal), `henter`
+> (naevneform), `vaelger` (handlende navneord). Din tabel har
+> `vaelger = vaelg + er`, og reglen "boej derefter efter engelsk regel" gav
+> `Selects`. Det rigtige er `Selector`. **Reglen er rigtig for flertal og
+> tvetydig for de to andre, og den kan ikke afgoere hvilken den ser.**
+
+Derfor: **kun flertal.** De fem oevrige klasser er grammatik, ikke ordforraad, og
+et menneske navngiver dem.
+
+### "Allerede engelsk" — ordbogen, med en fjendeliste
+
+Et ord er daekket, hvis det staar i `/usr/share/dict/words` (104.334 ord). Det
+daekker `start`, `position`, `form`, `live`, `slot`, `type`, `id`, `ms`, `km`,
+`api`, `min` — og det er grunden til, at koordinatorens maaling gav 446 og
+Androids 176: **de taelte ikke ordbogen med.**
+
+**MEN ordbogen har falske venner, og den foerste er maalt:**
+
+```
+er    staar i /usr/share/dict/words (den engelske toevelyd) — OG er dansk
+```
+
+**En blind ordbogsregel giver `erEgetHold -> erOwnTeam`**, praecis den hybrid
+Androids foerste vaerktoejsudgave lavede. Derfor:
+
+```
+FALSKE VENNER — i ordbogen, men dansk. Behandles som UDAEKKEDE:
+  er · til · paa · han · hun · den · det · som · ved · var · har
+```
+
+Listen voksede ud af én maaling og er sandsynligvis ikke komplet. **Vokser den,
+er det en rettelse, ikke en fejl** — og et ord paa springe-listen koster et
+menneske fem sekunder, mens en hybrid koster en omdoebning mere.
 
 ### KOLLISIONER — ord hvis engelske oversaettelse ikke kan staa som et navn
 
