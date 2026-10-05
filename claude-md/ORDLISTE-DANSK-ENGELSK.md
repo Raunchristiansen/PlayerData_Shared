@@ -224,6 +224,42 @@ vinder, fordi den er den mest specifikke.**
 - **Tre-dels-sammensaetninger** er proevet og virker (`kamp+gps+data`), men
   hver ekstra del ganger risikoen for et forkert split.
 
+### RETTELSE 06-10 kl. 00:05 — hver del skal vaere **DANSK**, ikke blot daekket
+
+Androids maaling af reglen paa deres eget trae gav **`kropper -> bodyPer`**:
+
+```
+kropper  ->  krop + per      begge dele er i mappingen
+                             `per` er et GODKENDT ENGELSK ord
+```
+
+**Alle dele var daekkede, og intet i hybrid-reglen kunne se noget forkert.**
+Det er praecis koordinatorens `_to_int -> _plausible_int` fra samme nat, hvor
+alle oevrige ord var engelske og derfor passerede.
+
+**Reglen kraever nu, at hver del er DANSK.** Et sammensat dansk ord er sat
+sammen af danske dele — en engelsk del betyder, at opdelingen er forkert, ikke
+at ordet er halvt oversat.
+
+```
+krop + per        AFVIST   'per' er engelsk -> opdelingen er forkert
+alder + regler    OK       begge danske     -> age_rules
+hold + kort       OK       begge danske     -> team_card
+```
+
+### OG BOEJNINGEN SKAL PROEVES PAA STAMMEN, IKKE PAA HELE ORDET
+
+Androids to, der slap forbi deres foerste rettelse:
+
+```
+spillerRaekker -> playerDivisions      KAN_IKKE_AFGOERES blev tjekket paa
+skifte         -> changes               HELE ordet, ikke paa STAMMEN
+```
+
+`raekker` og `skifte` er boejninger af `raekke` og `skift`, som begge staar i
+A5b. **En spaerring, der kun kender grundformen, er aaben for hver boejning af
+det samme ord** — og boejningsreglen loeber FOER opslaget, saa den naar det
+foerst.
 
 ### KOLLISIONER — ord hvis engelske oversaettelse ikke kan staa som et navn
 
@@ -324,17 +360,13 @@ frem for forhandles.
 | hjemme | `home` | `dbu_club_colors.home_shirt` |
 | klub | `club` | `dbu_club_colors.dbu_club_name` |
 | navn | `name` | `dbu_groups.division_name`, `dbu_club_colors.dbu_club_name` |
-| positioner | `position` | `position_minutes.position` (flertalsreglen: `positions`) |
 | praefiks | `prefix` | `activity_types.match_number_prefix` |
-| raekke | `division` | `dbu_groups.division_name` |
 | sendt | `sent` | `match_end_push_sent.sent_at` |
 | slut | `end` | `families.follow_match_end_notifications` |
 | standard | `default` | `age_rules.default_format` |
-| tal | `number` | `activity_types.match_number_prefix` |
 | tid | `time` | `match_halftime_state.extra_time` |
 | trin | `step` | `match_gps_data.step_balance_l` |
 | troeje | `shirt` | `dbu_club_colors.home_shirt` |
-| typer | `type` | `activity_types.legacy_type` (flertal: `types`) |
 | ude | `away` | `dbu_club_colors.away_shirt` |
 
 **ADVARSEL om `halve`:** Backend maalte, at `halve_op` er en **afrundingsregel**
@@ -381,7 +413,6 @@ paa engelsk et andet sted i samme kodebase, saa valget er truffet.
 | dansk | engelsk | bevis, efterproevet |
 |---|---|---|
 | faelles | `shared` | tabellerne `shared_matches` (39 forekomster) og `shared_tournaments`, `#144` |
-| skift | `change` | `PositionChangeIn` (9 forekomster), `_position_change_fra_lager` |
 | nulstil | `reset` | ruten `/api/auth/reset-password`, tabellen `password_reset_tokens` |
 | tjek | `check` | ruterne `/player-check` og `/lineups/check-now` |
 | felter | `fields` | `/api/v1/stats/nullable-fields`, `nullable_fields.py`, tabellen `form_fields` |
@@ -482,7 +513,6 @@ Maalt 05-10 kl. 23:57: det gamle moenster gav 71 par, det rettede 89.
 
 | navne | dansk | engelsk | serverens bevis |
 |---|---|---|---|
-| **8** | raekke | `division` | `"/divisions"`, `"/matches-for-division"`, `division_name`, `divisionid` |
 | **7** | faelles | `shared` | `shared_matches`, `shared_tournaments` (28 forekomster) |
 | **7** | navn | `name` | `dbu_club_name`, `created_by_name`, `event_name` (39) |
 | **4** | aktivitet | `activity` | `activity_type_key`, `activity_type_category` (93) |
@@ -511,22 +541,40 @@ aktivitetstyper  activity_types   serveren HAR tabellen (61)
 De er altsaa ikke nye beslutninger — de falder ud af reglen plus A5 ovenfor, og
 **det er den kontrol, reglen blev valideret med.**
 
-### `raekke` er den vigtigste, og den var ikke gaettet
+### RETTET 06-10 kl. 00:05: `raekke` er FLYTTET til A5b — 51 navne, to betydninger
 
-`raekke` stod som *ugennemgaaet* i iOS' tabel — altsaa i ordbogen, men ikke
-godkendt. Det er praecis den kategori, hvor en ordbog er farlig: `raekke` ligner
-`row`, og `row` er rigtigt i `_row_to_dict`. **I DBU-hierarkiet er en raekke en
-division**, og serveren har allerede sagt det med en rute.
+**Posten stod her i to timer som "afgjort af serveren". Den var forkert, og
+Android maalte det i deres eget trae:**
 
 ```
-DBU-hierarkiet, som serveren navngiver det
-  division   /divisions                raekke
-  group      dbu_groups, age_group     pulje
+DBU-raekken           -> division   Raekke, RaekkeKamp, RaekkeKampeSvar
+en RAEKKE i en liste  -> row        GpsRaekke, HistorikRaekke, KamptrupRaekke
+                                    BaenkRaekke, KampprogramRaekke, KampRaekke
 ```
 
-En oversaettelse til `row` havde givet `TeamRow`, `MatchRow`, `MatchesRow` — navne
-der ser rigtige ud og betyder noget andet. **Det er ikke en stavefejl, det er en
-forkert model.**
+`GpsRaekke -> GpsDivision` stod paa deres liste af 77 foreslaaede omdoebninger.
+Det er **een raekke fra en GPS-upload**, og `GpsDivision` er ikke en stavefejl —
+det er en forkert model, og den kompilerer.
+
+**Og intet kunne fange den: `Gps` og `Raekke` er begge daekkede ord.**
+
+**Hvorfor posten var forkert, selv om maalingen var rigtig:** serveren HAR
+afgjort, at DBU-raekken hedder `division` (`/divisions`, `division_name`). Det
+er sandt. Men jeg maalte **serveren** og konkluderede om **klienternes navne** —
+og klienterne bruger ordet i to betydninger, serveren kun i een.
+
+Det staar i min egen commit-besked fra samme indsaettelse:
+
+> *"En ordbog ville have sagt `row`, og `row` ER rigtigt i `_row_to_dict`."*
+
+**Jeg havde modeksemplet i haanden og lagde ordet i det entydige afsnit
+alligevel.** Det er ikke en maalefejl; det er en placeringsfejl, og den er
+dyrere, fordi afsnittets overskrift siger *"ingen beslutning, kun
+efterproevning"*.
+
+**Reglen, der foelger:** et ord maa kun staa i et A-afsnit, naar serverens brug
+og klienternes brug er maalt til at vaere DEN SAMME. Serverens feltnavn afgoer,
+hvad ordet HEDDER paa engelsk — ikke hvor mange betydninger klienten bruger det i.
 
 ### `ord` er en delstreng af `password` — samme faelde som `hold`
 
@@ -539,7 +587,16 @@ nu to beviste tilfaelde af den, ikke eet.
 
 ## A5b. KAN IKKE AFGOERES PAA LISTEN — maal kaldestedet
 
-**Disse seks har to plausible engelske ord i DENNE kodebase**, og det er
+**ALLE FEM AF ANDROIDS ORD STOD TIDLIGERE I A2 ELLER A4** som "afgjort af
+serveren", fra kl. 22:45 og 23:10. De er **fjernet derfra 06-10 kl. 00:05** og
+staar nu kun her, med serverbeviset bevaret i kolonnen "de to".
+
+**Grunden til at de ikke blot fik en note:** disse tabeller bliver PARSET af tre
+sessioner. En tvetydig post i en maskinlaest tabel er en fejl, uanset hvad
+prosaen ved siden af siger — et vaerktoej laeser raekken, ikke advarslen. Et ord,
+der ikke kan afgoeres, maa derfor ikke staa i en mapping-tabel overhovedet.
+
+**Disse har to plausible engelske ord i DENNE kodebase**, og det er
 ambiguitetsreglen fra afsnittet oeverst: et vaerktoej skal springe navnet over,
 ikke vaelge.
 
@@ -547,10 +604,13 @@ ikke vaelge.
 |---|---|---|
 | maerke | `mark` · `badge` · `marker` | serveren har BAADE `badges` og `marker`. `KortMaerke` er sandsynligvis `mark`, men det er kaldestedet der ved det |
 | tilbage | `remaining` · `back` | `KampTilbage` = kampe der RESTERER. `gaaTilbage` = navigation. Samme ord, to retninger |
-| skift | `change` · `substitution` | `skiftAdgangskode` er `change`. Men **`skifte` er en HAENDELSESTYPE** (en udskiftning), og den maa ikke blive `change` |
-| tal | `number` · `figure` · `stat` | `nummer` ejer allerede `number` (A5). `HoldTal` er statistik, ikke numre |
+| skift | `change` · `substitution` | `skiftAdgangskode` er `change`. Men **`skifte` er en HAENDELSESTYPE** (en udskiftning), og den maa ikke blive `change` · serveren: `PositionChangeIn` (9 forekomster), `_position_change_fra_lager` |
+| tal | `number` · `figure` · `stat` | `nummer` ejer allerede `number` (A5). `HoldTal` er statistik, ikke numre · serveren: `activity_types.match_number_prefix` |
 | aeldre | `older` · `legacy` | `AeldreNoegle` i `CacheSkema`. Android har `legacy_type` — to platforme kan have valgt forskelligt |
 | ord | `word` | maalvaerdien er nok klar, men se delstreng-faelden ovenfor FOER den bruges |
+| **raekke** | `division` · `row` | **51 navne, maalt af Android.** DBU-raekken er `division`; `GpsRaekke`/`BaenkRaekke`/`HistorikRaekke` er `row`. Se afsnittet ovenfor · serveren: `dbu_groups.division_name` |
+| positioner | `positions` · `position` | mappingens post er dansk FLERTAL mod engelsk ENTAL · serveren: `position_minutes.position` (flertalsreglen: `positions`) |
+| typer | `types` · `type` | samme · serveren: `activity_types.legacy_type` (flertal: `types`) |
 
 **`skift` er den farligste**, og grunden er den samme som `kort`s to betydninger:
 et af de to er en haendelsestype i data, og en forkert omdoebning dér er en
