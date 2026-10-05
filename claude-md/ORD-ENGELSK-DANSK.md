@@ -53,7 +53,7 @@ staar paa.** Et menneske afgoer det paa NAVNET.
 > Et ord, der findes i begge sprog med forskellig betydning, kan ikke afgoeres
 > paa listen. Det afgoeres paa navnet.
 
-## GODKENDT ENGELSK — 215 ord
+## GODKENDT ENGELSK — 217 ord
 
 26 af dem er godkendt af **alle tre uafhaengigt.**
 
@@ -85,7 +85,8 @@ staar paa.** Et menneske afgoer det paa NAVNET.
   service        session        sessions       set            sheet          shell          site         
   slot           stage          start          state          stats          status         stop         
   strip          substitution   sync           table          tags           team           teams        
-  text           to             toggle         token          totals         training       type         
+  text           to             toggle         token          totals         training       type
+  total          veo             
   types          unique         until          updated        upload         url            value        
   verification   verify         version        vocabularies   wizard       
 
@@ -121,11 +122,40 @@ marker      dansk BYDEFORM   markerHalvleg = "markér halvlegen". Stod 0 gange i
                              prosaen, saa enhver frekvensmaaling missede den
 ```
 
-## OVERDETEKTION — hverken dansk eller engelsk
+## OVERDETEKTION — hvorfor et ord rammer heuristikken, ikke en TREDJE kategori
 
 Forkortelser, varemaerker og fragmenter rammer heuristikkerne, men skal ikke
-omdoebes: `dbu`, `veo`, `repo`, `dsl`, `hid`, `api`, `json`, og enkeltbogstav-
-fragmenter som `b` i `b64url` og `v` i `v1`.
+omdoebes: `repo`, `dsl`, `hid`, `api`, `json`, og enkeltbogstav-fragmenter som
+`b` i `b64url` og `v` i `v1`.
+
+### RETTET 06-10 kl. 01:30: `dbu` og `veo` er FLYTTET til GODKENDT ENGELSK
+
+**`dbu` stod i BEGGE afsnit, og `veo` kun her. Det kostede navne.**
+
+De to kategorier har forskellig virkning paa et navn, og det er ikke aabenlyst:
+
+```
+godkendt engelsk   BEHOLD ordet, omdoeb RESTEN     dbu_kampnr -> dbu_match_number
+overdetektion      "skal ikke omdoebes"            kan laeses som: SPRING
+                                                   HELE navnet over
+```
+
+**For en forkortelse INDE i et sammensat navn er "godkendt engelsk" den
+rigtige opfoersel.** Beviset er Backends egen omdoebning:
+`hent_veo_links -> fetch_veo_links` — `veo` beholdt, `hent` omdoebt. Det er
+praecis, hvad den godkendte liste giver, og det modsatte af at springe navnet
+over.
+
+Android maalte 06-10, at **`dbu` blokerer 17 af deres navne** — flest af alle
+undtagen `opstilling`. Om det skyldes denne modsigelse, ved jeg ikke: jeg har
+maalt FILEN, ikke deres parser, og jeg har een gang i nat paastaaet noget om
+tre sessioners vaerktoejer, jeg ikke havde maalt. **Spoergsmaalet er sendt til
+dem.**
+
+**Afsnittet her er derfor en BEGRUNDELSE, ikke en kategori.** Et ord staar
+antingen i GODKENDT ENGELSK (behold det) eller i MAALT DANSK (omdoeb det) eller
+i mapningens tvetydige afsnit. Dette afsnit siger kun, HVORFOR nogle ord
+rammer heuristikkerne forkert.
 
 ## HVAD DER IKKE HOERER HER
 
