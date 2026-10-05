@@ -43,6 +43,32 @@ Melder du en fejl videre, eller lukker du et Issue en anden platform også skal 
 
 En ren symptombeskrivelse tvinger modtageren til at gætte. Det er forskellen på, at den anden platform finder deres version på ti minutter eller bruger en aften på at genopdage den.
 
+### En måling, der kun findes i to sessioners logge, er ikke dokumenteret
+
+Android målte `#76` grundigt, sendte det til koordinatoren i en besked, og
+koordinatoren relayede det videre til Morten. **Kortet havde nul kommentarer**,
+da det blev opdaget timer senere.
+
+Androids egen formulering, efter at koordinatoren indrømmede fejlen:
+
+> Den gælder begge veje: jeg sendte den til dig i en besked og **betragtede den
+> som afleveret.** En måling, der kun findes i to sessioners logge, er ikke
+> dokumenteret — den er **husket**, og hukommelse er præcis det, der dør med en
+> session.
+
+**Samme dag skete det tre gange hos koordinatoren:** `#144` og `#157` var kørt
+og verificeret, men kortene stod åbne, og `#76`s måling fandtes kun i en
+chatbesked.
+
+**Formen der holder:** de tal, der skal overleve dig, skrives i
+**commit-beskeden** — det eneste sted en platform-session selv kan garantere — OG
+koordinatoren lægger dem på kortet. To steder, to ejere, og ingen af dem er en
+chatlog.
+
+Det er samme lektie som `live_contract.py`s egen oprindelse: iOS måtte spørge
+koordinatoren om en JSON-form i en besked, **og svaret forsvandt ved nedbruddet
+samme formiddag.**
+
 ### Tværgående arbejde: forælder og under-issues
 
 Et GitHub-Issue bor i ét repo — de andre platformes sessioner ser det ikke. Derfor:
@@ -359,6 +385,52 @@ bygget, men ingen regel sagde, at dokumenterne skulle bruge det.
 TING uden nøgle er en fejl med det samme, en eksisterende uden er en kendt mangel,
 der rettes når der alligevel er grund til at røre den (samme tempo som resten af
 denne fils regler, ikke en ny, selvstændig oprydningsopgave).
+
+### Samme serializer, modsat opførsel — afhængigt af feltets erklæring
+
+Android målte 05-10-2026, at et `null` fra serveren blev `false` i 48 af 86
+registreringer. **Den oplagte mistænkte var `FleksibelBoolean`**, som de selv
+havde målt i `#73` til at give `false` for et null.
+
+Den var uskyldig:
+
+> Jeg målte den i `#73` på et **ikke-nullabelt** felt, hvor den giver `false` —
+> men på et **NULLABELT** felt håndterer kotlinx null'en, FØR serializeren
+> kaldes. Samme serializer, modsat opførsel, afhængigt af feltets type.
+>
+> Havde jeg stolet på min egen `#73`-måling, havde jeg rettet det forkerte sted.
+
+Tabet lå i `Kladde.fra`s `?: false` — **ét lag længere inde**, i oversættelsen
+fra model til udkast. Og `DatainputGem` skrev gættet TILBAGE, så en forælder,
+der åbnede en gammel registrering og gemte uden at røre knappen, muterede
+serverens data.
+
+**Reglen:** en serializers opførsel er ikke en egenskab ved serializeren. Den er
+en egenskab ved **serializeren PLUS feltets erklæring.** En måling på ét felt
+siger intet om et andet felt med samme serializer, hvis deres nullabilitet
+afviger.
+
+Det er samme form som afsnittet ovenfor: robustheden ligger i vejen, ikke i
+delen. Her ligger den endda i et **par** — og et par kan ikke måles ved at måle
+én halvdel.
+
+### Og mål hele vejen, ikke kun grænsen
+
+Androids måling, der fandt det, gik hele vejen:
+
+```
+server sender      model       kladde      gemt
+null               null        FALSE       false     <- tabet her
+false / 0          false       false       false
+true / 1           true        true        true
+```
+
+**Modellen bevarede null'en hele tiden.** Havde de kun målt afkodningen, havde
+de fundet den uskyldig og ledt videre i den forkerte retning. Havde de kun målt
+det gemte, havde de fundet `false` og mistænkt serializeren.
+
+**Kun hele kæden viser, hvor et tab sker.** Og en mutation, der skrives tilbage,
+kan kun ses ved at måle skrivningen — ikke læsningen.
 
 ### Robusthed er en egenskab ved vejen, ikke ved feltet
 
