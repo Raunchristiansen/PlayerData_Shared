@@ -695,6 +695,9 @@ ikke vaelge.
 | tal | `number` · `figure` · `stat` | `nummer` ejer allerede `number` (A5). `HoldTal` er statistik, ikke numre · serveren: `activity_types.match_number_prefix` |
 | aeldre | `older` · `legacy` | `AeldreNoegle` i `CacheSkema`. Android har `legacy_type` — to platforme kan have valgt forskelligt |
 | ord | `word` | maalvaerdien er nok klar, men se delstreng-faelden ovenfor FOER den bruges |
+| **opstilling** | `lineup` · `formation` | **19 navne hos Android, den stoerste enkeltgevinst.** Serveren har SELV splittet det: `match_lineup` er TABELLEN, `match_lineup.formation` er KOLONNEN. Staar i afsnit A's egen split-tabel, men maa derfor ikke staa i mapningen |
+| **maal** | `goal` · `target` | maalt: `goal` **42**, `target` **12** i serveren. Afsnit A afgoer SCORINGS-betydningen (`follow_goal_notifications`); maal som *maaling/maalsaetning* er en anden ting |
+| **traek** | `pull` · `draw` · `feature` | `pull` 1, `draw` 1 — og `feature` 27, som tilhoerer `funktion`, ikke `traek`. Beviset er altsaa svagt OG tvetydigt |
 | **raekke** | `division` · `row` | **51 navne, maalt af Android.** DBU-raekken er `division`; `GpsRaekke`/`BaenkRaekke`/`HistorikRaekke` er `row`. Se afsnittet ovenfor · serveren: `dbu_groups.division_name` |
 | positioner | `positions` · `position` | mappingens post er dansk FLERTAL mod engelsk ENTAL · serveren: `position_minutes.position` (flertalsreglen: `positions`) |
 | typer | `types` · `type` | samme · serveren: `activity_types.legacy_type` (flertal: `types`) |
@@ -835,6 +838,46 @@ maal paa ENGELSK side  cap  → unesCAPe        <- NY, og lige saa stille
 `[a-z_]*ord[a-z_]*` finder `password`; et `grep` paa `[a-z_]*cap[a-z_]*` finder
 `unescape`. Der er ingen forskel paa de to fejl, og jeg havde kun skrevet den
 ene ned.
+
+## A7. SYV ORD FRA ANDROIDS BLOKERINGSLISTE — maalt 06-10 kl. 00:50
+
+**Kilden er Androids egen optaelling** fra `#85`s springe-liste: hvilke ord
+blokerer flest af DERES 1738 sprungne navne. Det er en bedre prioritering end
+iOS' doc alene, fordi den er maalt paa de navne, der faktisk staar tilbage.
+
+| navne | dansk | engelsk | n | serverens bevis |
+|---|---|---|---|---|
+| **7** | felt | `field` | **57** | `field_key`, `nullable_fields` |
+| **8** | ekstra | `extra` | **51** | `has_extra_time` |
+| **8** | sidste | `last` | **29** | `last_sync`, `last_seen` |
+| **8** | ryd | `clear` | **18** | bydeform, som `marker` og `placer` |
+| **8** | miljoe | `environment` | **10** | `environment`, ikke `env` (n=1) |
+| **8** | baggrund | `background` | 4 | |
+| **7** | lokal | `local` | 2 | svagt, men entydigt |
+
+**`fortryd -> undo` er UDELADT med n=1.** Ordet er entydigt, men eet enkelt
+serverbevis er ikke nok til at kalde det *afgjort af serveren*, og der findes
+ingen anden kilde. Det hoerer i afsnit B, hvis nogen vil foreslaa det.
+
+### `cache` og `total` er ENGELSKE — de hoerer ikke i denne fil
+
+Android har dem som blokerende ord (8 hver), fordi de staar som *ugennemgaaede*.
+Maalt: `cache` **31** og `total` **52** forekomster i serveren, brugt som
+engelske ord. **De skal GODKENDES i `ORD-ENGELSK-DANSK.md`, ikke oversaettes.**
+
+Det er overdetektionens anden form: ikke et fragment som `repo` eller `dsl`, men
+**et rigtigt engelsk ord, der ogsaa staves saadan paa dansk.** En ordbogsproeve
+siger "engelsk" og har ret; godkendelseslisten siger "ikke godkendt" og har
+ogsaa ret. Kun en maaling af BRUGEN afgoer det.
+
+### `dbu` blokerer 17 navne og skal ALDRIG omdoebes
+
+Det er en **forkortelse for en organisation** (Dansk Boldspil-Union), ikke et
+dansk ord. Samme klasse som `repo`, `kode`, `dsl`, `hid` i metodeafsnittets
+overdetektionsliste — men stoerre end dem alle, og derfor vaerd at navngive.
+
+**`dbu` er det ord, der blokerer næstflest navne hos Android, og den rigtige
+handling er at fjerne det fra kandidatlisten**, ikke at finde et maal til det.
 
 ## B. Entydige — jeg foreslår, ingen beslutning nødvendig
 
