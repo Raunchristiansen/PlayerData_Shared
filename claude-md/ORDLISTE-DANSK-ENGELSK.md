@@ -251,6 +251,73 @@ begge klienter læser de felter i forvejen, og fordi det kan efterprøves.
 |---|---|---|
 | opstilling | `lineup` **eller** `formation` | `match_lineup` er TABELLEN (hvilke spillere), `match_lineup.formation` er KOLONNEN (4-4-2). Ét dansk ord, to engelske begreber — præcis det, tre sessioner ville gætte forskelligt |
 
+## A2. AFGJORT AF SERVEREN — tilfoejet 05-10-2026 kl. 22:45
+
+**Maalt, ikke valgt.** Alle tre platforme havde maalt disse ord som DANSKE
+(`ORD-ENGELSK-DANSK.md`), men ingen af dem havde en engelsk maalvaerdi. Serveren
+har den.
+
+**Princippet er Androids:** *for de ord, serveren allerede har et feltnavn til,
+er valget truffet.* Og det kan efterproeves med et `PRAGMA table_info`-opslag
+frem for forhandles.
+
+| dansk | engelsk | serverens bevis |
+|---|---|---|
+| afbud | `absence` | `sessions.absence_reason_key`, `absence_reasons.legitimate_absence` |
+| alder | `age` | `age_rules.age_group`, `dbu_groups.age_group` |
+| dato | `date` | `sessions.date`, `group_formats.confirmed_date` |
+| gule | `yellow` | `age_rules.has_yellow_cards`, `format_rules.second_yellow` |
+| halve | `half` | `match_halftime_state.active_half_number` — **men se advarslen nedenfor** |
+| hjemme | `home` | `dbu_club_colors.home_shirt` |
+| klub | `club` | `dbu_club_colors.dbu_club_name` |
+| navn | `name` | `dbu_groups.division_name`, `dbu_club_colors.dbu_club_name` |
+| positioner | `position` | `position_minutes.position` (flertalsreglen: `positions`) |
+| praefiks | `prefix` | `activity_types.match_number_prefix` |
+| raekke | `division` | `dbu_groups.division_name` |
+| sendt | `sent` | `match_end_push_sent.sent_at` |
+| slut | `end` | `families.follow_match_end_notifications` |
+| standard | `default` | `age_rules.default_format` |
+| tal | `number` | `activity_types.match_number_prefix` |
+| tid | `time` | `match_halftime_state.extra_time` |
+| trin | `step` | `match_gps_data.step_balance_l` |
+| troeje | `shirt` | `dbu_club_colors.home_shirt` |
+| typer | `type` | `activity_types.legacy_type` (flertal: `types`) |
+| ude | `away` | `dbu_club_colors.away_shirt` |
+
+**ADVARSEL om `halve`:** Backend maalte, at `halve_op` er en **afrundingsregel**
+("halve op"), ikke "to halve". `halve -> half` gaelder KUN naar ordet handler om
+en halvleg. **Et navn med `halve` i en afrundingssammenhaeng hoerer paa
+springe-listen.** Samme form som `sort`: ordet kan ikke afgoeres globalt.
+
+Og `standard` er i samme klasse: Androids fund var, at `STANDARD_FARVE` er
+**standardfarven** (default), og det passer med serverens `default_format`. Men
+ordet laeser som engelsk "standard", og det er praecis derfor det er farligt.
+
+## A3. STADIG UDEN EN ENGELSK MAALVAERDI — 19 ord
+
+**Serveren navngiver dem ikke, og de er ikke afgjort.** Et navn, der indeholder
+et af dem, hoerer paa springe-listen, indtil nogen afgoer ordet:
+
+```
+art · deltager · fri · frisk · handling · knap · lager · linje · mangler
+ny · prognose · rang · registrer · skift · slip · stilling · tag · tom
+```
+
+**Fem af dem har ÉT plausibelt engelsk ord** og kan afgoeres uden Morten, naar
+nogen tager dem: `handling -> action`, `knap -> button`, `linje -> line`,
+`ny -> new`, `tom -> empty`, `mangler -> missing`.
+
+**Og fire er reelt tvetydige:**
+
+```
+stilling    standings (tabellen) ELLER position (paa banen)?
+art         kind ELLER species? — bruges om haendelsestypens ART
+rang        rank — men serverens egen _HAENDELSE_RANG er ogsaa dansk
+tag         take ELLER tag (et maerkat)? Androids maaling: dansk "tag"
+```
+
+**De fire hoerer ikke paa denne liste, foer nogen har laest deres kaldesteder.**
+
 ## B. Entydige — jeg foreslår, ingen beslutning nødvendig
 
 Ingen af disse har to plausible engelske ord i denne kodebase.
