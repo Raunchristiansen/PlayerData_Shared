@@ -778,7 +778,7 @@ ikke som delstreng. Den staar der, fordi styrken af et bevis er forskellen paa
 
 | dansk | engelsk | n | serverens bevis |
 |---|---|---|---|
-| kampdato | `date` | **5** | **`#156` trin 1 sender det paa ledningen: `"date": k["kampdato"]`** |
+| kampdato | se nedenfor | **5** | **TO SVAR, og det er ikke en fejl i listen** — se afsnittet om ledning mod navn |
 | frisk | `fresh` | **8** | `fresh_kampnrs`, `refresh_match_now` |
 | slip | `release` | 3 | laasens modsaetning til `tag` |
 | handling | `action` | 2 | **dansk ACTION, ikke "haandtering"** — staar paa farligste-listen |
@@ -891,6 +891,92 @@ overdetektionsliste — men stoerre end dem alle, og derfor vaerd at navngive.
 
 **`dbu` er det ord, der blokerer næstflest navne hos Android, og den rigtige
 handling er at fjerne det fra kandidatlisten**, ikke at finde et maal til det.
+
+### `kampdato` har TO rigtige svar: `date` paa ledningen, `matchDate` som navn
+
+**Androids maaling 06-10 kl. 01:00 rettede posten anden gang.** Jeg havde den
+foerst som `match_date` (maalt paa et FUNKTIONSNAVN), saa som `date` (maalt paa
+`#156`s wire-noegle). **Begge var halve svar.**
+
+```
+paa LEDNINGEN   "date": k["kampdato"]        #156 trin 1 — bindende
+som NAVN        kampDato -> matchDate        SAMMENSAT via camelCase
+                kampdato -> date             posten vinder, og taber "kamp"
+```
+
+**To navne for eet begreb**, hvis posten bruges paa navne. Og `@SerialName` /
+`CodingKeys` fryser noeglen i forvejen, **saa navnet er frit** — der er ingen
+grund til at lade wire-noeglen diktere det.
+
+Android har haandnavngivet `kampdato -> matchDate`. Og de maalte, at det er den
+**eneste** af listens sammensatte poster, hvor SAMMENSAT-reglen giver et bedre
+svar end posten: `holdkort` giver det samme, og `tidslinje`, `adgangskode`,
+`spillested` kan slet ikke deles.
+
+> Et kolonnenavn, en wire-noegle og et egenskabsnavn er tre forskellige
+> strenge — og i dette projekt er de bevidst forskellige.
+
+Det staar allerede i metodeafsnittet. **Jeg har nu brudt det tre gange paa
+samme post**, og det er derfor raekken ovenfor peger hertil frem for at give
+eet svar.
+
+### RETTELSE: "alle tre sessioners vaerktoejer" var MIN slutning, ikke en maaling
+
+Jeg skrev om split-raekken, at `opstilling -> lineup` havde staaet som en
+afgjort post i **alle tre sessioners vaerktoejer**. Android maalte det mod
+`41945e6`, `3e70ad6` og `4fe49a2`: **hos dem har den aldrig vaeret der.**
+
+Grunden er et `"eller"`-filter, de skrev ind da parseren blev bygget — og
+**samme filter holder ogsaa `maal`, `traek`, `raekke`, `skift` og `tal` ude af
+A5b's mapping-formede raekker.** Den beskyttelse var ikke forudset for A5b; den
+virkede der af sig selv.
+
+**Mit "alle tre" var samme fejl som resten af natten:** jeg maalte, at raekken
+KAN parses, og konkluderede om tre konkrete parsere, jeg ikke havde maalt. Den
+rigtige saetning er *"ethvert parse, der tager den foerste backtick-gruppe"* —
+og det er praecis, hvor maalingen stoppede.
+
+**Og filteret er den rigtige loesning, ikke min `**se A5b**`-markering.** Et
+filter paa `"eller"` / `·` virker paa hver fremtidig tvetydig raekke, uden at
+nogen skal huske at markere den. Jeg beholder markeringen, fordi den ogsaa
+daekker en parser uden filteret — men et filter er det, der skaleres.
+
+## A8. SEKS ORD MERE — Backends kandidater, maalt 06-10 kl. 01:05
+
+**Backend flagede dem tilbage frem for at gaette**, efter batch 6. Maalt med
+segmentgraense paa BEGGE sider, og med de faktiske linjer laest.
+
+| dansk | engelsk | dansk n | engelsk n | serverens bevis |
+|---|---|---|---|---|
+| gyldig | `valid` | 21 | **17** | `resultat["valid"]`, `valid=True` — allerede en JSON-NOEGLE |
+| resultat | `result` | 51 | 10 | `result = []`, `result.append`, `result.extend` |
+| spillet | `played` | 13 | 8 | `played_kampnrs`, `played = [m for m in matches …]` |
+| notifikation | `notification` | 17 | 13 | `android_notification` |
+
+**`resultat["valid"]` er vaerd at se paa:** serveren har i forvejen et dansk
+variabelnavn med en ENGELSK noegle indeni. Det er `#124`s blandede tilstand i
+eet udtryk, og det er grunden til at `gyldig -> valid` ikke er et gaet.
+
+### To blev AFVIST
+
+```
+relevant   dansk 28, engelsk 28   SAMME TAL — det er samme ord i begge sprog
+effektiv   dansk 7,  engelsk 0    INTET bevis for 'effective'
+```
+
+**`relevant` er `cache`/`total`-klassen:** et rigtigt engelsk ord, der ogsaa
+staves saadan paa dansk. Det skal **GODKENDES** i `ORD-ENGELSK-DANSK.md`, ikke
+oversaettes. At de to tal er identiske er selve beviset — hvert dansk traef ER
+et engelsk traef.
+
+`effektiv` har ingen maalvaerdi i serveren og hoerer i A3.
+
+### Og `maal` ramte NUL hele def-navne
+
+Backend maalte det: alle fire forekomster er blokeret af **andre** uafgjorte ord
+(`effektiv`, `beregn`, `tidslinje`, `hvis`, `relevant`, `notifikation`). Saa
+A5b's tvetydighed kostede ingenting denne runde — **men den vil koste, saa snart
+de oevrige ord afgoeres.** Vaerd at vide, naar `notifikation` nu er afgjort.
 
 ## B. Entydige — jeg foreslår, ingen beslutning nødvendig
 
