@@ -58,10 +58,52 @@ hybrid er ikke dansk, saa ratchet-tallet falder, `aeoeaa` forsvinder, og
 springes HELE navnet over og skrives til en liste, et menneske navngiver i haanden.
 
 ```
-harGuleKort      har + gule + kort     'gule' udaekket  ->  SPRINGES OVER
-spillerNavn      spiller + navn        'navn' er ENGELSK ->  omdoebes helt
-periodeMarkeringMs  periode + markering + ms   udaekket ->  SPRINGES OVER
+harGuleKort         har + gule + kort            'gule' udaekket   -> SPRINGES OVER
+spillerNavn         spiller + navn               'navn' er DANSK   -> SPRINGES OVER
+periodeMarkeringMs  periode + markering + ms     udaekket          -> SPRINGES OVER
 ```
+
+> **RETTET 05-10-2026.** Foerste udgave havde `spillerNavn -> playerNavn` her som
+> et eksempel paa "omdoebes helt", med begrundelsen *"'navn' er ENGELSK"*. **Det
+> er en hybrid, og eksemplet var forkert.** iOS fangede det: *"Din tekst siger
+> 'navn er ENGELSK -> omdoebes helt': det er en hybrid i min laesning, saa jeg har
+> IKKE godkendt navn."*
+
+### HVORFOR det var forkert: begge mine heuristikker laekker dansk
+
+**Maalt 05-10 efter iOS' fund:**
+
+```
+serverens 186 skemaord       33 ER DANSKE
+  navn · dato · raekke · klub · hjemme · ude · deltager · tid · afbud
+  aarsag · spillested · troejenr · kampnr · praefiks · puljeid · sektion
+  kampdato · kampinfo · beregnet · delte · dag · dbu · json · veo ...
+
+/usr/share/dict/words        laekker mindst disse danske ord
+  er · alt · gang · mange · loft · mine · tag · slip · art
+```
+
+**Serverens skemaord var den stoerste fejl.** Jeg regnede dem som daekkede, fordi
+serveren er "sandheden" — men **33 af dens kolonnenavne er stadig danske**, og
+det er praecis dem, `#156` skal omdoebe. En kolonne, der venter paa at blive
+engelsk, er ikke et bevis paa, at ordet ER engelsk.
+
+### LOESNINGEN er iOS' og Androids, ikke min: en GODKENDELSESLISTE
+
+> Et ord taeller kun som engelsk, hvis et MENNESKE har gennemgaaet og godkendt
+> det. Alle andre sender navnet til springe-listen.
+
+iOS' `docs/omdoebning-124/godkendt-engelsk.txt` har **63 ord**, gennemgaaet i
+haanden. **Ordbogen og serverens skemaord er dermed KANDIDAT-generatorer, ikke
+autoriteter** — de foreslaar ord til gennemgang, de afgoer ingenting.
+
+**Det er samme form som alt andet, der har virket i aften:** Backends
+godkendelsesliste i `test_feltnavne.py` (fejler lukket), Androids
+kollisionsliste (committet, afgjort i haanden), `#95`s sprogvagt (en
+godkendelsesliste, ikke en afvisningsliste).
+
+**En afvisningsliste kan aldrig blive faerdig. En godkendelsesliste er faerdig i
+det oejeblik, den er gennemgaaet.**
 
 **Det er en egenskab ved vaerktoejet, ikke ved listen.** Derfor kan listen vokse
 bagefter uden at noget skal rettes om, og springe-listen er maalbar fremdrift.
