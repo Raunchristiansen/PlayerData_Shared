@@ -1559,6 +1559,42 @@ Det er samme form som `pgrep -f`, der matcher sin egen kommandolinje: et mønste
 bredt nok til at finde det, man leder efter, er også bredt nok til at finde noget
 andet, der ligner.
 
+### En måling der finder for MEGET koster andres tid, ikke din egen
+
+Android var 05-10-2026 på vej til at melde, at en tømt vektorfil ville bestå
+tavst — et fund der ville have ramt alle fem delte vektortests på én gang.
+Grundlaget var et grep efter `isNotEmpty`/`size`, der gav **nul træf i fire af
+de fem.**
+
+**De tømte `kortstatus-fra-python.json` for at bevise det først. Testen blev
+rød.**
+
+Vagten heder `vektoren_har_de_kanttilfaelde_den_skal_have` og påstår på
+**NAVNE**, ikke på længder. Mønstret ledte efter den forkerte form.
+
+> Et grep efter en implementeringsform finder ikke en vagt, der er skrevet i en
+> anden. **Fraværet af mit mønster var ikke fraværet af en kontrol.**
+
+Det er samme familie som `pgrep -f`, `cat` på en låsemappe og en denylist af
+ord man kom i tanke om. **Men retningen er ny**, og den er værd at skille ud:
+
+```
+en maaling der finder for LIDT    -> en overset fejl.  Din omkostning
+en maaling der finder for MEGET   -> en falsk alarm.   ANDRES omkostning
+```
+
+En overset fejl koster dig et gennemsyn mere. **En falsk alarm koster
+modtageren at læse, undersøge og formulere modbeviset** — og den koster det hos
+nogen, der ikke har konteksten til at se, at alarmen var forkert.
+
+Det er derfor et forkert kort er dyrere end intet kort, og det er samme regning
+her: et fund meldt opad er en regning, du sender til en anden.
+
+**Prisen for at undgå det var én sabotage.** Tøm kilden, se vagten blive rød, og
+meld først derefter. Et fund om en MANGLENDE kontrol skal sabotagetestes lige så
+hårdt som en kontrol man selv bygger — faktisk hårdere, for her er påstanden, at
+der ikke er noget at finde.
+
 ### Et mønster, der matcher på delstreng, matcher også den, der leder
 
 `pgrep -f`, `pkill -f` og enhver anden søgning i en **kommandolinje** rammer også
@@ -1915,6 +1951,27 @@ Koordinator, 2026-10-04, fundet i sit eget værktøj: `check-parent-cards.sh` he
 Samme familie som denne fils egne afsnit om et filter, der ikke rammer noget ("Et håndskrevet mønster er selv et måleinstrument"), og om en test-modulliste der manglede filer (#128) — et værktøj, der kun rapporterer sit RESULTAT, kan ikke skelne "jeg så alt, og alt var i orden" fra "jeg så en brøkdel, og den brøkdel var i orden". Rettelsen: scriptet rapporterer nu selve SIT UDSNIT ("INTERVAL 100 lukkede kort set, #6-#137" pr. repo) ved siden af konklusionen — hullet er dermed synligt uden at nogen skal opdage det ved et uheld.
 
 **Reglen, generaliseret:** et instrument, der kan se en DELMÆNGDE af det, det påstår at dække (en side af resultater, en tidsgrænse, et filter), skal sige HVILKEN delmængde det så — ikke kun hvad den fandt i den.
+
+### Et gulv fanger skrumpning. Fejlen er, at kilden vokser
+
+Androids vektortest hævdede `size >= 8` på en delt vektorfil, mens deres fire
+andre hævdede et eksakt antal (`assertEquals(162, ...)`). Målt 05-10-2026.
+
+> Et gulv fanger kun skrumpning; den fejl, der sker, er at kilden VOKSER forbi
+> vores kopi — og så ligger et nyt tilfælde ulæst, mens hele vektortesten
+> består.
+
+**Det er præcis den fejl, en kanarie findes for**, og et `>=` kan ikke se den.
+Serveren tilføjer en niende vektor, klientens otte består, og ingen får at vide,
+at den niende aldrig blev kørt.
+
+**Et antal, der må vokse frit, er ikke en kontrol — det er en kommentar.** Hævd
+det eksakte tal, og lad testen fejle højlydt med beskeden *"kilden har flere
+tilfælde, end denne test kender"*.
+
+Og værd at bemærke: formen fandtes allerede fire steder i samme kodebase.
+**Afvigelsen var i den nyeste test**, ikke i den ældste — så det er ikke gammel
+gæld, men en konvention der ikke blev fulgt, da den var kendt.
 
 ### En frysning kræver en sabotage, FØR facit rettes
 
