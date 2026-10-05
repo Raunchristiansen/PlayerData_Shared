@@ -616,6 +616,62 @@ Maalt: `grep` for `ord` i serveren giver **44 traef, og de er `admin_password`,
 **kun paa et HELT ord i en opdeling.** Samme regel som C2's `hold`, og listen har
 nu to beviste tilfaelde af den, ikke eet.
 
+## BOEJNING: `-r`-FLERTALLET ER AFVIST, OG TO FEJL I SAMME REGEL
+
+**Backend spurgte 06-10 kl. 00:25, om `-r` kan regnes som flertal paa linje med
+`-er`** — dansk tilfoejer kun `-r`, naar ordet ender paa `-e` (`periode` ->
+`perioder`). Reglen er sprogligt rigtig. **Som VAERKTOEJSREGEL er den afvist**,
+og maalingen viser hvorfor med det samme.
+
+**Af mapningens 24 ord der ender paa `-e` er en stor del slet ikke navneord:**
+
+```
+aktive   -> aktiver     ADJEKTIV. Og 'aktiver' er et rigtigt dansk ord: assets
+fejlede  -> fejleder    datids-participium
+gule     -> guler       adjektiv  ·  halve -> halver   adjektiv/talord
+hjemme   -> hjemmer     adverbium ·  nullable          engelsk ord
+```
+
+`aktive -> aktiver` er den vaerste: den producerer et **eksisterende dansk ord
+med en anden betydning.** Intet i en hybrid-kontrol kan se det.
+
+**Og den ENGELSKE side er uafhaengigt forkert.** Et `+s` paa maalvaerdien giver:
+
+```
+bane -> pitch    ->  pitchs     skal vaere  pitches
+familie -> family ->  familys    skal vaere  families
+halvleg -> half  ->  halfs      skal vaere  halves
+```
+
+**To fejl i samme regel, paa hver sin side af pilen.** Dansk flertal kan ikke
+udledes af endelsen alene, fordi endelsen ikke siger, om ordet er et navneord;
+og engelsk flertal kan ikke udledes med `+s`, fordi `-ch`, `-y` og `-f` boejer
+anderledes.
+
+**Konsekvens:** de 9 navne, Backend fandt, gaar paa **haandnavne-listen**, ét ad
+gangen med deres kaldested. Det er den form, der har virket fire gange i nat —
+og den koster mindre end en regel, der skal have undtagelser for adjektiver,
+participier og engelsk ortografi.
+
+### Ordstillingen: `noun_count`, maalt
+
+```
+halves_count   30 forekomster   <- serverens egen form
+_pause_count    7
+_session_count  6
+```
+
+Navneordet foerst, `count` sidst. Saa `_antal_perioder -> period_count`, ikke
+`count_of_periods`. **Afgjort af serveren, ikke af mig.**
+
+### `gem_halvleg_tilstand -> save_half_state`, efter C3
+
+Serveren bruger `_status` om deltagelse og kort (`card_status`,
+`expected_status`, `actual_status`) og `_state` om alt andet
+(`content_state`, `_byg_live_activity_content_state`). En halvlegs tilstand er
+ikke en deltagelsesstatus, saa **`state`** — praecis C3's snit, nu med serverens
+egne navne som bevis.
+
 ## A5b. KAN IKKE AFGOERES PAA LISTEN — maal kaldestedet
 
 **ALLE FEM AF ANDROIDS ORD STOD TIDLIGERE I A2 ELLER A4** som "afgjort af
