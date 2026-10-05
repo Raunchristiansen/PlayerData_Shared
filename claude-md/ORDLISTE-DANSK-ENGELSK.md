@@ -978,6 +978,76 @@ Backend maalte det: alle fire forekomster er blokeret af **andre** uafgjorte ord
 A5b's tvetydighed kostede ingenting denne runde — **men den vil koste, saa snart
 de oevrige ord afgoeres.** Vaerd at vide, naar `notifikation` nu er afgjort.
 
+## A9. TO ORD, og hvorfor koordinatoren IKKE laengere laver kandidatlister
+
+**Maalt 06-10 kl. 01:20** paa de ord, der blokerer flest af Backends resterende
+navne — 148 navne er eet ord fra at kunne omdoebes, fordelt paa 121 ord.
+
+| dansk | engelsk | n | serverens bevis |
+|---|---|---|---|
+| byg | `build` | **13** | |
+| beregn | `calculate` | 3 | `calculated_by` i `sessions.py` — og det er `#156`s EGEN dual-key for `beregnet_af` |
+
+**Tre blev ikke afgjort:**
+
+```
+fjern         remove n=1       hint, ikke en afgoerelse
+kampprogram   fixtures n=3     men 'fixtures' kan vaere PYTEST-fixtures. Umaalt
+lager         store n=9        verbet 'store' mod navneordet 'storage' — og ordet
+                               staar paa farligste-listen (fra lager, ikke oel)
+```
+
+`kampprogram` blokerer flest navne af alle (5), og **den er netop derfor ikke
+afgjort paa et tal.** Tre `fixtures` i en Python-kodebase er lige saa
+sandsynligt testopsaetning som fodboldprogram.
+
+## BESLUTNING: koordinatoren sender ord, ALDRIG kandidatlister
+
+**Natten 05/06-10 fejlede koordinatorens kandidat-vaerktoej NI gange, paa en ny
+maade hver gang.** Ingen af dem meldte en fejl; alle gav en plausibel liste.
+
+```
+prosa laest som data            7 falske mappingpar, paa -> et overskrev paa -> on
+afsnit A's split-raekke         opstilling -> lineup som AFGJORT
+antalskolonnen i A5             nul raekker laest
+inkonsistent fed antalskolonne  fire af fem nye raekker faldt bort
+delstreng paa DANSK side        ord fandt password
+delstreng paa ENGELSK side      cap fandt unescape, wing fandt wingback
+funktionsnavn mod wire-noegle   kampdato -> match_date
+gaettet ordliste mod git show   kampnr "er blandt #156's 23" — den var ikke
+split('_') tabte underscore     hvert _private navn saa aendret ud
+```
+
+**Den sidste er den, der afgjorde det.** Efter rettelsen gav vaerktoejet 25
+kandidater. Laest igennem: syv var identitets-omdoebninger (`fetch_status ->
+fetch_status`), resten hybrider med `lager`, `tag`, `nu`, `min`, `side`, `op`
+— **og tre var praecis de faelder, Backends egen agent havde fanget selv:**
+
+```
+_kort_navn       kort betyder SHORT her, ikke card
+_saet_pause      et sync-jobs pause-gate, ikke en halvlegspause
+klub_praefiks    SQL-kolonne OG JSON-noegle — ville braekke #156's dual-key
+```
+
+**Vaerktoejet foreslog altsaa igen det, en anden havde afvist to timer foer.**
+
+### Hvad koordinatoren goer i stedet
+
+```
+SENDER     ordet, dets maalvaerdi, forekomsttallet, og hvor beviset staar
+SENDER     hvilke ORD blokerer flest navne — det er en maaling af listen,
+           ikke af koden
+SENDER IKKE  en liste over navne, der kan omdoebes
+```
+
+**Den form, der virker, er Backends:** en agent genererer kandidater med
+reglerne indlejret, og et menneske efterproever hver enkelt mod kaldestedet,
+foer noget koeres. Seks batches, nul hybrider i koden.
+
+Androids formulering gaelder ogsaa her: *en melding er et SIGNAL om, hvor der
+skal maales — aldrig et facit.* Jeg havde skrevet det til dem tre gange, mens
+mit eget vaerktoej lavede facitter.
+
 ## B. Entydige — jeg foreslår, ingen beslutning nødvendig
 
 Ingen af disse har to plausible engelske ord i denne kodebase.
