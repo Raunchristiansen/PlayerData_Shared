@@ -2115,6 +2115,77 @@ Samme familie som denne fils egne afsnit om et filter, der ikke rammer noget ("E
 
 **Reglen, generaliseret:** et instrument, der kan se en DELMÆNGDE af det, det påstår at dække (en side af resultater, en tidsgrænse, et filter), skal sige HVILKEN delmængde det så — ikke kun hvad den fandt i den.
 
+### En måler, der gætter på sprog, bliver værre jo bedre det går
+
+**Fem gange den 05-10-2026 fejlede en "ligner dansk"-måler under `#124`s
+omdøbning af 1130 testnavne.** Tre gange hos Android, én gang hos Koordinator,
+og én gang da Android beskrev sin egen fejl som Koordinatorens. Hver gang var
+koden rigtig, og måleren forkert.
+
+**Androids formulering, og den er den generelle:**
+
+> En måler, hvis signal er "ligner dansk", bliver dårligere jo længere arbejdet
+> skrider frem. Den tæller ikke det, der er tilbage — den tæller det, der
+> ligner, og de to falder fra hinanden netop i takt med fremskridtet. Den vil
+> melde "det går langsommere" lige inden den melder "vi er færdige".
+
+**Og den femte fejl viste hvorfor et ordlistefilter ikke kan laves rigtigt:**
+
+> Et sprogfilter bygget af korte funktionsord kan ikke skelne sprogene. De korte
+> ord er netop dem, to beslægtede sprog DELER — og samtidig dem, der er hyppige
+> nok til at ramme alt.
+
+Filteret havde `for`, `der`, `med`, `til`, `den`, `det`. Det flagede ni navne,
+der alle var engelske sætninger:
+
+```
+"a card FOR someone not on the pitch changes nothing"
+"the half sends the fields the server requires ... FOR an ordinary match"
+```
+
+**De fire målere, der fejlede, og hvad der virkede i stedet:**
+
+| maalerens signal | hvad den ramte | den strukturelle erstatning |
+|---|---|---|
+| `aeoeaa`-translitteration | `Does`, `Shirt` — engelske bogstavpar | `[æøå]` ALENE, aldrig `oe`/`ae`/`aa` |
+| fjorten typiske danske ord | `kortslutning`, `holder`, `Indhold` | helt ord i en camelCase-opdeling |
+| korte funktionsord | engelske sætninger med `for` | listen over FAKTISK omdoebte |
+| forekomster af et moenster | `kamp` tre gange i samme fil | DISTINKTE navne, filtreret paa `@Test` |
+
+**Reglen: en fremskridtsmåler skal tælle en struktur, ikke en lighed.**
+`@Test` på klasseniveau. Distinkte deklarationer. Listen over det, der faktisk er
+omdøbt, meldt i hver commit-besked, så den kan efterprøves.
+
+Og vil man alligevel finde kandidater ved sprog, er den eneste retning, der er
+sikker, **"ikke i en engelsk ordbog"** frem for "ligner dansk". Den
+overvurderer — forkortelser og fragmenter kommer med — men den kan ikke melde
+*"der er mindre tilbage, end du tror"*, og det er den retning, en måler skal
+fejle i.
+
+### Et testnavn må ikke stave et felt om, som serveren eller koden ejer
+
+Under samme omdøbning lod Android **sytten navne stå** med dansk eller med en
+understreg, og hvert enkelt med en grund:
+
+```
+konto_komplet · is_physical · match_number_prefix · FAMILY_DEFINED
+    understregen er en del af serverens eget feltnavn, ikke dansk snake_case
+
+foerMaal · halvlegPayload · tiderTekst · vaelgPosition · erSpoegelse
+    navnet paa en PRODUKTIONSfunktion
+
+puljeid · kampnr · raekke · spiller_navn · from_position · card_status
+session_type · ApiJson · SerialName · og vaerdien `Kamp`
+    en frossen noegle, en kolonne eller en vaerdi i data
+```
+
+**Et testnavn er en påstand om, hvad koden hedder.** Omdøber man navnet i testen,
+men ikke i koden, lyver testen — og den bliver ikke rød af det. iOS lod `foerMaal`
+stå af samme grund, uafhængigt, samme aften.
+
+Reglen gælder begge veje: et testnavn må heller ikke beholde et dansk ord, som
+koden ikke længere bruger.
+
 ### Et gulv fanger skrumpning. Fejlen er, at kilden vokser
 
 Androids vektortest hævdede `size >= 8` på en delt vektorfil, mens deres fire
