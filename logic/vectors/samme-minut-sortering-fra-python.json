@@ -146,6 +146,90 @@
       ]
     },
     {
+      "beskrivelse": "Mål (rang=default 99) i samme minut som ind/skifte/ud (rang 0/1/2), ingen stempler — rangen ALENE afgør: ind < skifte < ud < mål. Androids egen fundne bug (rang-default 1 i stedet for 99) ville her give [IND, MAAL, SKIFTE, UD] — forkert — i stedet for det rigtige facit.",
+      "periods": [
+        {
+          "start": "10:00",
+          "end": "10:35"
+        },
+        {
+          "start": "10:50",
+          "end": "11:25"
+        }
+      ],
+      "events": [
+        {
+          "id": "MAAL",
+          "type": "mål",
+          "time": "10:20",
+          "kilde": null,
+          "updated_at": null
+        },
+        {
+          "id": "UD",
+          "type": "ud",
+          "time": "10:20",
+          "kilde": null,
+          "updated_at": null
+        },
+        {
+          "id": "IND",
+          "type": "ind",
+          "time": "10:20",
+          "kilde": null,
+          "updated_at": null,
+          "position": "ST"
+        },
+        {
+          "id": "SKIFTE",
+          "type": "skifte",
+          "time": "10:20",
+          "kilde": null,
+          "updated_at": null,
+          "position": "CM"
+        }
+      ],
+      "forventet_raekkefoelge": [
+        "IND",
+        "SKIFTE",
+        "UD",
+        "MAAL"
+      ]
+    },
+    {
+      "beskrivelse": "Fuldstændig kollision på minut, type OG updated_at — kun det oprindelige indeks tilbage til at afgøre rækkefølgen. Input er [FOERST, ANDEN]; facit SKAL bevare den rækkefølge (stabil sortering)",
+      "periods": [
+        {
+          "start": "10:00",
+          "end": "10:35"
+        },
+        {
+          "start": "10:50",
+          "end": "11:25"
+        }
+      ],
+      "events": [
+        {
+          "id": "FOERST",
+          "type": "mål",
+          "time": "10:20",
+          "kilde": "live",
+          "updated_at": "2026-10-05T10:20:30+00:00"
+        },
+        {
+          "id": "ANDEN",
+          "type": "mål",
+          "time": "10:20",
+          "kilde": "live",
+          "updated_at": "2026-10-05T10:20:30+00:00"
+        }
+      ],
+      "forventet_raekkefoelge": [
+        "FOERST",
+        "ANDEN"
+      ]
+    },
+    {
       "beskrivelse": "Klemning FØR sortering: en hændelse i PAUSEN (10:47) klemmes til periode 2's start (10:50) — en rå vægur-sortering ville fejlagtigt give [X, Y], klemning-før-sortering giver [Y, X]",
       "periods": [
         {
