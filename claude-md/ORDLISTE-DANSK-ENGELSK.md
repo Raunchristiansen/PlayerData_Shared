@@ -338,7 +338,7 @@ begge klienter læser de felter i forvejen, og fordi det kan efterprøves.
 
 | dansk | engelsk | hvorfor to |
 |---|---|---|
-| opstilling | `lineup` **eller** `formation` | `match_lineup` er TABELLEN (hvilke spillere), `match_lineup.formation` er KOLONNEN (4-4-2). Ét dansk ord, to engelske begreber — præcis det, tre sessioner ville gætte forskelligt |
+| opstilling | **se A5b** | `match_lineup` er TABELLEN (hvilke spillere), `match_lineup.formation` er KOLONNEN (4-4-2). Eet dansk ord, to engelske begreber — praecis det, tre sessioner ville gaette forskelligt. **Maalvaerdien er bevidst IKKE et parsebart felt her**: raekken stod foer som `` `lineup` **eller** `formation` ``, og ethvert parse tog den foerste backtick-gruppe og laeste `opstilling -> lineup` som afgjort. Det er kilden til koordinatorens eget `get_opstillinger -> get_lineups`-forslag 06-10 kl. 00:00 |
 
 ## A2. AFGJORT AF SERVEREN — tilfoejet 05-10-2026 kl. 22:45
 
@@ -673,6 +673,19 @@ ikke en deltagelsesstatus, saa **`state`** — praecis C3's snit, nu med servere
 egne navne som bevis.
 
 ## A5b. KAN IKKE AFGOERES PAA LISTEN — maal kaldestedet
+
+> **TIL ET VAERKTOEJ: SPRING HELE DETTE AFSNIT OVER.** Raekkerne herunder har
+> samme form som mapningens — `| ord | \`maal\` | ... |` — men kolonnen "de to"
+> indeholder TO eller TRE maalvaerdier, og et parse tager den foerste
+> backtick-gruppe. Laeser du A5b, faar du `opstilling -> lineup`,
+> `raekke -> division` og `maal -> goal` som AFGJORTE, og det er praecis
+> modsat afsnittets formaal.
+>
+> Det er ikke et hypotetisk problem. Afsnit A's split-raekke stod indtil
+> 06-10 kl. 00:50 som `` \`lineup\` **eller** \`formation\` ``, og **enhver
+> parse laeste `opstilling -> lineup`** — det var kilden til koordinatorens
+> eget `get_opstillinger -> get_lineups`-forslag. Raekken har nu
+> `**se A5b**` i maalkolonnen, saa den ikke kan parses.
 
 **ALLE FEM AF ANDROIDS ORD STOD TIDLIGERE I A2 ELLER A4** som "afgjort af
 serveren", fra kl. 22:45 og 23:10. De er **fjernet derfra 06-10 kl. 00:05** og
