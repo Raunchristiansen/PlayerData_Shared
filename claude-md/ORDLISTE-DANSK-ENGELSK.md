@@ -318,6 +318,32 @@ tag         take ELLER tag (et maerkat)? Androids maaling: dansk "tag"
 
 **De fire hoerer ikke paa denne liste, foer nogen har laest deres kaldesteder.**
 
+## A4. AFGJORT AF KODEBASENS EGEN BRUG — tilfoejet 05-10-2026 kl. 23:05
+
+**Backend foreslog disse seks med bevis fra deres EGNE kaldesteder, ikke fra en
+oversaettelse.** Koordinatoren efterproevede hvert enkelt. **Samme princip som
+A2, bare med koden som autoritet frem for skemaet:** ordet er allerede i brug
+paa engelsk et andet sted i samme kodebase, saa valget er truffet.
+
+| dansk | engelsk | bevis, efterproevet |
+|---|---|---|
+| faelles | `shared` | tabellerne `shared_matches` (39 forekomster) og `shared_tournaments`, `#144` |
+| skift | `change` | `PositionChangeIn` (9 forekomster), `_position_change_fra_lager` |
+| nulstil | `reset` | ruten `/api/auth/reset-password`, tabellen `password_reset_tokens` |
+| tjek | `check` | ruterne `/player-check` og `/lineups/check-now` |
+| felter | `fields` | `/api/v1/stats/nullable-fields`, `nullable_fields.py`, tabellen `form_fields` |
+| deltager | `participant` | `DeltagerIn.participant` fra `#156` trin 1, 19 forekomster |
+
+**Hvorfor det er en MAALING og ikke et valg:** hvert ord har allerede en engelsk
+modpart i brug. **At vaelge et andet ord ville skabe to engelske navne for eet
+begreb** — praecis det, Mortens regel fra `#83` forbyder: *to begreber maa ikke
+dele eet ord, og eet begreb maa ikke have to ord.*
+
+**Og `deltager` er den fineste:** `#156` trin 1 gav request-body-feltet
+`deltager` en engelsk tvilling `participant` faa timer foer. **Ordet var afgjort
+paa ledningen, foer nogen spurgte om koden** — og det er den omvendte retning af
+`pause -> break`, hvor ledningens svar IKKE kunne staa som et navn.
+
 ## B. Entydige — jeg foreslår, ingen beslutning nødvendig
 
 Ingen af disse har to plausible engelske ord i denne kodebase.
