@@ -172,6 +172,59 @@ Listen voksede ud af én maaling og er sandsynligvis ikke komplet. **Vokser den,
 er det en rettelse, ikke en fejl** — og et ord paa springe-listen koster et
 menneske fem sekunder, mens en hybrid koster en omdoebning mere.
 
+### SAMMENSAT-REGLEN — tilfoejet 05-10-2026 kl. 23:45
+
+**Dansk skriver sammensatte ord i EET ord. Camel­Case og `_` kan ikke dele dem.**
+Androids fund: *"navne med sammensatte smaabogstaver (kamptype, kampnr) rammes
+ikke."*
+
+```
+aktivitetstyper   hverken _ eller camelCase deler den
+aldersregler      men BEGGE dele staar i mappingen
+```
+
+**Reglen: laengste-match-foerst mod mappingens egne noegler, med et tolereret
+BINDE-S.**
+
+```python
+noegler = sorteret(MAP, efter laengde, laengste foerst)
+for k in noegler:
+    for binde in ('', 's'):          # aktivitetS+typer, alderS+regler
+        if ordet starter med k+binde:
+            del resten op paa samme maade
+```
+
+**Og valideringen er staerk: reglen reproducerer serverens EGNE navne.**
+
+| dansk, eet ord | reglens split | resultat | serveren har |
+|---|---|---|---|
+| `aktivitetstyper` | aktivitet + typer | `activity_types` | **TABELLEN `activity_types`** |
+| `aldersregler` | alder + regler | `age_rules` | **TABELLEN `age_rules`** |
+| `holdliste` | hold + liste | `team_list` | **FILEN `team_list.py`** |
+| `kamphaendelser` | kamp + haendelser | `match_events` | — |
+| `holdkort` | hold + kort | `team_card` | — |
+
+**De tre foerste er regnet UDEN at se paa serveren, og de rammer det, serveren
+allerede hedder.** En regel, der genskaber et navn, nogen har valgt i haanden,
+er ikke et gaet.
+
+**Laengste-match-foerst er noedvendigt**, ikke en optimering: `hold` og
+`holdkort` staar begge i mappingen, og et korteste-match ville dele `holdkort`
+som `hold` + `kort` selv naar posten `holdkort` findes. **Den laengste post
+vinder, fordi den er den mest specifikke.**
+
+**Hvad reglen IKKE kan:**
+
+- **Et binde-s, der ogsaa er en ordendelse.** `alders` kunne vaere ejeform af
+  `alder`. Reglen tolererer det, fordi resultatet er det samme — men et ord, hvor
+  `s` hoerer til stammen, ville deles forkert. **Ingen fundet endnu; det er en
+  graense, ikke et bevis.**
+- **Et sammensat ord, hvis dele IKKE er i mappingen.** Det hoerer stadig paa
+  springe-listen.
+- **Tre-dels-sammensaetninger** er proevet og virker (`kamp+gps+data`), men
+  hver ekstra del ganger risikoen for et forkert split.
+
+
 ### KOLLISIONER — ord hvis engelske oversaettelse ikke kan staa som et navn
 
 **Vaerktoejet SKAL stoppe paa disse og skrive dem til en kollisionsliste, som
