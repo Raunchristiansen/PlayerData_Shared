@@ -1255,6 +1255,52 @@
       "yellow_card_minutes": 10
     }
   ],
+  "match_event_types": [
+    {
+      "active": true,
+      "display_da": "Mål",
+      "key": "goal",
+      "legacy_value": "mål",
+      "sort_order": 1
+    },
+    {
+      "active": true,
+      "display_da": "Gult kort",
+      "key": "yellow_card",
+      "legacy_value": "gult_kort",
+      "sort_order": 2
+    },
+    {
+      "active": true,
+      "display_da": "Rødt kort",
+      "key": "red_card",
+      "legacy_value": "rødt_kort",
+      "sort_order": 3
+    }
+  ],
+  "match_sides": [
+    {
+      "active": true,
+      "display_da": "Eget hold",
+      "key": "own_team",
+      "legacy_value": "eget_hold",
+      "sort_order": 1
+    },
+    {
+      "active": true,
+      "display_da": "Modstander",
+      "key": "opponent",
+      "legacy_value": "modstander",
+      "sort_order": 2
+    },
+    {
+      "active": true,
+      "display_da": "Ingen",
+      "key": "none",
+      "legacy_value": "ingen",
+      "sort_order": 3
+    }
+  ],
   "positions": [
     {
       "active": true,
@@ -1390,5 +1436,5 @@
       "sort_order": 5
     }
   ],
-  "version": "b01680ac828042f8"
+  "version": "150590b3e2bcf27f"
 }
