@@ -458,6 +458,104 @@ uafgoerlige (`set` er en Python-builtin OG kontekstuelt). `funktion`s afgoerelse
 frigiver altsaa ikke netop det navn — men den frigiver ordet.
 
 
+## A5. AFGJORT AF SERVEREN — 05-10-2026 kl. 23:55, prioriteret efter iOS' maaling
+
+**Kilden til prioriteringen er iOS' egen optaelling**, ikke mit gaet:
+`docs/omdoebning-124/frigoer-flest-navne.md` — *"237 navne er EET ord fra at
+kunne omdoebes; 167 ord."* Kun navne med praecis EET blokerende ord taelles, saa
+afgoerelsen af det ene ord frigiver navnet.
+
+**Hvert ord herunder er slaaet op i serverens egen kode, ikke i en ordbog.**
+Kolonnen "bevis" er det, en `git grep` i `backend/app/` svarer.
+
+**TIL DEN, DER PARSER FILEN: A5's foerste kolonne er et ANTAL, ikke et ord.**
+De oevrige afsnits tabeller har dansk i foerste kolonne. Et moenster, der antager
+det, laeser **nul** af de atten raekker herunder — og nul ser ud som "ingen nye
+ord", ikke som en fejl.
+
+```python
+# tolererer baade formen med og uden antalskolonne
+r'^\|\s*(?:\*\*\d+\*\*\s*\|\s*)?([a-zaeoeaa ()/]+?)\s*\|\s*`([a-z_]+)`'
+```
+
+Maalt 05-10 kl. 23:57: det gamle moenster gav 71 par, det rettede 89.
+
+| navne | dansk | engelsk | serverens bevis |
+|---|---|---|---|
+| **8** | raekke | `division` | `"/divisions"`, `"/matches-for-division"`, `division_name`, `divisionid` |
+| **7** | faelles | `shared` | `shared_matches`, `shared_tournaments` (28 forekomster) |
+| **7** | navn | `name` | `dbu_club_name`, `created_by_name`, `event_name` (39) |
+| **4** | aktivitet | `activity` | `activity_type_key`, `activity_type_category` (93) |
+| **4** | klub | `club` | `dbu_club_id`, `dbu_club_name`, `dbu_club_colors` (9) |
+| **3** | holdkort | `team_card` | ruten `get_team_card_players` (`1f02ddd`, batch 4) |
+| **3** | tider | `times` | `period_times_json` |
+| **3** | nulstil | `reset` | `password_reset_tokens`, `idx_password_reset_tokens_family` |
+| **3** | tjek | `check` | `get_player_check`, `/dbu/player-check` |
+| **3** | minut | `minute` | `period_minutes`, `yellow_card_minutes`, `idx_position_minutes_session` |
+| **2** | deltager | `participant` | `participant`, `participant_required` |
+| **2** | troeje | `shirt` | `shirt_color`, `home_shirt`, `away_shirt` |
+| **2** | tidslinje | `timeline` | `sessions.timeline_json` |
+| **2** | afbud | `absence` | `absence_reason_key`, `absence_reason` (30) |
+| **2** | aktive | `active` | `active_half_number`, `active_period_start_ms` (60) |
+| **2** | nummer | `number` | `active_half_number`, `match_number_prefix` |
+| **1** | foelg | `follow` | `follow_goal_notifications`, `follow_match_end_notifications` |
+| **1** | bekraeft | `confirm` | `confirmed`, `confirmed_by`, `confirmed_date` (21) |
+
+**Og to, SAMMENSAT-reglen afgoer af sig selv**, fordi deres dele nu er daekket:
+
+```
+aldersregler     age_rules        serveren HAR tabellen (17 forekomster)
+aktivitetstyper  activity_types   serveren HAR tabellen (61)
+```
+
+De er altsaa ikke nye beslutninger — de falder ud af reglen plus A5 ovenfor, og
+**det er den kontrol, reglen blev valideret med.**
+
+### `raekke` er den vigtigste, og den var ikke gaettet
+
+`raekke` stod som *ugennemgaaet* i iOS' tabel — altsaa i ordbogen, men ikke
+godkendt. Det er praecis den kategori, hvor en ordbog er farlig: `raekke` ligner
+`row`, og `row` er rigtigt i `_row_to_dict`. **I DBU-hierarkiet er en raekke en
+division**, og serveren har allerede sagt det med en rute.
+
+```
+DBU-hierarkiet, som serveren navngiver det
+  division   /divisions                raekke
+  group      dbu_groups, age_group     pulje
+```
+
+En oversaettelse til `row` havde givet `TeamRow`, `MatchRow`, `MatchesRow` — navne
+der ser rigtige ud og betyder noget andet. **Det er ikke en stavefejl, det er en
+forkert model.**
+
+### `ord` er en delstreng af `password` — samme faelde som `hold`
+
+Maalt: `grep` for `ord` i serveren giver **44 traef, og de er `admin_password`,
+`admin_password_hash`, `admin_password_salt`.** Ordet `password` indeholder `ord`.
+
+`ord` er ikke afgjort her, men faelden er, og den gaelder uanset maalvaerdien:
+**kun paa et HELT ord i en opdeling.** Samme regel som C2's `hold`, og listen har
+nu to beviste tilfaelde af den, ikke eet.
+
+## A5b. KAN IKKE AFGOERES PAA LISTEN — maal kaldestedet
+
+**Disse seks har to plausible engelske ord i DENNE kodebase**, og det er
+ambiguitetsreglen fra afsnittet oeverst: et vaerktoej skal springe navnet over,
+ikke vaelge.
+
+| dansk | de to | hvorfor listen ikke kan afgoere det |
+|---|---|---|
+| maerke | `mark` · `badge` · `marker` | serveren har BAADE `badges` og `marker`. `KortMaerke` er sandsynligvis `mark`, men det er kaldestedet der ved det |
+| tilbage | `remaining` · `back` | `KampTilbage` = kampe der RESTERER. `gaaTilbage` = navigation. Samme ord, to retninger |
+| skift | `change` · `substitution` | `skiftAdgangskode` er `change`. Men **`skifte` er en HAENDELSESTYPE** (en udskiftning), og den maa ikke blive `change` |
+| tal | `number` · `figure` · `stat` | `nummer` ejer allerede `number` (A5). `HoldTal` er statistik, ikke numre |
+| aeldre | `older` · `legacy` | `AeldreNoegle` i `CacheSkema`. Android har `legacy_type` — to platforme kan have valgt forskelligt |
+| ord | `word` | maalvaerdien er nok klar, men se delstreng-faelden ovenfor FOER den bruges |
+
+**`skift` er den farligste**, og grunden er den samme som `kort`s to betydninger:
+et af de to er en haendelsestype i data, og en forkert omdoebning dér er en
+datamigrering, ikke en omdoebning.
+
 ## B. Entydige — jeg foreslår, ingen beslutning nødvendig
 
 Ingen af disse har to plausible engelske ord i denne kodebase.
@@ -471,6 +569,19 @@ har         has           eget        own           vis         show
 vælg        select        hent        fetch         slet        delete
 sæt         set           indlæs      load          gem         save
 ```
+
+**Fem mere, 05-10 kl. 23:55 — maalt til at have NUL forekomster i serveren**,
+altsaa rent klientbegreb, hvor ingen server kan afgoere ordet:
+
+```
+er          is            logik       logic         straffe     penalty
+trup        squad         personlige  personal
+```
+
+`er` frigiver **6 navne** (`erEgetHold`, `erKamp`, `erKort`, `erStaevne`) og er
+boolean-praefikset. Det staar i den engelske ordbog som et interjektion, og det
+er netop derfor en ordbog ikke kan afgoere det — **den siger "engelsk" om et
+dansk ord.** `straffe` er fodboldtermen `penalty`, ikke `punish`.
 
 **`svar` → `response`, ikke `answer`:** det er altid et HTTP-svar i denne
 kodebase, aldrig et svar på et spørgsmål.
