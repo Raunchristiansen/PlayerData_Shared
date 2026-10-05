@@ -33,6 +33,95 @@ INTERVAL
   det tæller ikke det, der er tilbage, men det der ligner. "Ikke i den engelske
   ordbog" overvurderer, men kan ikke melde "der er mindre tilbage, end du tror".
 
+## REGLEN DER GOER LISTEN BRUGBAR — tilfoejet 05-10-2026 efter iOS' fund
+
+**iOS maalte, at listen ville lave 456 hybrider, og de standsede foer de koerte
+noget.** Koordinatorens maaling bagefter, paa alle tre traeer:
+
+```
+                        UDEN boejningsregel        MED boejningsregel
+iOS        2633 navne    387 helt / 478 hybrid     463 helt / 475 hybrid
+Android    2673 navne    370 helt / 405 hybrid     446 helt / 405 hybrid
+Backend     391 navne     57 helt /  91 hybrid      71 helt /  90 hybrid
+------------------------------------------------------------------------
+           5697 navne    814 helt / 974 hybrid     980 helt / 970 hybrid
+```
+
+**En hybrid er `hasGuleCard`, `periodMarkeringMs`, `playerNavn`** — hverken dansk
+eller engelsk. Og det farlige er, at **ingen af de tre vagter fanger den:** en
+hybrid er ikke dansk, saa ratchet-tallet falder, `aeoeaa` forsvinder, og
+"ikke i den engelske ordbog"-maaleren bliver glad.
+
+### Reglen: VAERKTOEJET naegter at lave en hybrid
+
+**Omdoeb et navn KUN hvis HVERT ord i det er daekket.** Er bare ét ord udaekket,
+springes HELE navnet over og skrives til en liste, et menneske navngiver i haanden.
+
+```
+harGuleKort      har + gule + kort     'gule' udaekket  ->  SPRINGES OVER
+spillerNavn      spiller + navn        'navn' er ENGELSK ->  omdoebes helt
+periodeMarkeringMs  periode + markering + ms   udaekket ->  SPRINGES OVER
+```
+
+**Det er en egenskab ved vaerktoejet, ikke ved listen.** Derfor kan listen vokse
+bagefter uden at noget skal rettes om, og springe-listen er maalbar fremdrift.
+
+**Hvorfor det er bedre end at skrive ordlisten faerdig foerst:** halen er lang.
+Af de 349 udaekkede ord rammer **146 kun ÉT navn**, og top 100 ord daekker kun
+61 % af hybriderne. Et ord, der optraeder én gang, er ikke en ordforraads-
+beslutning — det er navngivningen af den ene ting, og den hoerer i haanden.
+
+### Boejningsreglen — 19 ord, 114 navne
+
+Et ord er daekket, hvis dets **stamme** staar i listen og endelsen er en dansk
+boejning. Maalt, de der faktisk forekommer:
+
+```
+kampe      = kamp + e          haendelser = haendelse + er
+banen      = bane + en         farver     = farve + er
+traenings  = traening + s      puljer     = pulje + er
+spillere   = spiller + e       vaelger    = vaelg + er
+halvlege   = halvleg + e       noegler    = noegle + er
+perioder   = periode + er      traeninger = traening + er
+henter     = hent + er         stoevner   = stoevne + er
+hentet     = hent + et
+```
+
+Engelsk boejes derefter efter engelsk regel: `kampe -> matches`, inte
+`matche`. **Tilfoej ikke boejninger til selve listen** — stammen plus reglen.
+
+### KOLLISIONER — ord hvis engelske oversaettelse ikke kan staa som et navn
+
+**Vaerktoejet SKAL stoppe paa disse og skrive dem til en kollisionsliste, som
+platformen afgoer i haanden og committer.** Listen er iOS' fund plus
+koordinatorens efterproevning:
+
+| dansk | listen siger | hvorfor den ikke kan staa |
+|---|---|---|
+| pause | `break` | **RESERVERET NOEGLEORD** i Swift, Kotlin OG Python |
+| saet | `set` | Swift property-setter · Kotlin soft keyword · Python builtin |
+| krop | `body` | SwiftUI `View.body` |
+| liste | `list` | Python builtin · SwiftUI `List` |
+| tekst | `text` | SwiftUI `Text` |
+| fra | `from` | **RESERVERET** i Python |
+| til / paa | `to` / `on` | kontekstuelt — `on` kolliderer med Compose-modifiers |
+
+**`pause -> break` kom fra serveren** (`age_rules.has_break`) og er rigtig DER.
+**Et ord, der er afgjort paa ledningen, er ikke dermed afgjort i koden** — det
+var en graense, listens foerste udgave slet ikke havde.
+
+### Og hvad der IKKE maa goeres
+
+**Tilfoej ikke ord selv.** `kampe`, `spillere`, `haendelser` er daekket af
+boejningsreglen; de oevrige 349 kommer i en udvidelse, der gennemgaas. En
+platform, der selv vaelger et ord, laver praecis det problem, listen findes for
+at loese: tre engelske navne for det samme.
+
+**Og et symbol-uopmaerksomt vaerktoej er en risiko, iOS flagede:** SwiftSyntax
+loeser ikke symboler, saa omdoebningen sker efter STAVNING. Et lokalt navn i et
+andet lag med samme stavning foelger med. **Byg en spaerring mod det, foer
+vaerktoejet koerer.**
+
 ## A. Afgjort af serveren — ingen beslutning, kun efterprøvning
 
 **Fire af tabellens seksten `tabel.kolonne`-henvisninger var forkerte i første
