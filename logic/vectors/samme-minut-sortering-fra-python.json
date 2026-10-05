@@ -1,0 +1,266 @@
+{
+  "kontrakt": {
+    "funktion": "sort_events(periods, events)",
+    "returnerer": "events, sorteret efter §2's regel (docs/HAENDELSER-KONTRAKT.md)",
+    "regler": [
+      "Sorter: klemt spilleminut -> updated_at (kun kilde IN (null,'live','opstilling')) -> rang (ind=0, skifte=1, ud=2) -> oprindeligt array-indeks",
+      "KLEMNING sker FØR sorteringen — en hændelse i pausen mellem to perioder regnes for at ske ved NÆSTE periodes start, og det klemte tidspunkt er hvad der sorteres på",
+      "updated_at IGNORERES når kilde == 'efterregistreret' — rang afgør i stedet, fordi updated_at der kun stempler INDTASTNINGS-tidspunktet ikke er et pålideligt hændelses-tidspunkt",
+      "en hændelse UDEN updated_at sorteres FØR en MED updated_at, ved samme klemte minut"
+    ],
+    "kilde": "backend.app.beregning.sort_events, PlayerData_Backend",
+    "genereret": "scripts/generer-samme-minut-vektorer.py"
+  },
+  "vektorer": [
+    {
+      "beskrivelse": "To hændelser samme minut, kilde=null, forskellig updated_at — den tidligste vinder",
+      "periods": [
+        {
+          "start": "10:00",
+          "end": "10:35"
+        },
+        {
+          "start": "10:50",
+          "end": "11:25"
+        }
+      ],
+      "events": [
+        {
+          "id": "P",
+          "type": "mål",
+          "time": "10:20",
+          "kilde": null,
+          "updated_at": "2026-10-05T10:20:30+00:00"
+        },
+        {
+          "id": "Q",
+          "type": "mål",
+          "time": "10:20",
+          "kilde": null,
+          "updated_at": "2026-10-05T10:20:10+00:00"
+        }
+      ],
+      "forventet_raekkefoelge": [
+        "Q",
+        "P"
+      ]
+    },
+    {
+      "beskrivelse": "Samme minut, updated_at mangler på den ene — den UDEN updated_at sorteres FØRST",
+      "periods": [
+        {
+          "start": "10:00",
+          "end": "10:35"
+        },
+        {
+          "start": "10:50",
+          "end": "11:25"
+        }
+      ],
+      "events": [
+        {
+          "id": "S",
+          "type": "mål",
+          "time": "10:20",
+          "kilde": null,
+          "updated_at": "2026-10-05T10:20:10+00:00"
+        },
+        {
+          "id": "R",
+          "type": "mål",
+          "time": "10:20",
+          "kilde": null,
+          "updated_at": null
+        }
+      ],
+      "forventet_raekkefoelge": [
+        "R",
+        "S"
+      ]
+    },
+    {
+      "beskrivelse": "Samme minut, kilde='live' og kilde='opstilling' — begge i tie-break-mængden, forskellig kilde-VÆRDI ændrer intet",
+      "periods": [
+        {
+          "start": "10:00",
+          "end": "10:35"
+        },
+        {
+          "start": "10:50",
+          "end": "11:25"
+        }
+      ],
+      "events": [
+        {
+          "id": "T",
+          "type": "mål",
+          "time": "10:20",
+          "kilde": "live",
+          "updated_at": "2026-10-05T10:20:30+00:00"
+        },
+        {
+          "id": "U",
+          "type": "mål",
+          "time": "10:20",
+          "kilde": "opstilling",
+          "updated_at": "2026-10-05T10:20:10+00:00"
+        }
+      ],
+      "forventet_raekkefoelge": [
+        "U",
+        "T"
+      ]
+    },
+    {
+      "beskrivelse": "kilde='efterregistreret' IGNORERER updated_at — rang (ind 0, skifte 1, ud 2) afgør i stedet",
+      "periods": [
+        {
+          "start": "10:00",
+          "end": "10:35"
+        },
+        {
+          "start": "10:50",
+          "end": "11:25"
+        }
+      ],
+      "events": [
+        {
+          "id": "W",
+          "type": "ud",
+          "time": "10:20",
+          "kilde": "efterregistreret",
+          "updated_at": "2026-10-05T10:20:10+00:00"
+        },
+        {
+          "id": "V",
+          "type": "ind",
+          "time": "10:20",
+          "kilde": "efterregistreret",
+          "updated_at": "2026-10-05T10:20:30+00:00",
+          "position": "CB"
+        }
+      ],
+      "forventet_raekkefoelge": [
+        "V",
+        "W"
+      ]
+    },
+    {
+      "beskrivelse": "Klemning FØR sortering: en hændelse i PAUSEN (10:47) klemmes til periode 2's start (10:50) — en rå vægur-sortering ville fejlagtigt give [X, Y], klemning-før-sortering giver [Y, X]",
+      "periods": [
+        {
+          "start": "10:00",
+          "end": "10:35"
+        },
+        {
+          "start": "10:50",
+          "end": "11:25"
+        }
+      ],
+      "events": [
+        {
+          "id": "X",
+          "type": "skifte",
+          "time": "10:47",
+          "kilde": null,
+          "updated_at": null,
+          "position": "CM"
+        },
+        {
+          "id": "Y",
+          "type": "ind",
+          "time": "10:50",
+          "kilde": null,
+          "updated_at": null,
+          "position": "ST"
+        }
+      ],
+      "forventet_raekkefoelge": [
+        "Y",
+        "X"
+      ]
+    },
+    {
+      "beskrivelse": "Kombineret: samme pause-klemning som ovenfor, PLUS en tredje hændelse Z på samme klemte minut — tre-vejs kollision afgjort af rang alene (ind 0 < skifte 1 < ud 2)",
+      "periods": [
+        {
+          "start": "10:00",
+          "end": "10:35"
+        },
+        {
+          "start": "10:50",
+          "end": "11:25"
+        }
+      ],
+      "events": [
+        {
+          "id": "Z",
+          "type": "ud",
+          "time": "10:50",
+          "kilde": null,
+          "updated_at": null
+        },
+        {
+          "id": "X",
+          "type": "skifte",
+          "time": "10:47",
+          "kilde": null,
+          "updated_at": null,
+          "position": "CM"
+        },
+        {
+          "id": "Y",
+          "type": "ind",
+          "time": "10:50",
+          "kilde": null,
+          "updated_at": null,
+          "position": "ST"
+        }
+      ],
+      "forventet_raekkefoelge": [
+        "Y",
+        "X",
+        "Z"
+      ]
+    },
+    {
+      "beskrivelse": "Ingen perioder — intet at klemme imod, falder tilbage til rå tid",
+      "periods": [],
+      "events": [
+        {
+          "id": "A",
+          "type": "mål",
+          "time": "10:05",
+          "kilde": null,
+          "updated_at": null
+        },
+        {
+          "id": "B",
+          "type": "mål",
+          "time": "10:02",
+          "kilde": null,
+          "updated_at": null
+        }
+      ],
+      "forventet_raekkefoelge": [
+        "B",
+        "A"
+      ]
+    },
+    {
+      "beskrivelse": "Tom hændelsesliste",
+      "periods": [
+        {
+          "start": "10:00",
+          "end": "10:35"
+        },
+        {
+          "start": "10:50",
+          "end": "11:25"
+        }
+      ],
+      "events": [],
+      "forventet_raekkefoelge": []
+    }
+  ]
+}
