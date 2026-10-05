@@ -1753,6 +1753,58 @@ Samme kort (#19): en JSON-decoder for et nyt svar manglede en `CodingKeys`-mapni
 
 Rettelsen af bundle-crashet var derfor en FORUDSÆTNING for at finde den egentlige, uafhængige fejl — ikke blot endnu en ting på samme liste. **En testkørsel, der ikke består, kan skjule en ANDEN, endnu ikke-fundet fejl bag den første** — ret den første fejl, og kør testene igen, før du konkluderer at resten er grønne af rigtige grunde.
 
+### En funktion, hvis navn svarer på et andet spørgsmål end den stilles
+
+Android fandt det 05-10-2026, mens de byggede `#79`. `FormRegelLogik.typeNoegle`
+hedder som om den giver en aktivitetstypenøgle. Den giver `ALL` eller
+`FAMILIE_DEFINERET` — **formularreglernes gyldighedsområde**, som ikke findes i
+`activity_types.key`.
+
+Havde de brugt den til at sende `type_key`, havde **hver familie-egen
+træningstype** sendt `FAMILY_DEFINED`, og serveren havde logget en uenighed for
+hver eneste.
+
+Deres formulering:
+
+> Funktionen hedder `typeNoegle`, men den svarer på et andet spørgsmål. To
+> begreber, ét navn — og det er værre end et forkert navn, fordi det **læser
+> rigtigt på kaldstedet.**
+
+Den sidste halvdel er hele pointen. Et forkert navn opdages, når man læser
+funktionen. **Et navn, der passer til spørgsmålet man stiller, men ikke til det
+funktionen besvarer, opdages aldrig fra kaldstedet** — for dér ser det korrekt
+ud.
+
+### Og iOS havde præcis den samme, med et endnu mere uskyldigt navn
+
+Målt samme dag, efter at Android bad om et krydstjek:
+
+```
+FormRegelLogik.swift:188   static func activityTypeKey(fraLegacyType:) -> String
+                             ... return familieDefineret : alle
+FormRegelLogik.swift:106   static let alle = "ALL"
+FormRegelLogik.swift:113   static let familieDefineret = "FAMILY_DEFINED"
+```
+
+Og værre: **tre kaldsteder i `DatainputLogik` kalder resultatet `typeNoegle`** —
+i netop den fil, der bygger sync-pakken. Så en variabel ved det navn står
+allerede i scope, med en værdi der ikke er en typenøgle.
+
+**Begge platforme havde fælden. Ingen af dem havde lavet fejlen.** Den blev
+fundet, fordi den ene byggede noget, der kunne ramme den, og **spurgte om den
+anden havde et modstykke.**
+
+### Hvad man gør ved den
+
+**Mål hvad funktionen KAN returnere, ikke hvad den heder.** Et opslag, der har et
+nødfald, returnerer to slags svar: det man spurgte om, og noget andet. Navnet
+kan kun beskrive det ene.
+
+Og når en nøgle VINDER over en tekst — som efter `#152` trin 1 — gælder:
+**aldrig send et gæt.** Et opslag, der giver `null` ved ukendt, lader serveren
+falde tilbage til teksten. Et nødfald, der giver en plausibel men forkert nøgle,
+gør skaden i stedet for at undgå den.
+
 ### En afhængighed, der håndhæver OG returnerer, låner sit navn fra den forkerte halvdel
 
 Backend-sessionen fandt 2026-10-01 (#67), at `vocabularies.py` erklærede `family_id: int = Depends(get_current_family)` uden at bruge id'et nogen steder — de tre lister er universelle. Målt bagefter, viste det sig at være ÉT af NI steder i samme repo (`aldersregler.py`, fem steder i `dbu.py`, `live.py::hent_opstilling`, `main.py::hent_funktioner`, `match_form.py`), ikke en enlig forglemmelse.
