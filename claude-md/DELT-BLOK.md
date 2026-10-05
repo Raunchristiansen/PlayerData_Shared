@@ -798,6 +798,50 @@ en beskrivelse, der holdt op med at stemme, uden at sige det.
 
 Fjern **aldrig** en lås uden at have kontrolleret pid'en. Og tag aldrig en lås uden at skrive pid og ærinde — ellers er den næste nødt til enten at vente i det uendelige eller at gætte.
 
+### Et loft, der rækker til alt det du MÅLTE, siger intet om det du ikke målte
+
+Koordinatoren sænkede Gradle-dæmonens heap fra 1280m til 768m den 04-10-2026
+(`4954efd`), efter at otte builds var blevet OOM-dræbt. Grundlaget var en rigtig
+måling pr. proces.
+
+**Dagen efter brækkede det første release-build:**
+
+```
+koersel 302   R8: java.lang.OutOfMemoryError: Java heap space
+              "The currently configured max heap space is '768 MiB'"
+```
+
+**Ikke et OOM-dræb fra kernen** — `journalctl -k` var tom for kørslen. Det var
+JVM'ens eget loft, sat af rettelsen.
+
+Målingen bag sænkningen kørte
+`assembleDebug + testDebugUnitTest + compileDebugAndroidTestKotlin`. **R8 kører
+kun på et RELEASE-build.** Den lå helt uden for det univers, der blev målt.
+
+Androids formulering:
+
+> Et loft, der rækker til alt det, man målte, siger intet om det, man ikke
+> målte.
+
+**Rettelsen er ikke et højere loft overalt.** Det er et loft pr. opgave:
+release-trinnet sender sit eget `-Xmx1536m` (`c225b70`), hverdagens builds
+beholder 768m. Målt begge veje: 768m fejler, 1536m lykkes.
+
+### Hvorfor den er svær at fange
+
+En grænseværdi, der sættes efter en måling, **ser målt ud** — og den er det, for
+det den målte. Fejlen er ikke i tallet; den er i **rækkeviden af det univers,
+tallet blev valgt i.**
+
+Og den fejler først, når en sjældnere opgave kører: et release-build, en
+migrering, en fuld genindeksering. **Så afstanden mellem årsag og virkning er
+dage**, og den, der rammer den, er sjældent den, der satte tallet.
+
+**Prøven, før du sætter en grænse:** list de opgaver, der kører i det samme
+rum, og spørg hvilke af dem din måling IKKE dækkede. Er svaret "release" eller
+"én gang om måneden", så mål dem også — eller giv dem deres eget loft fra
+starten.
+
 ### Et tungt build i din egen scope kan dræbe sessionen, ikke bare buildet
 
 Maskinen løb tør for hukommelse 01-10-2026 kl. 09:55 og tog Claude-appen med sig,
