@@ -604,13 +604,21 @@ ikke vaelge.
 |---|---|---|
 | maerke | `mark` · `badge` · `marker` | serveren har BAADE `badges` og `marker`. `KortMaerke` er sandsynligvis `mark`, men det er kaldestedet der ved det |
 | tilbage | `remaining` · `back` | `KampTilbage` = kampe der RESTERER. `gaaTilbage` = navigation. Samme ord, to retninger |
-| skift | `change` · `substitution` | `skiftAdgangskode` er `change`. Men **`skifte` er en HAENDELSESTYPE** (en udskiftning), og den maa ikke blive `change` · serveren: `PositionChangeIn` (9 forekomster), `_position_change_fra_lager` |
+| skift | `change` · `substitution` | `skiftAdgangskode` er `change`. Men **`skifte` er en HAENDELSESTYPE** (en udskiftning), og den maa ikke blive `change` · serveren: `PositionChangeIn` (9 forekomster), `_position_change_fra_lager` · **ogsaa i SERVEREN**: `beregning.py`s `ind`/`skifte`/`ud` i `_HAENDELSE_RANG` er en udskiftning, mens `skift_adgangskode` er `change` (Backend 06-10 kl. 00:05) |
 | tal | `number` · `figure` · `stat` | `nummer` ejer allerede `number` (A5). `HoldTal` er statistik, ikke numre · serveren: `activity_types.match_number_prefix` |
 | aeldre | `older` · `legacy` | `AeldreNoegle` i `CacheSkema`. Android har `legacy_type` — to platforme kan have valgt forskelligt |
 | ord | `word` | maalvaerdien er nok klar, men se delstreng-faelden ovenfor FOER den bruges |
 | **raekke** | `division` · `row` | **51 navne, maalt af Android.** DBU-raekken er `division`; `GpsRaekke`/`BaenkRaekke`/`HistorikRaekke` er `row`. Se afsnittet ovenfor · serveren: `dbu_groups.division_name` |
 | positioner | `positions` · `position` | mappingens post er dansk FLERTAL mod engelsk ENTAL · serveren: `position_minutes.position` (flertalsreglen: `positions`) |
 | typer | `types` · `type` | samme · serveren: `activity_types.legacy_type` (flertal: `types`) |
+
+**`skift` er bekraeftet paa ALLE TRE SIDER.** Android fandt de 8 klientnavne;
+Backend maalte uafhaengigt, at deres `beregning.py` har samme to betydninger, og
+at `skift_adgangskode -> change_password` (batch 2) var kontekstuelt rigtig.
+
+Det flytter bevisklassen: ordet er ikke tvetydigt *i klienterne*, det er
+tvetydigt **i projektet**. Et vaerktoej, der afgoer det pr. platform, vil
+afgoere det forskelligt tre steder.
 
 **`skift` er den farligste**, og grunden er den samme som `kort`s to betydninger:
 et af de to er en haendelsestype i data, og en forkert omdoebning dér er en
