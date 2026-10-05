@@ -536,6 +536,53 @@ et for lavt ser ud som gode nyheder.
 Gælder enhver sprogs tilsvarende: Swifts `Mirror` eller `CodingKeys` frem for en regex
 over `let`-erklæringer, og en skemaintrospektion frem for et mønster over
 `@SerialName`. **Spørg strukturen, ikke teksten** — og mistro et tal, der blev lavere.
+### `PRIMARY KEY` betyder ikke `NOT NULL` i SQLite — undtagen for INTEGER
+
+Backend fandt det 05-10-2026 under `#159`, mens de byggede nullable-kontrakten
+for `/api/sessions`:
+
+```
+sessions.id    type=TEXT  notnull=0  pk=1
+```
+
+**Primærnøglen kan være NULL.** Og det er ikke en fejl i skemaet; det er
+SQLites dokumenterede historiske opførsel. Målt uafhængigt med en ren tabel:
+
+```
+TEXT PRIMARY KEY               notnull=0   NULL ACCEPTERET -> gemt som None
+INTEGER PRIMARY KEY            notnull=0   NULL -> auto-tildelt rowid (1)
+TEXT PRIMARY KEY NOT NULL      notnull=1   AFVIST
+```
+
+**De to første ser ens ud i pragmaen og opfører sig modsat.** `INTEGER PRIMARY
+KEY` er en alias for `rowid`, så et `NULL` dér betyder "tildel selv" — harmløst
+og standard. `TEXT PRIMARY KEY` gemmer `NULL` som `NULL`.
+
+Backends konklusion, og den er den rigtige form: kontraktens `nullable: false`
+for `id` er et **løfte på applikationsniveau** (`SessionIn.id: str` er påkrævet),
+**ikke et bevis på databaseniveau.** Det er skrevet eksplicit på kontrakten frem
+for valgt stiltiende.
+
+**Reglen:** et felt, du vil kunne stole på ikke er null, skal have et eksplicit
+`NOT NULL`. At det er primærnøgle er ikke nok, med mindre typen er `INTEGER`.
+
+### Og en pragmas kolonneorden er noget man slår op, ikke husker
+
+Koordinatoren læste `PRAGMA table_info`s udgang to gange i træk og fik det
+forkerte svar begge gange — fordi `r[5]` blev læst som `notnull`.
+
+```
+PRAGMA table_info ->  cid, name, type, notnull, dflt_value, pk
+                       0     1     2      3         4        5
+```
+
+`r[5]` er `pk`. Så "notnull=1" på to primærnøgler var i virkeligheden "pk=1" —
+**et svar, der ser plausibelt ud, fordi begge ER primærnøgler.**
+
+Og fejlen var selvmodsigende på skærmen: `notnull=1` ved siden af "NULL
+ACCEPTERET". **En måling, der modsiger sig selv i samme output, er en
+læsefejl — ikke et interessant fund.** Det er det billigste sted at gribe ind.
+
 ### To NULL'er er ikke ens — en sammensat nøgle med en nullable kolonne forhindrer ingenting
 
 Fundet af Backend-sessionen 01-10-2026, under #53, **før** udrulning.
