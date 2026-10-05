@@ -1,102 +1,154 @@
 # Ordene bag #124: hvad der er engelsk, hvad der er dansk, og hvad der ikke kan afgoeres
 
-**Flettet af koordinatoren 05-10-2026 fra Androids og iOS' egne gennemgange.**
-Begge maalte paa deres eget traee, ord for ord. **Backend har ikke maalt endnu** —
-deres liste flettes ind, naar de har.
+**Flettet af koordinatoren 05-10-2026 fra ALLE TRE platformes egne gennemgange.**
+Hver maalte paa sit eget traee, ord for ord, og doemte hvert ord mod dets
+FAKTISKE brug — ikke mod stavemaaden.
 
-Hjemmet er her, saa de 76+ ord ikke maales tre gange. **Men listen er ikke en
-autoritet, der kan overtages uden at laese:** de fire ord under "kan ikke
-afgoeres" er beviset paa, at et ord kan vaere engelsk i eet traee og dansk i et
-andet.
+```
+Android    51 engelsk   26 dansk
+iOS        61 engelsk   43 dansk
+Backend   189 engelsk   34 dansk
+```
 
-## REGLEN, som goer listen brugbar
+## REGLEN
 
-Et ord taeller **kun** som engelsk, hvis det staar her — ikke fordi det staar i
-`/usr/share/dict/words` eller i serverens skemaord. **Begge heuristikker laekker
-dansk**, maalt: 33 af serverens 186 skemaord ER danske (`navn`, `dato`,
-`raekke`, `klub`, `hjemme`, `ude`, `deltager`, `tid`...), og ordbogen indeholder
-`er`, `alt`, `gang`, `mange`, `loft`, `mine`, `tag`, `slip`.
+Et ord taeller **kun** som engelsk, hvis det staar her. **Ikke** fordi det staar
+i `/usr/share/dict/words` eller i serverens skemaord — **begge heuristikker er
+maalt utaette:**
 
-**Ordbogen og skemaordene er kandidat-generatorer, ikke autoriteter.**
+```
+serverens 186 skemaord   33 ER DANSKE   navn · dato · raekke · klub · hjemme
+                                        ude · deltager · tid · afbud · aarsag
+/usr/share/dict/words    laekker        er · alt · gang · mange · loft · mine
+                                        tag · slip · art · hold · by · for
+```
 
-## KAN IKKE AFGOERES PAA EN LISTE — 4 ord
+**Ordbogen og skemaordene er kandidat-generatorer, ikke autoriteter.** Backends
+metode er formen: de kandidatord, der ramte en heuristik, blev LAEST og doemt
+mod `word_to_names` — hvor ordet faktisk optraeder — og resten blev ikke doemt
+paa formodning.
 
-**Disse findes i BEGGE sprog med forskellig betydning**, og Android og iOS naaede
-modsatte svar paa dem. **Ingen af dem tog fejl.**
+## KAN IKKE AFGOERES PAA EN LISTE — 7 ord
 
-| ord | dansk | engelsk | Android | iOS |
+**Dette er IKKE en tabel over uenighed. Det er en tabel over ord, hvis betydning
+afhaenger af NAVNET.** Og beviset er staerkest for de to, hvor begge betydninger
+findes **inden for EEN kodebase:**
+
+| ord | Android | iOS | Backend | beviset |
 |---|---|---|---|---|
-| `point` | point (= points) | point | ENGELSK | DANSK |
-| `by` | by (= city) | by (praeposition) | DANSK | ENGELSK |
-| `for` | for (= for/too) | for | DANSK | ENGELSK |
-| `min` | min (= my) | min (minimum/minute) | DANSK | ENGELSK |
+| `side` | — | — | BEGGE | `effektiv_maal_side` er team-SIDE (eng.) · `bekraeft_email_side` er webSIDE (da.) |
+| `min` | DANSK | ENG | BEGGE | `_min_krav` er minimum (eng.) · `slet_min_konto` er "min" (da.) |
+| `sort` | DANSK | DANSK | ENG | `sortFarve` er SORT farve (da.) · `_sort_key`/`sort_events` er sorterings-verbet (eng.), **nul danske forekomster i backend** |
+| `point` | ENG | DANSK | — | dansk "point" (= points) · engelsk "point" |
+| `by` | DANSK | ENG | ENG | dansk "by" (= city) · engelsk praeposition |
+| `for` | DANSK | ENG | ENG | dansk "for" (= for/too) · engelsk "for" |
+| `post` | DANSK | — | ENG | dansk "post" (= en raekke/en post) · engelsk HTTP POST |
+
+**`side` og `min` er de vigtigste**, fordi de viser, at problemet ikke er to
+platforme, der er uenige. **Det er ét ord, der betyder to ting i samme fil.**
 
 **Vaerktoejet skal sende navnet til springe-listen, uanset hvilken side ordet
-staar paa.** Et menneske afgoer det paa NAVNET: `pointAntal` er point;
-`sorteretBy` er engelsk; `minSpiller` er "min spiller"; `minVarighed` er
-minimum.
+staar paa.** Et menneske afgoer det paa NAVNET.
 
 > Et ord, der findes i begge sprog med forskellig betydning, kan ikke afgoeres
 > paa listen. Det afgoeres paa navnet.
 
-## GODKENDT ENGELSK — 72 ord
+## GODKENDT ENGELSK — 215 ord
 
-Gennemgaaet ord for ord af Android (51) og iOS (61), **36 af dem af begge
-uafhaengigt.**
+26 af dem er godkendt af **alle tre uafhaengigt.**
 
-  absence         alarm           alert           api             app             assist        
-  badge           cache           chevron         chip            data            dbu           
-  distance        email           face            filter          flow            form          
-  formation       gps             hex             id              interval        json          
-  key             km              label           labels          legacy          live          
-  login           match           me              minutes         ms              ok            
-  order           parse           payload         per             person          ping          
-  pm              position        preview         prompt          push            reason        
-  repository      rest            rules           score           scorer          segment       
-  selection       server          session         side            slot            start         
-  status          stop            sync            toggle          token           totals        
-  training        type            upload          value           version         wizard        
+  absence        access         account        activity       add            admin          alarm        
+  alert          alias          android        api            app            apple          assist       
+  assists        association    at             background     backup         badge          ca           
+  cache          card           category       certificate    change         checkpoint     chevron      
+  chip           clamped        clear          client         compute        connection     content      
+  cookie         count          create         current        custom         daily          data         
+  date           db             dbu            decimal        decode         delete         deleted      
+  detect         diff           discover       distance       distinct       doc            drift        
+  email          entry          epoch          error          event          events         expired      
+  export         face           families       family         fetch          filter         find         
+  first          flag           flow           form           format         formation      full         
+  get            global         goals          gps            guide          handle         hash         
+  header         headers        hex            holder         home           html           http         
+  id             impact         in             int            interval       ios            ip           
+  is             json           key            km             label          labels         legacy       
+  lifespan       limit          links          list           live           log            login        
+  logout         loop           mail           manifest       match          me             minute       
+  minutes        monthly        ms             name           next           no             none         
+  now            ok             one            order          out            parse          password     
+  patch          payload        per            person         pick           ping           player       
+  pm             position       preview        prompt         purge          push           rate         
+  raw            read           reason         refresh        relevant       repository     request      
+  resolve        response       rest           restore        row            rules          run          
+  save           scan           score          scorer         search         seconds        secret       
+  secrets        secure         seed           segment        selection      send           server       
+  service        session        sessions       set            sheet          shell          site         
+  slot           stage          start          state          stats          status         stop         
+  strip          substitution   sync           table          tags           team           teams        
+  text           to             toggle         token          totals         training       type         
+  types          unique         until          updated        upload         url            value        
+  verification   verify         version        vocabularies   wizard       
 
-## MAALT DANSK — 49 ord
+## MAALT DANSK — 66 ord
 
-Ord der staar i ordbogen eller i serverens skemaord, men **ER danske.**
+Ord der staar i ordbogen eller serverens skemaord, men **ER danske.**
 
-  alt             art             cachet          dato            deltager        er            
-  fed             gang            gemmer          gule            handling        hjemme        
-  i               ind             kant            klub            knap            linje         
-  loft            mange           mangler         marker          med             mine          
-  navn            nu              ny              og              op              placer        
-  positioner      post            prognose        raekke          registrer       sendt         
-  skift           slip            sort            standard        stat            tag           
-  tal             tid             tom             trin            troeje          typer         
-  ude           
+  af             afbud          alder          alt            art            cachet         da           
+  dato           deltager       er             fed            fri            frisk          gang         
+  gem            gemmer         gule           halve          handling       hjemme         hold         
+  i              ind            kampdato       kampnr         kant           klub           knap         
+  lager          linje          loft           mange          mangler        marker         med          
+  mig            mine           mod            navn           nu             ny             og           
+  op             pause          placer         positioner     praefiks       prognose       raekke       
+  rang           registrer      sendt          skift          slip           slut           standard     
+  stat           stilling       tag            tal            tid            tom            trin         
+  troeje         typer          ude          
 
-**Fire af dem er vaerre end resten**, fordi de laeser rigtigt og betyder noget
-andet:
+### De farligste: de laeser rigtigt og betyder noget andet
+
+**En hybrid er synlig for en laeser. Disse er det ikke.**
 
 ```
 sort        dansk BLACK      sortFarve er en SORT farve, ikke en sorteret
 standard    dansk DEFAULT    STANDARD_FARVE er standardfarven
-loft        dansk CAP        et loft er en graense
+loft        dansk CAP        et loft er en graense — fundet af BAADE Android og Backend
 handling    dansk ACTION     ikke haandtering
+halve       dansk "halve op" halve_op er en AFRUNDINGSREGEL, ikke "to halve"
+hold        dansk TEAM       _hold_navn_for_niveau er team-navn, ikke "at holde"
+lager       dansk STORAGE    _opstilling_doc_fra_lager er "fra lager", ikke oel
+da          dansk SPROGKODE  display_da er "visning, dansk" — ikke et engelsk ord
+marker      dansk BYDEFORM   markerHalvleg = "markér halvlegen". Stod 0 gange i
+                             prosaen, saa enhver frekvensmaaling missede den
 ```
 
-**En hybrid er synlig for en laeser. `sortFarve -> sortColor` er det ikke** — den
-ser ud som korrekt engelsk og betyder det modsatte. Androids fund.
+## OVERDETEKTION — hverken dansk eller engelsk
 
-Og `marker` er en dansk bydeform (`markerHalvleg` = "markér halvlegen"). Den
-stod **0 gange** i Androids prosa, saa enhver frekvensmaaling missede den. **Kun
-laesningen fandt den.**
+Forkortelser, varemaerker og fragmenter rammer heuristikkerne, men skal ikke
+omdoebes: `dbu`, `veo`, `repo`, `dsl`, `hid`, `api`, `json`, og enkeltbogstav-
+fragmenter som `b` i `b64url` og `v` i `v1`.
 
 ## HVAD DER IKKE HOERER HER
 
-**Kollisioner er per platform.** `break` er reserveret i alle tre sprog, men
-`set`, `body`, `list`, `text`, `from` kolliderer kun paa nogle. Androids maaling:
-*"et ord, der kolliderer paa een platform, kolliderer ikke paa alle. En unoedig
-springe-liste ser ud som forsigtighed."* **De hoerer i hver platforms eget
-vaerktoej.**
+**Kollisioner er per platform.** Backends maaling:
 
 ```
-SPROG      hoerer HER        et ord er dansk eller engelsk, uanset repo
-SYNTAKS    hoerer DER        hvad der kan staa som et navn i Swift/Kotlin/Python
+er    -> is      RESERVERET i Python
+i/ind -> in      RESERVERET i Python — TO danske ord rammer SAMME reserverede ord
+med   -> with    RESERVERET i Python
+pause -> break   reserveret i ALLE TRE sprog
+tid   -> time    BLOED kollision — stdlib-modulnavn, ikke reserveret
 ```
+
+Og Swifts `View.body`, SwiftUIs `List`/`Text`, Kotlins soft keywords er hver
+sine. Androids maaling: *"et ord, der kolliderer paa een platform, kolliderer
+ikke paa alle. En unoedig springe-liste ser ud som forsigtighed."*
+
+```
+SPROG      hoerer HER      et ord er dansk eller engelsk, uanset repo
+SYNTAKS    hoerer DER      hvad der kan staa som et navn i Swift/Kotlin/Python
+```
+
+## ET HYBRID-EKSEMPEL, FUNDET I NAVNET SELV
+
+`rang_for` — dansk `rang` + engelsk `for`. **Navnet var en hybrid, foer nogen
+omdoebte noget.** Det er den klasse, hybrid-reglen findes for at fange.
