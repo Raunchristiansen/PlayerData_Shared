@@ -749,6 +749,93 @@ navn, der hos dem er en raekke.
 afgoer, hvad ordet HEDDER i hver betydning (`division` og `row`); hvilken
 betydning et konkret navn har, kan kun maales dér, hvor navnet bor.
 
+## A6. NI ORD MERE — og denne gang med serverens FOREKOMSTTAL
+
+**Tilfoejet 06-10 kl. 00:30.** Udgangspunktet er maalt, ikke valgt: af de **66
+ord, `ORD-ENGELSK-DANSK.md` klassificerer som danske**, har 21 et maal, 5 er
+bevidst tvetydige (A5b) — og **40 har intet maal.** Et ord, der er klassificeret
+dansk uden en maalvaerdi, kan ikke omdoebe noget.
+
+**Kolonnen `n` er antal forekomster i `backend/app/` maalt med SEGMENTgraense**,
+ikke som delstreng. Den staar der, fordi styrken af et bevis er forskellen paa
+"serveren har afgjort det" og "serveren har brugt ordet een gang".
+
+| dansk | engelsk | n | serverens bevis |
+|---|---|---|---|
+| kampdato | `date` | **5** | **`#156` trin 1 sender det paa ledningen: `"date": k["kampdato"]`** |
+| frisk | `fresh` | **8** | `fresh_kampnrs`, `refresh_match_now` |
+| slip | `release` | 3 | laasens modsaetning til `tag` |
+| handling | `action` | 2 | **dansk ACTION, ikke "haandtering"** — staar paa farligste-listen |
+| tom | `empty` | 2 | `gps_file_empty` |
+| fri | `free` | 1 | svagt, men entydigt |
+| prognose | `forecast` | 1 | svagt, men entydigt |
+| registrer | `register` | 1 | `register_team_events`. Bydeform |
+
+**De tre oeverste er afgjort. De seks nederste er HINTS**, og forskellen staar i
+tallet frem for i en overskrift. Et ord med `n = 1` er ikke "afgjort af
+serveren" — det er et forslag, serveren tilfaeldigvis er enig i.
+
+### RETTET FEM MINUTTER SENERE: to fejl i tabellen ovenfor
+
+**1. `kampnr -> match_number` er FJERNET.** Jeg skrev *"det er `#156`s egen
+kolonne"*. Maalt paa commit'ens `+`-linjer: `kampnr` er **ikke** blandt `#156`
+trin 1's dual-keys. De faktiske par er:
+
+```
+navn -> name / username / feature_key     klub_praefiks -> club_prefix
+kampdato -> date                          hjemme -> home        ude -> away
+score_hjemme -> home_score                score_ude -> away_score
+holder_navn -> holder_name                deltager -> participant
+tid_sek -> time                           beregnet_af -> calculated_by
+```
+
+**Hvorfor jeg trode det:** mit foerste grep var
+`git show e2c714d | grep -oE '"(kampnr|puljeid|[a-z_]*nr|spillested|[a-z_]*navn)"'`
+— altsaa en **gaettet ordliste mod hele `git show`-outputtet**, inklusive
+fjernede linjer, kontekstlinjer OG commit-beskeden. Den maalte ikke, hvad
+commit'en gjorde; den bekraeftede, hvad jeg havde skrevet i soegningen.
+
+> Samme fejl som *"6 danske filnavne — der var fjorten"*: **min grep var en
+> denylist.** En denylist kan kun bekraefte det, man allerede har taenkt paa.
+
+`match_number` og `match_number_prefix` findes i serveren, men de er **en anden
+kolonne** — et praefiks til at generere numre. `kampnr` har i dag **ingen**
+engelsk alias paa ledningen, og hoerer derfor i A3, ikke her.
+
+**2. `kampdato -> match_date` var forkert paa den anden side af graensen.**
+`_parse_match_date` er et FUNKTIONSNAVN (Backends batch 5). `#156` sender
+`"date"` paa ledningen. Rettet til `date`.
+
+> Jeg maalte en funktion og konkluderede om en JSON-noegle. Et egenskabsnavn, et
+> kolonnenavn og en wire-noegle er tre forskellige strenge — og i dette projekt
+> er de bevidst forskellige.
+
+### To ord blev AFVIST, fordi mit eget grep loeb paa delstrenge
+
+```
+loft -> cap     mit grep fandt 'unescape'   unes-CAP-e
+kant -> wing    mit grep fandt 'wingback'   een token, ikke et segment
+linje -> line   mit grep fandt 'deadline', 'discipline'
+lager -> store  mit grep fandt 'restore', 'restored'
+```
+
+Med segmentgraense: **`cap` 0 · `wing` 0 · `edge` 0 · `button` 0.** `line` og
+`store` har 7 og 9 ægte forekomster, men ikke i en sammenhaeng der afgoer ordet.
+
+**Det er sjette gang i nat, at delstreng-faelden ramte en maaling** — efter
+`hold` (C2), `ord` i `password`, og Androids `kropper`. Og denne gang var det
+paa den **ENGELSKE** side af pilen, hvor jeg ikke havde ledt efter den.
+
+```
+maal paa DANSK side    hold → Indhold, beholdt, ophold
+maal paa ENGELSK side  cap  → unesCAPe        <- NY, og lige saa stille
+```
+
+**Reglen: begge sider af pilen skal maales med segmentgraense.** Et `grep` paa
+`[a-z_]*ord[a-z_]*` finder `password`; et `grep` paa `[a-z_]*cap[a-z_]*` finder
+`unescape`. Der er ingen forskel paa de to fejl, og jeg havde kun skrevet den
+ene ned.
+
 ## B. Entydige — jeg foreslår, ingen beslutning nødvendig
 
 Ingen af disse har to plausible engelske ord i denne kodebase.
