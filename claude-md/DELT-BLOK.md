@@ -1525,6 +1525,40 @@ Samme form som det frosne tal i `FormRegelAkserTest` (`60/52/22/39`), der blev
 rødt af én lovlig tilføjelse: en kontrol, der beskytter mod ændring, står i vejen
 den dag ændringen er rigtig.
 
+### Et ord i en loglinje er ikke en hændelse
+
+Koordinatoren søgte 05-10-2026 efter årsagen til et maskinnedbrud med:
+
+```
+journalctl -b -1 -k | grep -icE 'out of memory|oom-kill|panic'   ->  2
+```
+
+**To træf. Begge var `drm panic`** — grafikdriverens panik-*håndterer*, der
+registrerer sig ved hver opstart. Ikke en kernepanik; det modsatte, nemlig
+beviset på at håndteringen virker.
+
+Samme kørsel gav "6 nedlukningsspor" i det boot, der døde. De seks lå spredt
+over femten dage: `initrd-cleanup` ved opstart, `geoclue` der lukkede ned efter
+60 sekunder, `gnome-shell`, `NetworkManager` der fangede SIGTERM. **Ingen af dem
+havde med nedbruddet at gøre.** Tallet 6 lignede et fund.
+
+Fejlen er, at **et ord valgt for at matche en hændelse også matcher hvert navn,
+hver tilstandsbeskrivelse og hver rutinebesked, der indeholder ordet.** Og en
+optælling skjuler det, fordi den ikke viser teksten.
+
+```
+grep -c  'panic'    ->  2      ser ud som to panikker
+grep     'panic'    ->  drm panic, drm panic
+```
+
+**Tæl aldrig i en log. Læs linjerne.** Og hvis der er for mange at læse, så
+afgræns med tid frem for at stole på antallet — `--since` er en måling, et
+nøgleord er et gæt.
+
+Det er samme form som `pgrep -f`, der matcher sin egen kommandolinje: et mønster
+bredt nok til at finde det, man leder efter, er også bredt nok til at finde noget
+andet, der ligner.
+
 ### Et mønster, der matcher på delstreng, matcher også den, der leder
 
 `pgrep -f`, `pkill -f` og enhver anden søgning i en **kommandolinje** rammer også
@@ -1641,6 +1675,38 @@ bruger.
 Baegge gange var det et andet menneskes spoergsmaal, der fandt det. **Ingen af dem fandt
 sit eget.**
 
+### Et datapunkt, du selv har fremstillet, hører ikke i opgørelsen
+
+Koordinatoren opgjorde 05-10-2026 otte OOM-dræbte builds og satte dem op mod
+tidspunktet, hvor hukommelsesloftet blev sat:
+
+```
+syv draebt FOER loftet   ·   eet draebt EFTER
+```
+
+Android-sessionen kunne gøre rede for det ene. Det var **deres egen
+`#69`-måling**: `assembleDebug + testDebugUnitTest + compileDebugAndroidTestKotlin`
+med `--no-build-cache` på et nulstillet `app/build`, bygget med vilje så dyr som
+muligt for at finde ud af, hvad en unavngiven proces var.
+
+Deres formulering:
+
+> Et datapunkt, man selv har fremstillet for at presse systemet, må ikke indgå i
+> opgørelsen over, hvor ofte systemet presses af sig selv.
+
+**Den hører hverken i "før" eller "efter" — den hører udenfor.** Og det er værd
+at bemærke, at den ikke er et modeksempel mod loftet; den er konstrueret til at
+ramme det.
+
+Det farlige er, at et fremstillet datapunkt **ser ud som de andre i loggen.**
+Kernen skriver samme linje, uanset om processen døde under almindeligt arbejde
+eller under en bevidst belastningsprøve. Opgørelsen kan derfor ikke skelne dem,
+og kun den, der kørte prøven, ved det.
+
+**Så sig det, når du kører en belastningsprøve** — og spørg, før du opgør andres
+tal. Forskellen mellem "syv mod én" og "syv mod nul uprovokerede" er ikke
+kosmetisk: den første inviterer til at tro, at indgrebet ikke virkede.
+
 ### Serverens egne data er ikke et testgrundlag — de er ét punkt i rummet
 
 Android 01-10-2026, ved at bygge formularens regelmotor (`#17`):
@@ -1718,6 +1784,41 @@ Den dyre halvdel, fundet ved selve målingen: en afstemning af påmindelser læs
 > **Genopbyg udledt output FØR en afstemning mod det, ellers afstemmes mod en forældet tilstand.**
 
 Samme familie som dagens øvrige fund: en test eller en kørsel, der beviser noget TÆT PÅ den rigtige påstand, ikke selve den. Spørg derfor altid, når én funktion flettes/overtager et delt dokument: hvad ELLERS afhænger af dette dokuments indhold, og er DET genberegnet, før noget læser det igen?
+
+### En kronisk tilstand er ikke udløseren til en akut hændelse
+
+Koordinatoren meldte 05-10-2026, at maskinen døde af hukommelsesmangel. Grundlaget
+var ægte og alvorligt:
+
+```
+otte Gradle-builds OOM-draebt i loebet af dagen
+kl. 06:35   swap 239 MB fri af 4,0 GiB
+```
+
+**Men maskinen levede 68 minutter videre efter den måling**, og den sidste
+OOM-kill lå otte timer før døden. Det, der faktisk skete, stod to linjer længere
+ned i loggen:
+
+```
+15 dage       lid LUKKET (HandleLidSwitch=ignore), applespi stille: 2 beskeder
+07:43:18      Lid opened        <- den ENESTE lid-haendelse i de 15 dage
+07:43:42      43 applespi-fejl i EET sekund, derefter intet
+```
+
+**Fireogtyve sekunder fra en diskret hændelse til døden**, og nul
+nedlukningsspor, nul OOM-kill, nul hængende opgaver i vinduet.
+
+Fejlen er ikke, at hukommelsen blev målt forkert. Den var målt rigtigt, og den
+er stadig et reelt problem. Fejlen er, at **den mest alarmerende måling blev
+gjort til årsagen**, fordi den var den mest alarmerende.
+
+**Prøven, der skiller dem, er: hvad ændrede sig?** En tilstand, der har holdt i
+timer eller dage, forklarer ikke, hvorfor noget skete netop nu. Den forklarer
+højst, hvorfor systemet var skrøbeligt, da det skete.
+
+Og konsekvensen var praktisk: anbefalingen blev at frigøre hukommelse, hvilket
+**ikke ville have forhindret nedbruddet.** Et rigtigt råd mod et forkert
+problem ser ud som et svar.
 
 ### En konsekvens-beskrivelse er en antagelse, til den er målt — selv når rettelsen er rigtig alligevel
 
