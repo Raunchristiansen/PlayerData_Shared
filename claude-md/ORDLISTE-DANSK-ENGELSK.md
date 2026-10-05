@@ -371,6 +371,40 @@ hoerer i mappingen alligevel, fordi et vaerktoej ellers ser `nullable` som
 selv, er ikke stoej — den er en GODKENDELSE.**
 
 
+### A4c — fire mere, 05-10-2026 kl. 23:35
+
+| dansk | engelsk | bevis, efterproevet |
+|---|---|---|
+| familie | `family` | `family_id` i 587 forekomster, kolonner i `auth_sessions`, `password_reset_tokens` m.fl. |
+| soeg | `search` | 20 forekomster, ruten `/club-colors/search` |
+| fejlede | `failed` | 15 forekomster, ruten `/club-colors/failed` |
+| funktion | `feature` | **IKKE `function`** — se nedenfor |
+
+**`funktion -> feature` er den laererige.** Koordinatoren soegte foerst efter
+`function` og fandt **nul forekomster** — og var paa vej til at kalde ordet
+uafgjort.
+
+**Men ordet betyder noget andet, end det ser ud til.** `admin.py:399`s
+`saet_funktion` serverer ruten `/features/{feature_key}` med kroppen
+`FunktionsKnapIn`, og docstringen siger: *"Slaar en central funktions-knap
+til/fra for ALLE klienter."*
+
+```
+funktion   = en FEATURE FLAG, ikke en funktion i kodebetydningen
+serveren   har allerede features-tabellen og feature_key
+```
+
+> **Jeg oversatte ordet bogstaveligt i stedet for at laese, hvad det betyder.**
+> Et dansk ord har ikke een engelsk modpart — det har den, konteksten giver det.
+
+Det er samme fejlform som resten af natten, nu paa en oversaettelse: **jeg maalte
+et ORD og konkluderede om et BEGREB.** Rettelsen kostede ét `git grep -A10`.
+
+**Og `saet_funktion` kan stadig ikke omdoebes**, fordi `saet` staar blandt de
+uafgoerlige (`set` er en Python-builtin OG kontekstuelt). `funktion`s afgoerelse
+frigiver altsaa ikke netop det navn — men den frigiver ordet.
+
+
 ## B. Entydige — jeg foreslår, ingen beslutning nødvendig
 
 Ingen af disse har to plausible engelske ord i denne kodebase.
