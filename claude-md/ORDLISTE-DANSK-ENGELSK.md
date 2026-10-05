@@ -499,6 +499,28 @@ afgoerelsen af det ene ord frigiver navnet.
 **Hvert ord herunder er slaaet op i serverens egen kode, ikke i en ordbog.**
 Kolonnen "bevis" er det, en `git grep` i `backend/app/` svarer.
 
+**FIRE PARSER-FEJL ER MAALT PAA DENNE FIL, 05-10/06-10. Laes dem foer du
+skriver en femte** — tre var Androids, een var koordinatorens, og **ingen af dem
+meldte en fejl.** De gav alle et TAL, der lignede et svar:
+
+```
+koordinatoren  prosalinjen laest som data        7 falske par, paa -> et
+                                                 overskrev den rigtige paa -> on
+Android        antalskolonnen i A5               74 -> 83   nul raekker laest
+Android        header-filter paa ORDET "navn"    et RIGTIGT ord udeladt tavst
+Android        set("") <= set("-: ")             83 -> 78   hver tabels SIDSTE
+                                                 raekke laest som overskrift
+```
+
+**Den tredje og fjerde er de lumske.** Et filter skrevet for at springe
+OVERSKRIFTER over udelukkede ordet `navn`, fordi overskriften hedder det samme —
+*en tabel skal kendes paa sin FORM, ikke paa sine ord.* Og **den tomme maengde er
+delmaengde af alt**, saa en tom linje efter en tabels sidste raekke bestod den
+strukturelle proeve.
+
+Androids egen note: *"Tallet gik fra 83 til 78, mens det LIGNEDE en stramning."*
+Det blev kun fundet, fordi de laeste de 78 igennem og savnede `bekraeft`.
+
 **TIL DEN, DER PARSER FILEN: A5's foerste kolonne er et ANTAL, ikke et ord.**
 De oevrige afsnits tabeller har dansk i foerste kolonne. Et moenster, der antager
 det, laeser **nul** af de atten raekker herunder — og nul ser ud som "ingen nye
@@ -506,10 +528,19 @@ ord", ikke som en fejl.
 
 ```python
 # tolererer baade formen med og uden antalskolonne
-r'^\|\s*(?:\*\*\d+\*\*\s*\|\s*)?([a-zaeoeaa ()/]+?)\s*\|\s*`([a-z_]+)`'
+r'^\|\s*(?:\**\d+\**\s*\|\s*)?([a-zaeoeaa ()/]+?)\s*\|\s*`([a-z_]+)`'
 ```
 
-Maalt 05-10 kl. 23:57: det gamle moenster gav 71 par, det rettede 89.
+**Moensteret er proevet ordret mod filen 06-10 kl. 00:20: 82 par, 72 distinkte
+danske ord, NUL ord med mere end eet engelsk maal** (A5b udeladt, som den skal
+vaere). Proev det igen efter en redigering — det tager fem sekunder og er den
+eneste kontrol, der fanger et format, der er gledet.
+
+To tidligere maalinger paa samme fil: 71 par foer antalskolonnen blev tolereret,
+78 da antallet var FED i nogle raekker og bart i andre. **Den anden er den
+lumske** — jeg skrev tabellen for at loese et parse-problem og gav den en
+inkonsistent foerste kolonne, saa fire af fem nye raekker faldt bort. `\**`
+tolererer nu begge.
 
 | navne | dansk | engelsk | serverens bevis |
 |---|---|---|---|
@@ -624,6 +655,44 @@ afgoere det forskelligt tre steder.
 et af de to er en haendelsestype i data, og en forkert omdoebning dér er en
 datamigrering, ikke en omdoebning.
 
+## A5c. ET ANTAL NAVNE MED ORDET ER IKKE ET ANTAL NAVNE ORDET KAN OMDOEBE
+
+**Tilfoejet 06-10 kl. 00:15, efter at Android bad om "de 8 DBU-navne" som et
+navne-niveau-tillaeg. De findes ikke som et rent saet.**
+
+Jeg rangerede `raekke` foerst i A5 med begrundelsen *"8 navne"*, hentet fra iOS'
+`frigoer-flest-navne.md`. **Maalt i iOS' eget trae:**
+
+```
+KampRaekke      Core/Design/KampKomponenter.swift:149   struct ... : View     ROW
+HoldRaekke      Core/Design/KampKomponenter.swift:80    struct ... : View     ROW
+KampeRaekke     Core/Kampe/KampeLogik.swift:4           : Identifiable        uklar
+RaekkeKamp      DBURepository+Datainput.swift:4         : Decodable       DIVISION
+```
+
+**Mindst halvdelen af iOS' otte er raekker i en liste**, ikke DBU-raekker. Og
+`KampRaekke` staar paa Androids `row`-liste OGSAA — samme navn, samme betydning,
+i to traeer.
+
+**iOS' tal var rigtigt.** Deres doc siger praecist, hvad det taeller: *"navne med
+praecis ÉT blokerende ord"*. Den paastaar ikke, at ordet er entydigt. **Jeg laeste
+et ANTAL som en DOM** — og rangerede derefter ordet foerst, netop fordi tallet var
+stort.
+
+```
+jeg laeste              jeg sluttede                 det rigtige maal
+8 navne har ordet       8 navne kan omdoebes          ordets BETYDNING pr. navn
+en hyppig kandidat      en vigtig afgoerelse          om der er EEN afgoerelse
+```
+
+**Konsekvensen for metoden:** et navne-niveau-tillaeg kan ikke bo i denne fil.
+Udleverede jeg "de 8", havde Android faaet `KampRaekke -> MatchDivision` for et
+navn, der hos dem er en raekke.
+
+**Hver platform klassificerer sine egne navne for de seks ord i A5b.** Listen
+afgoer, hvad ordet HEDDER i hver betydning (`division` og `row`); hvilken
+betydning et konkret navn har, kan kun maales dér, hvor navnet bor.
+
 ## B. Entydige — jeg foreslår, ingen beslutning nødvendig
 
 Ingen af disse har to plausible engelske ord i denne kodebase.
@@ -641,10 +710,20 @@ sæt         set           indlæs      load          gem         save
 **Fem mere, 05-10 kl. 23:55 — maalt til at have NUL forekomster i serveren**,
 altsaa rent klientbegreb, hvor ingen server kan afgoere ordet:
 
-```
-er          is            logik       logic         straffe     penalty
-trup        squad         personlige  personal
-```
+| navne | dansk | engelsk | hvorfor serveren ikke kan afgoere det |
+|---|---|---|---|
+| **6** | er | `is` | boolean-praefikset. **Staar paa fjendelisten**, saa en mappingpost slaar fjendereglen |
+| **3** | logik | `logic` | 5 danske forekomster i serveren, nul engelske |
+| **2** | straffe | `penalty` | fodboldtermen, ikke `punish`. Nul forekomster i serveren |
+| **1** | trup | `squad` | nul forekomster i serveren |
+| **2** | personlige | `personal` | nul forekomster i serveren |
+
+**De stod foerst som en KODEBLOK her, og Android maalte 06-10 kl. 00:15, at de
+"ikke findes i filen".** De fandtes — linje 577-578 i `3e70ad6` — men deres
+parse laeste dem ikke, og mit eget parse laeste ikke A5's tabel.
+
+**To dataformater i een fil, tre parsere.** Derfor er de nu en tabel: tabellen
+er det format, alle tre faktisk laeser. Prosa og kodeblokke er til mennesker.
 
 `er` frigiver **6 navne** (`erEgetHold`, `erKamp`, `erKort`, `erStaevne`) og er
 boolean-praefikset. Det staar i den engelske ordbog som et interjektion, og det
