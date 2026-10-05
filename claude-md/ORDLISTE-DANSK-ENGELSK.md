@@ -208,14 +208,20 @@ ville producere `Inteam`, `beteamt`, `Placeteamer`, `opteam`, `teamer`,
 `forteam` — og hvert enkelt ville kompilere eller ikke kompilere på en måde, der
 ikke peger på årsagen.
 
-| delstreng | navne | betyder | eksempler |
-|---|---|---|---|
-| `indhold` | 13 | content | `Indhold`, `OpstillingIndhold`, `FoelgKampIndhold` |
-| `holder` | 6 | holder (låsens) | `holderNavn`, `_forny_laas_hvis_holder`, `_laas_holder` |
-| `placeholder` | 2 | **engelsk ord** | `PlaceholderFane`, `placeholder` |
-| `beholdt` | 1 | kept | `beholdt` |
-| `ophold` | 1 | stay/pause | `UDKAST_OPHOLD_MS` |
-| `forhold` | 1 | ratio | `BANE_FORHOLD` (bane-forhold, altså aspect) |
+> **ADVARSEL — DETTE ER IKKE EN MAPPING.** Listen nedenfor er ord, der
+> **IKKE må omdøbes.** De er delstrenge, hvor `hold` betyder noget andet. Android
+> fandt 05-10, at en parser kan læse en tretrins-tabel som en oversættelse:
+> `indhold` endte i deres ordbog som `content` og gjorde `Indhold` til et
+> "dækket" navn. **Derfor står de nu som prosa uden en engelsk kolonne.**
+
+**`indhold`** — 13 navne (`Indhold`, `OpstillingIndhold`, `FoelgKampIndhold`).
+**`holder`** — 6 navne, låsens ejer (`holderNavn`, `_laas_holder`).
+**`placeholder`** — 2 navne, og det er et engelsk ord (`PlaceholderFane`).
+**`beholdt`** — 1 navn. **`ophold`** — 1 (`UDKAST_OPHOLD_MS`).
+**`forhold`** — 1 (`BANE_FORHOLD`).
+
+**Ingen af de seks har en oversættelse i denne liste.** De er udækkede, og
+hybrid-reglen skal springe navne, der indeholder dem, over.
 
 `Indhold` er særligt værd at bemærke: **det er netop den type, iOS' `#164`-fund
 handler om** — det gemte Face ID-login i Keychain. Et mekanisk `hold → team`
