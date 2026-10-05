@@ -344,6 +344,33 @@ dele eet ord, og eet begreb maa ikke have to ord.*
 paa ledningen, foer nogen spurgte om koden** — og det er den omvendte retning af
 `pause -> break`, hvor ledningens svar IKKE kunne staa som et navn.
 
+### A4b — tre mere, 05-10-2026 kl. 23:10
+
+| dansk | engelsk | bevis, efterproevet |
+|---|---|---|
+| aktivitet | `activity` | tabellen `activity_types` (142 forekomster), `activity_type_key` (69), `#37` |
+| regler | `rules` | TRE tabeller: `form_rules` (102), `age_rules` (40), `format_rules` (24) — `#44`/`#53` |
+| nullable | `nullable` | **allerede engelsk.** Tre UDRULLEDE endepunkter, alle bekraeftet registreret i den koerende container: `/api/v1/stats/nullable-fields`, `/api/v1/sessions/nullable-fields`, `/api/v1/live/nullable-fields` |
+
+**`regler -> rules` lukker Androids stammeskift-hul.** De maalte, at
+`regel -> regler` taber et `e`, saa boejningsreglen (stamme + endelse) ikke kan
+se det:
+
+```
+boejningsreglen   regel + er?   nej — stammen er 'regl', ikke 'regel'
+loesningen        'regler' staar som sin EGEN post, med 'rules' som maal
+```
+
+**En boejning, reglen ikke kan se, skal staa som sit eget ord.** Det er
+billigere end at udvide reglen med stammeskift-regler for dansk — og det er
+maalbart, fordi serveren har flertalsformen i tre tabelnavne.
+
+**Og `nullable` er den foerste post, hvor dansk og engelsk er SAMME ord.** Den
+hoerer i mappingen alligevel, fordi et vaerktoej ellers ser `nullable` som
+"ukendt" og springer hele navnet over. **En post, der oversaetter et ord til sig
+selv, er ikke stoej — den er en GODKENDELSE.**
+
+
 ## B. Entydige — jeg foreslår, ingen beslutning nødvendig
 
 Ingen af disse har to plausible engelske ord i denne kodebase.
