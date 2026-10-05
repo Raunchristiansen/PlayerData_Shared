@@ -2115,6 +2115,44 @@ Samme familie som denne fils egne afsnit om et filter, der ikke rammer noget ("E
 
 **Reglen, generaliseret:** et instrument, der kan se en DELMÆNGDE af det, det påstår at dække (en side af resultater, en tidsgrænse, et filter), skal sige HVILKEN delmængde det så — ikke kun hvad den fandt i den.
 
+### En hypotese om en anden platform er stadig en hypotese
+
+**Androids egne ord, 05-10-2026**, efter at de havde gaettet — og taget fejl —
+om at iOS og Backend havde samme hul som dem selv:
+
+> En hypotese om andre er stadig en hypotese, **ogsaa naar den goer een selv
+> mindre enestaaende.**
+
+**Sagen:** Android fandt, at deres egen `is_prose`-vagt afviste alt med `$` og
+dermed gav **164 af 620 brugertekster fripas.** De meldte det med tilfoejelsen
+*"det her gaelder sandsynligvis jeres vagter ogsaa"*.
+
+**Maalt af koordinatoren FOER det blev relayet:**
+
+```
+iOS      HAR vagten, og den HAANDTERER interpolation eksplicit.
+         normaliser() erstatter interpolationer med en pladsholder, og
+         docstringen siger, at "Deltog <a> af <b>" TAELLER som brugertekst
+Backend  har INGEN prosa-vagt. Deres ratchet handler om NAVNE, ikke brugertekst
+```
+
+**Fripasset var Androids alene.**
+
+**Og det er den OMVENDTE retning af dagens oevrige fejl.** De syv rettelser 01-10
+og de otte 04-10 var alle for brede konklusioner **til afsenderens fordel** — et
+fund, der gjorde en anden session forkert. Denne var et gaet, der gjorde
+afsenderen **mindre** forkert, ved at goere fejlen almindelig.
+
+> Det er en behagelig antagelse, og derfor sjaeldnere at faa maalt.
+
+**Reglen er den samme i begge retninger:** *"sandsynligvis gaelder det ogsaa
+jer"* er et SIGNAL om, hvor der skal maales — aldrig et facit. Og den, der
+relayerer det, skal maale det, foer modtageren bruger en tur paa at modbevise
+det.
+
+**Koordinatorens del af det:** jeg maalte begge traeer, foer jeg sendte noget.
+Det kostede to `git grep` og sparede to sessioner for en tur hver.
+
 ### En måler, der gætter på sprog, bliver værre jo bedre det går
 
 **Fem gange den 05-10-2026 fejlede en "ligner dansk"-måler under `#124`s
