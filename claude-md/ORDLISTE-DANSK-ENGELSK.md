@@ -1508,6 +1508,59 @@ Det er samme form som *"filnavne i et repo -> der findes intet svar -> OGSAA
 kortets kommentarer"*: **jeg soegte i kort og i ruter, og svaret laa i koden.**
 
 
+## A13. `efternavn` og `fornavn` — to SAMMENSATTE ord, der skal staa som hele noegler
+
+**Fundet kl. 03:58 ved at foelge Androids hint om `efter`.** De meldte, at et bart
+`efter` som HELE navnet blev `after`, og det fik mig til at maale serverens
+`efter`-forekomster.
+
+```
+app/account.py:144    efternavn = body.last_name.strip()
+last_name   22 forekomster      first_name  22
+efternavn   11 (dansk)          fornavn     13 (dansk)
+```
+
+| navne | dansk | engelsk | n | serverens bevis |
+|---|---|---|---|---|
+| **11** | efternavn | `last_name` | **22** | `account.py:144` siger det ORDRET: `efternavn = body.last_name` |
+| **13** | fornavn | `first_name` | **22** | samme par, samme fil |
+
+### Hvorfor de maa staa som HELE noegler
+
+**SAMMENSAT-reglen ville dele dem forkert:**
+
+```
+efternavn  ->  efter + navn  ->  after_name      FORKERT
+fornavn    ->  for   + navn  ->  for staar paa den UAFGOERLIGE liste
+                                 -> navnet blokeres (ikke forkert, men tabt)
+```
+
+`efternavn` er ikke "navnet efter" — det er **slaegtsnavnet.** Og `for` i
+`fornavn` er ikke praepositionen; det er praefikset *for-*.
+
+**Mekanismen findes allerede:** laengste-match-foerst mod mapningens egne
+noegler. Staar `efternavn` som en noegle, naas `efter` aldrig — praecis som
+`aktivitetstyper` forhindrer, at `aktivitet` og `typer` deles hver for sig.
+
+**Saa `efter -> after` fra A11 er uaendret rigtig.** Den temporale betydning er
+den rigtige i `row_efter`, `positioner_efter`, `efterregistreret`. Det var
+sammensaetningen, der manglede en noegle — ikke ordet, der manglede en
+afgoerelse.
+
+### Og de to er ikke de eneste af den slags
+
+```
+bagefter · derefter · efterlod       `efter` som DELSTRENG, ikke som del
+```
+
+De er daekket af hele-ord-reglen, fordi camelCase/snake_case ikke deler dem.
+**Men `efternavn` ER et snake_case-delbart ord**, og det er forskellen: en
+delstreng er sikker, en sammensaetning er ikke.
+
+> Hele-ord-reglen beskytter mod DELSTRENGE. Den beskytter ikke mod en
+> SAMMENSAETNING, hvis dele hver for sig staar i mapningen.
+
+
 ## B. Entydige — jeg foreslår, ingen beslutning nødvendig
 
 Ingen af disse har to plausible engelske ord i denne kodebase.
