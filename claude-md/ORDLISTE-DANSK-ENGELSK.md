@@ -202,7 +202,7 @@ for k in noegler:
 | `aldersregler` | alder + regler | `age_rules` | **TABELLEN `age_rules`** |
 | `holdliste` | hold + liste | `team_list` | **FILEN `team_list.py`** |
 | `kamphaendelser` | kamp + haendelser | `match_events` | — |
-| `holdkort` | hold + kort | `teamsheet` | **SAMMENSAT gav det forkerte svar her:** `hold -> team` og `kort -> card` er begge rigtige, og `team_card` er stadig forkert. Det engelske begreb er ÉT ord. Se A19 |
+| `holdkort` | hold + kort | **se A5b** | **SAMMENSAT gav det rigtige svar for det ENE begreb:** `hold -> team` + `kort -> card` = `team_card`, som er korrekt for statistik-kortet. For DBU-holdkortet er det engelske begreb ÉT ord, `teamsheet`. To begreber, eet dansk ord — se A20 |
 
 **De tre foerste er regnet UDEN at se paa serveren, og de rammer det, serveren
 allerede hedder.** En regel, der genskaber et navn, nogen har valgt i haanden,
@@ -550,7 +550,7 @@ tolererer nu begge.
 | **7** | navn | `name` | `dbu_club_name`, `created_by_name`, `event_name` (39) |
 | **4** | aktivitet | `activity` | `activity_type_key`, `activity_type_category` (93) |
 | **4** | klub | `club` | `dbu_club_id`, `dbu_club_name`, `dbu_club_colors` (9) |
-| **3** | holdkort | `teamsheet` | **RETTET i A19.** Stod som `team_card` med beviset "ruten `get_team_card_players`" — det er et FUNKTIONSNAVN. Ruten er `@router.get("/teamsheet-players")` og tabellerne `dbu_teamsheets`/`dbu_club_teamsheets`. 68 eksisterende `team_card`-navne er kendt gaeld, se A19 |
+| **3** | holdkort | **se A5b** | **FLYTTET TIL A5b i A20.** A19 rettede den fra `team_card` til `teamsheet`; begge er rigtige, for hvert sit begreb. DBU-holdkortet er `teamsheet`, statistik-kortet er `team_card`. Maalvaerdien er fjernet her, saa posten ikke kan parses som afgjort |
 | **3** | tider | `times` | `period_times_json` |
 | **3** | nulstil | `reset` | `password_reset_tokens`, `idx_password_reset_tokens_family` |
 | **3** | tjek | `check` | `get_player_check`, `/dbu/player-check` |
@@ -717,6 +717,7 @@ ikke vaelge.
 | positioner | `positions` · `position` | mappingens post er dansk FLERTAL mod engelsk ENTAL · serveren: `position_minutes.position` (flertalsreglen: `positions`) |
 | typer | `types` · `type` | samme · serveren: `activity_types.legacy_type` (flertal: `types`) |
 | **plads** | `slot` · `position` | **BEGGE er godkendt engelsk, og begge er serverens egne lineup-ord** (`slot_id`, `slots`, `start_slots` mod `position_minutes.position`). `valgtTomPlads` er en tom PLADS i opstillingen; `indPaaNyPlads` (`LineupEngine.kt:434`) er en spiller, der kommer ind paa en ny POSITION. Maalt 06-10 kl. 05:25: 7 navne hos Android |
+| **holdkort** | `teamsheet` · `team_card` | **maalt 06-10 kl. 05:50, efter at A19 havde afgjort den forkert TO gange.** DBU's officielle holdkort: serveren har `dbu_teamsheets`, `dbu_club_teamsheets` og `@router.get("/teamsheet-players")`; iOS' `holdkortSpillere()` henter netop den. **Men statistik-kortet i brugerfladen er ogsaa `holdkort`:** Androids `object TeamCard` (`core/stats/PositionBane.kt:108`, var `object HoldKort`, omdoebt i `6ab9ec7`) og iOS' `enum TeamCard` (`Core/Stats/StatsLogik.swift:435`). **To platforme valgte `TeamCard` uafhaengigt af hinanden** — det er et argument, ikke en fejl. 25 forekomster hos Android staar paa den forkerte side; de 19 paa stats-siden er korrekte |
 | **kode** | `code` · `password` | `adgangskode` ejer allerede `password` (A, serverens `password_hash`). Men `indPaaNyPlads(kode: String, ...)` er en PLADS-kode, ikke en adgangskode — samme fil, samme linje. `nyKode`/`kodeOk` kan vaere begge, og kun kaldestedet ved det. 6 navne |
 | **udvisning** | `sin_bin` · `dismissal` | **maalt 06-10 kl. 04:55 i jeres egen kode, ikke gaettet.** `beregning.py:322` *"en midlertidig udvisning"*, `:485` *"10 minutters udvisning"* — en tidsbegraenset bortvisning. Men `:329` *"en direkte udvisning"*, som er **roedt kort**. Eet dansk ord, to fodboldbegreber, praecis `opstilling`-formen. Serverens `format_rules.red_card` daekker KUN den anden. Rammer `_udvisning_slut_ms` og `_udvisning_minutter` (`live.py:438`) |
 
@@ -2011,6 +2012,77 @@ Swift-egenskabens navn), og som `live_contract.py` findes for at forhindre.
 
 > En rute er en kontrakt. En `def` er en implementering. De staar paa samme
 > linje i kilden, og kun den ene binder.
+
+## A20. RETTELSE AF A19: `holdkort` er TO BEGREBER, og jeg tog fejl to gange
+
+**Maalt 06-10 kl. 05:42, under en time efter A19.** A19 rettede
+`holdkort -> team_card` til `holdkort -> teamsheet` og kaldte de 68 eksisterende
+navne for gaeld. **Begge dele var forkerte.**
+
+### Ordet daekker to begreber, og de har hver sit rigtige engelske ord
+
+```
+1  DBU'S HOLDKORT          den officielle opstilling, synket fra DBU
+   serveren   dbu_teamsheets · dbu_club_teamsheets · /teamsheet-players
+   iOS        func holdkortSpillere() · HoldkortSpillereSvar   STADIG DANSK
+   Android    Dbu*.kt, 25 forekomster, bruger team_card        <- GAELDEN
+
+2  ET STATISTIK-KORT        et opsummeringskort i brugerfladen
+   Android    object TeamCard   core/stats/PositionBane.kt:108
+              var object HoldKort, omdoebt i 6ab9ec7
+   iOS        enum TeamCard     Core/Stats/StatsLogik.swift:435
+   begge      KampeSektion — nogletal, deltagelse, Fremgangsbar
+```
+
+**`object HoldKort -> object TeamCard` staar i Androids egen historik.** Det
+danske ord for begge begreber ER `holdkort`, og `team_card` er det RIGTIGE
+engelske ord for det andet. Et kort i en brugerflade er et `card`.
+
+**Posten hoerer derfor i A5b**, ikke i mapningen. Praecis samme form som
+`opstilling` (`lineup` for tabellen, `formation` for kolonnen) — og `opstilling`
+staar i A5b af den grund.
+
+### Hvad gaelden FAKTISK er
+
+```
+A19 sagde                 68 navne paa to platforme skal rettes
+maalt                     25 forekomster, KUN hos Android, kun i Dbu*-filerne
+
+Android stats-siden        19 forekomster   KORREKT, roer dem ikke
+iOS i alt                  21 forekomster   17 er stats-kortet + tests,
+                                            4 er deres egne plan-JSON'er
+iOS' teamsheet-kode        STADIG DANSK     de faar det rigtige ord fra
+                                            foedslen, ingen gaeld
+```
+
+**iOS har NUL fejlnavngivne teamsheet-identifikatorer.** Min A19-anbefaling til
+Morten om at rette 68 navne paa to platforme ville have sendt iOS ud paa en
+omdoebning af nul navne og Android ud paa at oedelaegge 19 korrekte.
+
+### Og fejlen var den samme begge gange, inden for en time
+
+```
+A19   jeg maalte strengen team_card i tre traeer og konkluderede om BEGREBET
+A20   jeg maalte, at ruten siger teamsheet, og konkluderede at ordet kun
+      har den ene betydning
+```
+
+**Begge gange maalte jeg en streng og konkluderede om en brug.** Det staar
+som nattens mest gentagne fejlklasse i koordinatorens CLAUDE.md, med seks
+tidligere tilfaelde — og jeg lavede den to gange i traek paa samme post, hvoraf
+den anden var mens jeg rettede den foerste.
+
+**Hvad der ville have fanget den foerste gang:** at spoerge, hvor forekomsterne
+BOR, foer jeg talte dem. `git grep -l` paa mappenavne tog tyve sekunder og
+delte 44 forekomster i 25 + 19 paa to begreber.
+
+> Et tal over forekomster af et ord er ikke et tal over navne paa ét begreb.
+> Og et ord, to platforme har valgt UAFHAENGIGT af hinanden, er sandsynligvis
+> rigtigt.
+
+Det sidste er det staerkeste signal, jeg gik forbi: **Android og iOS valgte
+`TeamCard` hver for sig til statistik-kortet.** To uafhaengige valg, der falder
+sammen, er et argument — ikke en fejl, der skal rettes.
 
 ## B. Entydige — jeg foreslår, ingen beslutning nødvendig
 
