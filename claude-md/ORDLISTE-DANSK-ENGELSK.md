@@ -275,7 +275,8 @@ koordinatorens efterproevning:
 | liste | `list` | Python builtin · SwiftUI `List` |
 | tekst | `text` | SwiftUI `Text` |
 | fra | `from` | **RESERVERET** i Python |
-| til / paa | `to` / `on` | kontekstuelt — `on` kolliderer med Compose-modifiers |
+| til | `to` | / `on` | kontekstuelt — `on` kolliderer med Compose-modifiers |
+| paa | `on` | / `on` | kontekstuelt — `on` kolliderer med Compose-modifiers |
 
 **`pause -> break` kom fra serveren** (`age_rules.has_break`) og er rigtig DER.
 **Et ord, der er afgjort paa ledningen, er ikke dermed afgjort i koden** — det
@@ -314,23 +315,24 @@ begge klienter læser de felter i forvejen, og fordi det kan efterprøves.
 | pause | `break` | `age_rules.has_break` |
 | kamp | `match` | `match_number_prefix`, `follow_match_end_notifications` |
 | spiller | `player` | `match_gps_data.player_name` |
-| hændelse | `event` | `event_id`, `event_name` |
-| nøgle | `key` | `absence_reason_key`, `activity_type_key`, `field_key` |
+| haendelse | `event` | `event_id`, `event_name` |
+| noegle | `key` | `absence_reason_key`, `activity_type_key`, `field_key` |
 | modstander | `opponent` | `sessions.opponent` |
 | halvleg | `half` | `active_half_number`, `half_length_min` |
-| mål (scoring) | `goal` | `follow_goal_notifications` |
+| maal (scoring) | **se A5b** | `follow_goal_notifications` afgoer SCORINGS-betydningen til `goal`. **Men `maal` betyder ogsaa maaling/maalsaetning** (`target` 12 forekomster i serveren), saa ordet maa ikke staa som en parsebar post. Se A5b |
 | farve | `color` | `shirt_color` |
-| stævne | `tournament` | `tournament_id`, `tournament_name` |
+| stoevne | `tournament` | `tournament_id`, `tournament_name` |
 | periode | `period` | `period_minutes`, `period_times_json` |
 | hold | `team` | `sessions.team` |
 | status | `status` | `status`, `selection_status`, `status_key` |
-| årsag | `reason` | `absence_reason_key` |
+| aarsag | `reason` | `absence_reason_key` |
 | antal | `count` | `halves_count` |
 | visning | `display` | `activity_types.display_da` |
-| valg / udvalgt | `selection` | `form_rules.selection_status` |
+| valg | `selection` | | `form_rules.selection_status` |
+| udvalgt | `selection` | | `form_rules.selection_status` |
 | adgangskode | `password` | `password_hash`, `password_salt` |
 | pulje | `group` | `dbu_groups.age_group`, `age_rules.age_group` |
-| træning | `training` | **en VÆRDI, ikke en kolonne:** `activity_types.category` = `training` |
+| traening | `training` | **en VÆRDI, ikke en kolonne:** `activity_types.category` = `training` |
 | varighed | `duration` | `session_duration_min`, `play_duration_min` |
 | spillested | `venue` | `shared_matches.venue`, `shared_tournaments.venue` — **men `dbu_matches.spillested` er stadig dansk** (`#156`) |
 
@@ -1047,6 +1049,97 @@ foer noget koeres. Seks batches, nul hybrider i koden.
 Androids formulering gaelder ogsaa her: *en melding er et SIGNAL om, hvor der
 skal maales — aldrig et facit.* Jeg havde skrevet det til dem tre gange, mens
 mit eget vaerktoej lavede facitter.
+
+## A10. HVAD LISTEN ER FOR — og de 418 ord, der IKKE hoerer paa den
+
+**Afgjort af koordinatoren 06-10-2026 kl. 02:33, paa Androids forslag.** Det er en
+metodebeslutning, ikke en produktbeslutning.
+
+Androids maaling af deres eget trae efter 183 omdoebninger:
+
+```
+core/-navne i alt                      2018
+blokeret af et udaekket ord            1417
+  ALLEREDE AFGJORT (A5b/fjendeliste)     32 ord ->  87 navne   intet at goere
+  ENGELSK-AGTIG, ikke godkendt endnu    131 ord -> 175 navne
+  UAFGJORT DANSK                        566 ord -> 817 navne
+
+418 af de 566 frigiver PRAECIS EET navn      = 74 %
+top 10 frigiver 58 af de 817
+```
+
+### Beslutningen: et ord, der optraeder EEN gang, hoerer ikke paa listen
+
+**De 418 bliver ikke poster her. De bliver navne, hver platform afgoer paa
+kaldestedet** — A5c's form anvendt bredt.
+
+Grunden er, hvad en listepost ER: en **faelles** beslutning, fordi tre platforme
+skal bruge samme engelske ord for samme danske begreb. **Et ord, der kun
+forekommer i eet navn eet sted, har ingen faellesmaengde at vaere enig om.** Saa
+posten koster en koordinering og giver ingen.
+
+```
+PAA LISTEN      ord, flere platforme bruger — eller hvor serveren har
+                afgjort det, saa klienterne SKAL foelge
+PAA KALDESTEDET et ord i eet navn. Den der ejer navnet, navngiver tingen
+```
+
+**Og det er samme konklusion, koordinatoren selv naaede 05-10**, da et forslag
+om at skrive 349 ord blev afvist: *et ord, der optraeder een gang, er ikke en
+ordforraads-beslutning — det er navngivningen af den ene ting.* Androids tal
+goer den skarpere, ikke mildere: forholdet var 42 %, nu er det 74 %.
+
+### Den tredje kategori, listen manglede: EGNE engelske sammensaetninger
+
+```
+datainput   = data + input     begge engelske, begge GODKENDTE
+prefs                          en forkortelse, platformens egen
+```
+
+SAMMENSAT-reglen deler dem ikke, fordi den kraever **danske** dele — og det er
+rigtigt, for det var den regel, der standsede `kropper -> bodyPer`. Men
+konsekvensen er, at et navn sammensat af to GODKENDTE engelske ord lander i
+"uafgjort dansk".
+
+**De hoerer hverken paa listen eller hos koordinatoren.** De er allerede
+engelske; de mangler kun, at vaerktoejet kan se det. Android maaler, hvor mange
+af de 566 der er af den slags.
+
+### Og instrumentreglen gaelder BEGGE veje
+
+Androids foerste udgave af listen havde `lineup` oeverst med 12 navne — **og alle
+12 var faerdige.** `opstilling -> lineup` bor i deres `PLATFORM_ORD` efter A5c,
+men `lineup` staar ikke i den faelles godkendelsesliste, saa `Lineup`,
+`LineupSlot`, `fromLineup` blev meldt som blokeret af et udaekket dansk ord.
+
+Tolv saadanne spoegelser, 34 navne-traef — **alle tolv engelske ord, vaerktoejet
+selv havde indfoert.**
+
+> Et vaerktoej, der ikke kan genkende sin egen udgang, melder den som
+> resterende arbejde.
+
+Det er idempotensfejlen i en anden form: ikke *omdoeber to gange*
+(`PositionMinute -> PositionMinutes`), men *taeller sig selv som uafsluttet*. Den
+foerste flytter navnet; **den anden flytter TALLET** — og tallet var det, der var
+bestilt.
+
+**Reglen fra A9 gaelder derfor begge veje: den der MAALER, kontrollerer sit
+instrument foer tallet forlader huset.** Koordinatoren sender ord, platformene
+sender tal — og begge skal proeve deres vaerktoej mod dets eget output.
+
+### Og ni poster var usynlige for en parser indtil kl. 02:33
+
+```
+2 celler med /      "til / paa"  ·  "valg / udvalgt"     -> delt i to raekker hver
+6 celler med aeoeaa haendelse · noegle · stoevne · aarsag · traening
+                                                         -> normaliseret
+1 celle med ()      "maal (scoring)"                     -> peger nu paa A5b
+```
+
+**`stoevne` og `valg` stod i Androids top-20 over UAFGJORTE ord** — og de var
+afgjort hele tiden. Projektet skriver dansk uden diakritter i identifikatorer
+(`#124` maalte: kun 36 navne med ae/oe/aa direkte), saa noeglerne skal ogsaa
+skrives saadan. En parser, der ikke normaliserer, missede seks poster.
 
 ## B. Entydige — jeg foreslår, ingen beslutning nødvendig
 
