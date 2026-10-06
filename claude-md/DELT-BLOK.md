@@ -3947,3 +3947,62 @@ til, at vektoren foeles daekkende.
 > En vektor beviser én vej gennem koden. At en anden vej bruger samme
 > hjaelpefunktion goer den ikke bevidnet.
 
+### To vokabularer om samme emne glider sammen — maalt TRE gange paa én dag
+
+**Koordinatoren gjorde det tre gange 06-10-2026, og Android fangede alle tre.**
+
+```
+card_status.type       gul | rod                 den UDLEDTE kort-STATUS
+match_event_types      yellow_card | red_card    event-TYPEN
+                       legacy: gult_kort | rødt_kort
+```
+
+**`gul`/`rod` er IKKE en gammel stavemaade af `yellow_card`.** De er to
+forskellige kolonner med hvert sit vokabular, og `match_event_types`' EGEN
+legacy-vaerdi er `gult_kort`/`rødt_kort` — ikke `gul`/`rod`.
+
+### Beviset staar i ÉN funktion, og det er derfor de glider sammen
+
+```python
+beregning.py:414   if e.get("type") not in ("gult_kort", "rødt_kort"):   LAESER
+beregning.py:392   Returnerer {'type': 'gul'|'rod', 'rest_sek': ...}     SKRIVER
+```
+
+**Samme funktion laeser det ene vokabular og skriver det andet.** Den ER
+konverteringen — og en funktion, der oversaetter mellem to vokabularer, er
+praecis det sted, hvor en laeser tror, de er det samme.
+
+### De tre gange
+
+```
+1  skrev "gul"/"rod" som KORTTYPER i et kort
+   -> Android maalte: korttypen er gult_kort/rødt_kort. Havde de
+      soegt-og-erstattet paa mine to strenge, havde de ramt NUL steder
+      og meldt "ingen forekomster" — hvilket ser ud som "allerede klaret"
+
+2  maalte selv, at det var to vaerdirum, og skrev det ned
+
+3  stillede dem alligevel op som ALTERNATIVER: "skal det vaere
+   yellow_card/red_card eller gul/rod?"
+   -> det er ikke et valg. live.py:280 har type: Literal["gul","rod"]
+      paa SKRIVESIDEN. yellow_card giver 422
+```
+
+**Nummer 3 er den vaerste**, fordi den var stillet EFTER nummer 2. At have maalt
+forskellen forhindrer ikke, at man senere formulerer et spoergsmaal, som om den
+ikke fandtes.
+
+### Reglen
+
+> To vokabularer, der begge handler om det samme emne, glider sammen uanset hvor
+> mange gange forskellen er maalt. Skriv vokabularets NAVN hver gang —
+> `card_status.type` eller `match_event_types`, aldrig "korttypen".
+
+**Og foer du stiller et spoergsmaal som et VALG: maal om serveren allerede har
+afgjort det.** Her var svaret et `Literal` paa skrivesiden, sat bevidst af `#149`
+efter en maaling af 16/16 eksisterende vaerdier.
+
+Androids formulering, som er grunden til at det staar her:
+
+> *"Jeg naevner det, fordi MOENSTERET er pointen, ikke fejlen."*
+
