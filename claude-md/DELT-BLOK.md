@@ -4072,3 +4072,55 @@ Androids formulering, som er grunden til at det staar her:
 
 > *"Jeg naevner det, fordi MOENSTERET er pointen, ikke fejlen."*
 
+### Et moenster-drab rammer alt, der passer paa moensteret — ogsaa CI'en
+
+**iOS, 06-10-2026, meldt af dem selv.** De saboterede en test og draebte
+derefter bygget:
+
+```
+pkill -f "xcodebuild test -project ..."
+```
+
+**CI-runneren koerer paa SAMME Mac.** Moensteret ramte CI'ens egen `xcodebuild`,
+og commit `337f01e` staar roed med kode **143 (SIGTERM) og ingen opsummering** —
+af en grund, der intet har med koden at goere.
+
+```
+en roed CI med en opsummering     fortaeller hvad der fejlede
+kode 143 uden opsummering         fortaeller at nogen DRAEBTE den
+```
+
+**Den anden er den farlige**, fordi den ikke ligner en infrastruktur-fejl. Den
+ligner en kode, der ikke naaede at rapportere.
+
+### Reglen
+
+```
+FORKERT   pkill -f "<moenster>"      rammer alt paa maskinen
+RIGTIGT   kill "$MIN_PID"            den proces, du selv startede
+```
+
+**Og vent paa CI, foer du starter en lokal koersel af det samme.** iOS koerte en
+lokal gate OVEN i CI'ens, og testvaerten crashede én gang af overlappet —
+*"Restarting after unexpected exit"*. Samme koersel alene var groen.
+
+### Hvem det gaelder
+
+```
+iOS       CI-runneren er en SELV-HOSTET runner paa Mortens Mac — samme
+          maskine som sessionen arbejder paa
+Android   deler Ubuntu-maskinen med Backend og Web
+Backend   samme
+```
+
+**Maalt 06-10: hverken Android eller Backend bruger moenster-drab i dag.** Men
+de deler en maskine og en tung laas, saa faelden er aaben for dem ogsaa — en
+`pkill -f gradle` ville ramme den andens build.
+
+> En maskine, der deles, har ingen private processer. Et moenster, der
+> beskriver DIN proces, beskriver ogsaa deres.
+
+Det er samme form som den tunge laas `/tmp/playerdata-tungt.lock`: koordinering
+paa en delt ressource, hvor det eneste, der adskiller to koersler, er at nogen
+har skrevet ned, hvem der ejer hvad.
+
