@@ -2320,6 +2320,76 @@ et manglende ord og et uafgjort ord er samme tilstand hos dem.
 Og de laeser listen **med vilje** frem for mine beskeder: *"en besked kan jeg
 ikke efterproeve, og en liste kan jeg hente igen i morgen."*
 
+## A25. RETTELSE til A19's raekke-tie-break: et PRAEFIKS siger KILDEN, ikke typen
+
+**Android maalte mig 06-10 kl. 08:09, og de har ret.**
+
+A19 tilfoejede `/divisions` som tie-break for `raekke`, og det er korrekt for
+SERVERENS DBU-begreb. **Men jeg brugte den derefter til at klassificere
+KLIENT-navne, og to af dem ramte forbi:**
+
+```
+jeg meldte   dbuRaekker · egneRaekker   = divisions   (fordi "dbu" og ruten)
+maalt        begge returnerer KampeLogik.Raekke       = ROWS
+```
+
+### Og grunden er, at der findes TO `Raekke`-typer med samme stavning
+
+```
+core/dbu/DbuModeller.kt:32    data class Raekke(raekkeId, navn, rangering)
+                              en DBU-RAEKKE (division)
+core/kampe/KampeLogik.kt:23   data class Raekke(puljeid, kampnr, slags,
+                              holdLabel, dato)
+                              en VIST raekke i Kampe-listen
+```
+
+`KampeModel:272` `dbuRaekker = egne.flatMap { MatchesLogic.fromDbu(...) }` giver
+den ANDEN — altsaa en vist raekke, bygget FRA DBU-data.
+
+> **Praefikset `dbu` siger KILDEN, ikke typen.**
+
+Det er en ny underform af nattens skelet, og den er lumsk, fordi praefikset
+LIGNER en typeangivelse:
+
+```
+jeg laeste       et praefiks (dbu, egne, faelles)
+jeg konkluderede hvad objektet ER
+det rigtige maal RETURTYPEN
+```
+
+### Den rettede deling, otte navne, hver maalt paa sin returtype
+
+```
+ROWS        gpsRows (var gpsRaekker) · spillerRaekker · baenkRaekker
+            dbuRaekker · faellesRaekker · egneRaekker
+DIVISIONS   stillingRaekker · kampRaekker
+            (begge baerer raekkeNavn/raekkeNoegle fra DBU)
+```
+
+**A19's rute-tie-break staar uaendret for SERVERENS navne** —
+`fetch_divisions`, `_scan_divisions`, `get_divisions` var rigtige, og Backend
+har udfoert dem. Fejlen var at tage den med over graensen til klientnavne.
+
+### Og `Raekke` selv kan ikke omdoebes af et vaerktoej
+
+To typer, samme stavning, modsatte betydninger. **Et vaerktoej, der matcher paa
+stavning, kan ikke skelne dem** — og et forkert valg giver en kompileringsfejl i
+bedste fald og en forkert type i vaerste.
+
+Den hoerer i en haand-runde, hvor hver fil afgoeres for sig og compileren er
+dommeren. **Den staar som uafgjort, ikke som resterende arbejde.**
+
+### Hvad der gjorde, at den blev fanget
+
+Jeg skrev til Android: *"maal det, for `GpsRaekke` er stadig en `row`."* De
+maalte, **og advarslen var berettiget i en retning, jeg ikke havde regnet med**
+— ikke at de to jeg ikke kendte var rows, men at de to jeg havde TILFOEJET var
+det.
+
+Det er sjette gang i nat, samme skelet: **jeg maalte eet lag og konkluderede om
+det naeste.** Og de fem foerste blev fanget af en session, der laeste sin egen
+kilde. Ogsaa denne.
+
 ## B. Entydige — jeg foreslår, ingen beslutning nødvendig
 
 Ingen af disse har to plausible engelske ord i denne kodebase.
