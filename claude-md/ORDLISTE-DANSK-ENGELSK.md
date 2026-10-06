@@ -716,6 +716,8 @@ ikke vaelge.
 | **raekke** | `division` · `row` | **51 navne, maalt af Android.** DBU-raekken er `division`; `GpsRaekke`/`BaenkRaekke`/`HistorikRaekke` er `row`. Se afsnittet ovenfor · serveren: `dbu_groups.division_name` |
 | positioner | `positions` · `position` | mappingens post er dansk FLERTAL mod engelsk ENTAL · serveren: `position_minutes.position` (flertalsreglen: `positions`) |
 | typer | `types` · `type` | samme · serveren: `activity_types.legacy_type` (flertal: `types`) |
+| **plads** | `slot` · `position` | **BEGGE er godkendt engelsk, og begge er serverens egne lineup-ord** (`slot_id`, `slots`, `start_slots` mod `position_minutes.position`). `valgtTomPlads` er en tom PLADS i opstillingen; `indPaaNyPlads` (`LineupEngine.kt:434`) er en spiller, der kommer ind paa en ny POSITION. Maalt 06-10 kl. 05:25: 7 navne hos Android |
+| **kode** | `code` · `password` | `adgangskode` ejer allerede `password` (A, serverens `password_hash`). Men `indPaaNyPlads(kode: String, ...)` er en PLADS-kode, ikke en adgangskode — samme fil, samme linje. `nyKode`/`kodeOk` kan vaere begge, og kun kaldestedet ved det. 6 navne |
 | **udvisning** | `sin_bin` · `dismissal` | **maalt 06-10 kl. 04:55 i jeres egen kode, ikke gaettet.** `beregning.py:322` *"en midlertidig udvisning"*, `:485` *"10 minutters udvisning"* — en tidsbegraenset bortvisning. Men `:329` *"en direkte udvisning"*, som er **roedt kort**. Eet dansk ord, to fodboldbegreber, praecis `opstilling`-formen. Serverens `format_rules.red_card` daekker KUN den anden. Rammer `_udvisning_slut_ms` og `_udvisning_minutter` (`live.py:438`) |
 
 **`skift` er bekraeftet paa ALLE TRE SIDER.** Android fandt de 8 klientnavne;
@@ -1745,6 +1747,84 @@ kontrol, der virker.
 
 **Konsekvensen hvis den ikke var fanget:** jeg havde sendt Backend en liste med
 fire ord, som listen allerede havde afgjort, og bedt dem maale dem igen.
+
+## A17. FIRE ORD TIL ANDROIDS BLOKERINGSLISTE — to paa en RUTE
+
+**Maalt 06-10 kl. 05:20-05:25 paa `PlayerData_Android@origin/HEAD`**, efter at
+Android havde konsumeret A16 og omdoebt seks navne (`d3ff7cc`).
+
+```
+INTERVAL  2292 deklarationer i 199 filer (app/src/main + core)
+          548 helt engelske · 524 kan omdoebes NU · 101 venter paa A5b
+          960 navne blokeret af EET ord, fordelt paa 578 ord
+```
+
+| dansk | engelsk | bevisklasse |
+|---|---|---|
+| filtre | `filters` | **RUTEN:** `@router.get("/filters")`. Dansk flertal af et godkendt engelsk ord — posten er derfor `filtre`, ikke `filter` |
+| indstillinger | `settings` | **RUTEN:** `@router.put("/settings")` |
+| regel | `rule` | serveren: `age_rules`, `format_rules`, `form_rules`, `rules` — fire tabeller |
+| ud | `out` | serveren: `live.py:221` `out_name: str = ""`, og kommentaren ved siden af goer det utvetydigt: det er **udskiftningens** spiller, der gaar UD. `logUd` -> `logOut` |
+| regler | `rules` | flertal af ovenstaaende, men stammen aendrer sig (`regel` -> `regler`), saa boejningsreglen naar den ikke. Serveren: `age_rules`, `format_rules` |
+
+**`filtre` og `indstillinger` er femte og sjette ord afgjort paa en rute**, og
+som de fire foer dem havde ruten ligget der hele tiden. En rute er en kontrakt:
+to klienter kalder den allerede, saa valget er truffet og kan ikke forhandles.
+
+### `regel` er den, der kraever en note — og det er Androids egen
+
+`regel -> regler` **aendrer stammen** (`regel`, ikke `regelr`), og
+boejningsreglen kan ikke se en konsonant- eller vokalaendring. Samme klasse som
+`minut -> minutter`, der fordobler.
+
+```
+regel   ->  rule        posten
+regler  ->  rules       SKAL staa eksplicit, boejningen naar den ikke
+```
+
+Det er anden gang samme graense rammer, og begge gange blev den fundet af
+Android i deres eget trae. **En boejningsregel, der kun haandterer suffikser, er
+ikke en boejningsregel for dansk** — den er en for de regelmaessige.
+
+### To gik til A5b i stedet, og den anden var en overraskelse
+
+`plads` var jeg ved at afgoere som `slot`, fordi serverens lineup-ord er
+`slot_id`/`slots`/`start_slots`. **Men `position` er ogsaa serverens, ogsaa
+godkendt, og ogsaa et lineup-ord** — og `indPaaNyPlads` handler om en position,
+mens `valgtTomPlads` handler om en slot.
+
+Og i SAMME linje stod den anden: `indPaaNyPlads(kode: String, ...)`.
+**`kode` er her en plads-kode**, mens `adgangskode` allerede ejer `password`.
+Et ord kan altsaa vaere afgjort i ét sammensat ord og uafgjort alene.
+
+**Det var kaldestedet, der viste begge** — ikke tallet, og ikke serverens
+vokabular. Havde jeg afgjort `plads -> slot` paa serverbeviset alene, havde
+`indPaaNyPlads` faaet et navn, der beskriver det forkerte begreb.
+
+### `ud` er TO BOGSTAVER — den farligste post paa hele listen
+
+Maalt i Androids trae, ord der BEGYNDER med `ud` og intet har med `out` at goere:
+
+```
+udkast        draft          udvisning     sin bin / dismissal (A5b)
+udtaget       selected       udled         derive
+udfoer        execute        udbredelse    distribution
+```
+
+En mekanisk erstatning af `ud -> out` ville give `outkast`, `outtaget`,
+`outvisning`, `outled` — og **hver enkelt ville kompilere.** Det er praecis
+`hold -> team`-faelden fra afsnit C2, men paa to bogstaver i stedet for fire,
+saa den rammer bredere.
+
+```
+TILLADT    ud som et HELT ord i en camelCase-/snake_case-opdeling
+           logUd -> logOut · ud -> out
+FORBUDT    ud som delstreng. ALDRIG
+```
+
+Og posten er kun vaerd at have, fordi `logUd` og `ud` er hyppige nok (5 navne).
+**Er du i tvivl om dit vaerktoej respekterer ordgraenser, saa spring denne
+post over** — fem navne er ikke vaerd en tavs oversaettelse af `udkast`.
 
 ## B. Entydige — jeg foreslår, ingen beslutning nødvendig
 
