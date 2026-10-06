@@ -1518,6 +1518,60 @@ Rettelsen var at matche **andet argument til `live(`**, altså den ene form, hvo
 fragment bliver en sti, og at generere snapshottet af serverens egne stier under
 `/live/`. Det er forskellen på at rette otte tilfælde og at lukke en klasse.
 
+### En splitter bruges for det, den FJERNER — og maales paa det, den BEHOLDER
+
+**Fjerde instans af samme form i omdoebningsarbejdet, og den sidste var den
+klareste.** Androids egen formulering, 06-10-2026:
+
+> a splitter used for what it removes rather than what it keeps
+
+De skulle finde ud af, om 30 kontraktnoegler forekommer i produktionskoden, og
+greb `kun_kode` fra `spander.py` — et vaerktoej, der findes for at fjerne
+**kommentarer**, men som ogsaa fjerner **strenge.**
+
+```
+hver kontraktnoegle bor i en STRENG   @SerialName("timeline_json")
+kun_kode fjerner strenge
+resultatet                            0 af 30 felter til stede
+```
+
+**Nul. I en kodebase, hvor de fleste af dem faktisk sendes.** Og nul er praecis
+det svar, man kan tro paa, hvis man ikke ved, hvad instrumentet fjernede.
+
+Den rigtige form, og den er en linje:
+
+```kotlin
+.replace(Regex("""/\*.*?\*/""", DOT_MATCHES_ALL), "")   kommentarer VAEK
+.replace(Regex("""//[^\n]*"""), "")                     kommentarer VAEK
+                                                        strenge BEHOLDT
+```
+
+### De fire instanser, og hvorfor de ligner hinanden
+
+```
+prosa laest som data        parseren tog ALT det uindrammede — for meget
+kun_kode paa noegler        splitteren tog strengene med — for lidt
+delstreng paa dansk side    ord fandt password — for meget
+split('_') tabte _          hvert _private navn saa aendret ud — for lidt
+```
+
+**To fjerner for meget, to for lidt — og alle fire gav et PLAUSIBELT tal.**
+Ingen af dem meldte en fejl.
+
+> Et vaerktoej har et formaal og en virkning, og de er ikke det samme. Spoerg,
+> hvad det BEHOLDER, naar du bruger det til at maale noget.
+
+Og den billigste kontrol er den, Android brugte bagefter: **en selvproeve med et
+kendt positivt og et kendt negativt tilfaelde** i samme test.
+
+```kotlin
+assertTrue("a known key must be found", isSent("timeline_json"))
+assertTrue("an invented key must not be", !isSent("findes_ikke_xyz"))
+```
+
+**To linjer, og de faelder begge retninger af fejlen** — et instrument der
+finder intet, og et der finder alt.
+
 ### Et anker, der er noget arbejdet flytter, holder kun til naeste gang
 
 Natten 05/06-10-2026 fandt de tre sessioner **seks kontroller, der var ankret til
