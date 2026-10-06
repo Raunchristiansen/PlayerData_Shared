@@ -1037,6 +1037,35 @@ klub_praefiks    SQL-kolonne OG JSON-noegle — ville braekke #156's dual-key
 
 **Vaerktoejet foreslog altsaa igen det, en anden havde afvist to timer foer.**
 
+### OPDATERET 03:35: en PLATFORM maa tilfoeje et ord, naar beviset holder
+
+**A9 sagde, at koordinatoren afgoer ord og platformene sender tal. Det er nu for
+stramt, og praksis er allerede en anden.**
+
+Backend tilfoejede `seneste -> latest` til afsnit B (18c2d44) med 29 maalte
+forekomster i `app/`, een betydning, og tre eksempler skrevet paa posten. Jeg
+efterproevede: `latest` 9, `seneste` 52 i hele `backend/` — altsaa to
+intervaller, og begge rigtige.
+
+**Posten var god. At den skulle gennem mig, ville have kostet en rundtur og
+intet andet.**
+
+```
+EN PLATFORM MAA tilfoeje et ord, naar ALLE tre holder:
+  1. serverbevis med SEGMENTgraense paa begge sider, eller en RUTE
+  2. intervallet staar paa posten — hvad blev maalt, hvor
+  3. eet betydning, og eksempler nok at efterproeve paa
+KOORDINATOREN afgoer stadig:
+  et ord med TO plausible maal                     -> A5b
+  et ord, hvor platformene kan vaelge forskelligt   -> faelles beslutning
+  en RETNING (n=1 mod en kollision, fx fjern -> remove)
+```
+
+**Og grunden til at graensen kan loesnes er maalt:** Backend fangede
+koordinatorens fejl ni gange i nat og producerede nul daarlige ord. Et
+flaskehals gennem mig ville ikke have fanget noget, og det ville have
+forsinket alt.
+
 ### Hvad koordinatoren goer i stedet
 
 ```

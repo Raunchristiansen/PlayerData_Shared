@@ -157,6 +157,35 @@ Beslutningsregel for hvert enkelt tilfælde:
 
 Baggrund: en spiller fik vist 71 minutter i stedet for 37, fordi klientens sortering manglede tie-break for hændelser i samme minut.
 
+### Dine commits i PlayerData_Shared staar som MORTENS — saet `user.name`
+
+**Maalt 03:35 paa de tre seneste commits i det delte repo:**
+
+```
+18c2d44  forfatter: Morten Christiansen   INGEN Co-Authored-By   (Backend)
+af80c70  forfatter: Morten Christiansen   INGEN Co-Authored-By   (Backend)
+38bc246  forfatter: Koordinator           Co-Authored-By: Claude (koordinatoren)
+```
+
+`gh` og `git` bruger repoets opsaetning, som er Mortens konto. **En commit fra en
+session er derfor ikke til at skelne fra en, han selv har lavet** — og
+`git log` er den varige optegnelse over, hvem der afgjorde et delt ord.
+
+**Det gaelder ogsaa Issue-kommentarer:** `gh api user` svarer
+`Raunchristiansen`, saa alt, en session skriver paa et kort, staar under hans
+navn. Koordinatoren opdagede det 06-10 kl. 02:30, fordi Backend laeste et kort
+direkte og bemaerkede, at en go-kommentar stod *"under repo-ejerens konto"* —
+altsaa som en primaerkilde. Den var et referat.
+
+```
+git -C <din klon> config user.name "<Backend|iOS|Android>"
+og/eller          Co-Authored-By: i commit-beskeden
+```
+
+**Hvorfor det er mere end pynt:** et hul, man kan SE, standser en laeser. Et
+referat, der ser ud som en primaerkilde, standser ingen. Og i dette projekt er
+det netop en sessions ret at standse en besked, der ikke er Mortens.
+
 ### En regel, intet kalder, kan vaere UENIG med den, der kaldes
 
 **To maalte forekomster hos Android, 02-10 og 06-10, og formen er den samme
