@@ -1826,6 +1826,73 @@ Og posten er kun vaerd at have, fordi `logUd` og `ud` er hyppige nok (5 navne).
 **Er du i tvivl om dit vaerktoej respekterer ordgraenser, saa spring denne
 post over** — fem navne er ikke vaerd en tavs oversaettelse af `udkast`.
 
+## A18. iOS' 237-liste er 60 % AFGJORT ALLEREDE — og fire nye ord
+
+**Maalt 06-10 kl. 05:25.** iOS committede
+`docs/omdoebning-124/frigoer-flest-navne.md` med 237 navne, der er ÉT ord fra at
+kunne omdoebes. **Dokumentets eget hoved siger 167 ord; den committede TABEL
+lister 60 ord / 130 navne** og slutter midt i listen ved `udskiftning`. Tallene
+nedenfor har derfor naevneren 130, ikke 237.
+
+```
+INTERVAL  60 ord / 130 navne — den committede tabel, ikke hovedets 167/237
+          maalt mod mapningens 126 poster, A5b's 15 og 239 godkendte ord
+
+ALLEREDE AFGJORT i den nuvaerende liste    30 ord /  78 navne   60 %
+staar i GODKENDT ENGELSK, lad staa          3 ord /   5 navne
+i A5b, kan IKKE afgoeres                    7 ord /  18 navne
+MANGLER fortsat                            20 ord /  29 navne
+```
+
+**Grunden er ikke, at ordene mangler. Dokumentets hoved siger det selv:
+`ordlisten ea21395`** — og det er submodul-pinnen, der staar **23 commits bagud**
+(`PlayerData_Backend#177`). iOS laeser en liste fra i formiddags.
+
+De ord, deres doc kalder uafgjorte, og som er afgjort nu:
+
+```
+navn -> name        faelles -> shared     er -> is          klub -> club
+aktivitet -> activity  tjek -> check      tider -> times    nulstil -> reset
+minut -> minute     logik -> logic        holdkort -> team_card
+troeje -> shirt     tidslinje -> timeline straffe -> penalty
+personlige -> personal  nummer -> number  notifikations -> notification
+klubber -> club (boejning)
+```
+
+**Det er `#177`s pris, maalt.** Ikke et argument om arkitektur — 78 navne, som
+to sessioner kunne have omdoebt, men som ser blokerede ud fra iOS' side.
+
+### Fire ord afgjort af de 20, der faktisk manglede
+
+| dansk | engelsk | bevisklasse |
+|---|---|---|
+| glemt | `forgot` | **RUTEN:** `@router.post("/forgot-password")`. `glemtAdgangskode` -> `forgotPassword`. **Syvende ord afgjort paa en rute** |
+| udskiftning | `substitution` | serveren: `"substitutions"`, og `substitution` staar i GODKENDT ENGELSK. Begge sider stemmer |
+| paakraevet | `required` | serveren: `"required"` |
+| vaerdi | `value` | serveren: `fixed_value`, `legacy_value`, `field_value_legality` · `value` er godkendt |
+
+**Og `stat` er ikke dansk** — den hoerer i GODKENDT ENGELSK. `stats` stod der
+allerede; `stat` gjorde ikke. Praecis samme hul som `total`/`totals` 06-10 kl.
+01:40, og det er anden gang en entalsform mangler ved siden af sin godkendte
+flertalsform. **Naar du godkender et flertal, maal om entallet ogsaa skal med.**
+
+### Tre jeg IKKE afgjorde, og hvorfor
+
+**`trin`** ser afgjort ud: serveren har `step_balance_l`/`step_balance_r`. Men
+det er GPS-SKRIDT, og `KontoTrin` er et trin i en guide. **Samme ord,
+forskellig model** — faelden fra `TraeningsType`/`activity-types` 04-10. Lad
+kaldestedet afgoere.
+
+**`kladde` og `udkast` er BEGGE "draft"** — `kladde` hos iOS (1 navn), `udkast`
+hos Android (5). To danske ord mod ét engelsk er tilladt, naar de er synonymer,
+men det skal besluttes og ikke opstaa: afgoer om de daekker samme begreb i
+koden, foer begge faar `draft`. Det er `fjern`/`slet`-kollisionen igen, bare
+uden en maaling endnu.
+
+**`markering`** har intet serverbevis, og `marker` i listen er BYDEFORMEN
+(«marker dette»), ikke navneordet. `periodeMarkering` kan vaere `marker` eller
+`marking`, og de to betyder ikke det samme.
+
 ## B. Entydige — jeg foreslår, ingen beslutning nødvendig
 
 Ingen af disse har to plausible engelske ord i denne kodebase.
