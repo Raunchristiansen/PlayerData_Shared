@@ -9,7 +9,7 @@
       "en hændelse UDEN updated_at sorteres FØR en MED updated_at, ved samme klemte minut"
     ],
     "kilde": "backend.app.beregning.sort_events, PlayerData_Backend",
-    "genereret": "scripts/generer-samme-minut-vektorer.py"
+    "genereret": "scripts/generate-same-minute-vectors.py"
   },
   "vektorer": [
     {
