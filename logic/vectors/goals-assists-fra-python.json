@@ -2,9 +2,11 @@
   "kontrakt": {
     "kilde": "backend.app.beregning.calculate_goals_assists_from_timeline — PlayerData_Backend",
     "genereret": "scripts/generate-goals-assists-vectors.py",
+    "rettet_2026_10_06": [
+      "Issue #188 trin 2: slettede mål tælles nu IKKE med (begge serverkopier), samme regel som goal_side.score_from_events (#146/#119, HOLD-stilling) — se vektoren 'slettet_mål_af_spilleren_selv_taelles_ikke'."
+    ],
     "maalt_ikke_rettet": [
-      "Slettede mål TÆLLES i dag af begge serverkopier og iOS' egen StatsLogik.swift:175 — Android (.aktive) udelader dem. #146s allerede låste regel for HOLD-stilling (score_from_events) udelader slettede mål; samme regel er IKKE endnu anvendt her.",
-      "Legacy-testen: serveren tester NØGLENS tilstedeværelse ('scorer_type' not in e), begge klienter tester VÆRDIEN (scorerType == nil/null) — forskelligt facit når en session har både en kendt scoring og et scorer_type:null-event, se vektoren 'null_scorer_type_SAMMEN_med_en_kendt_scoring'."
+      "Legacy-testen: serveren tester NØGLENS tilstedeværelse ('scorer_type' not in e), begge klienter tester VÆRDIEN (scorerType == nil/null) — forskelligt facit når en session har både en kendt scoring og et scorer_type:null-event, se vektoren 'null_scorer_type_SAMMEN_med_en_kendt_scoring'. MÅLT direkte i stage 2026-10-06: 0 af 62 sessions med mindst ét mål (156 mål-hændelser i alt) har noget event med scorer_type-nøglen til stede og værdien null — uenigheden er derfor UDEN praktisk konsekvens i dag (ingen session kan i praksis ramme den), men stadig ikke rettet, fordi facit ville afgøre ALLE FIRE kopiers fremtidige adfærd."
     ]
   },
   "vektorer": [
@@ -43,7 +45,7 @@
       "noter": "Et grundlæggende, utvetydigt tilfælde — spilleren selv scorer ét af de tre mål."
     },
     {
-      "navn": "slettet_mål_af_spilleren_selv_TAELLES_I_DAG",
+      "navn": "slettet_mål_af_spilleren_selv_taelles_ikke",
       "input": {
         "timeline": {
           "events": [
@@ -59,10 +61,10 @@
       },
       "kilde_kald": "beregning.calculate_goals_assists_from_timeline",
       "forventet": [
-        1,
+        0,
         0
       ],
-      "noter": "MÅLT, IKKE besluttet: nuværende serverkode tæller et SLETTET mål med — 0 ville være facit, hvis #146s allerede-låste 'et slettet mål tæller ikke'-regel (goal_side.score_from_events, HOLD-stilling) udvides til per-spiller mål/assist."
+      "noter": "RETTET (Issue #188 trin 2, 2026-10-06): et SLETTET mål tælles IKKE med — (0, 0), samme regel som #146s allerede-låste 'et slettet mål tæller ikke' (goal_side.score_from_events, HOLD-stilling), nu anvendt konsekvent her også."
     },
     {
       "navn": "aegte_legacy_noeglen_findes_slet_ikke",
