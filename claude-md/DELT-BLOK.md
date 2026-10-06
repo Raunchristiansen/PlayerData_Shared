@@ -4020,7 +4020,7 @@ bestod.
 > *"Det stod ikke i kortet, ingen test var roed, og jeg ville ikke have fundet
 > det uden skaermbilledet."*
 
-### Hvad de fandt
+#### Hvad de fandt
 
 ```
 MatchesTab.kt   chevronen pegede stadig til HOEJRE,
@@ -4038,7 +4038,7 @@ testene        groenne. De maalte, at loggen foldede ud og ind
 
 Rettet med `.rotate(if (udfoldet) 90f else 0f)`.
 
-### Hvorfor ingen test kunne fange den
+#### Hvorfor ingen test kunne fange den
 
 En test skrives mod en **forventning**, og ingen havde forventningen *"chevronen
 skal rotere"* — fordi ingen havde taenkt paa chevronen. Den var korrekt FOER
@@ -4053,7 +4053,7 @@ et billede    viser alt paa skaermen, ogsaa det du ikke taenkte paa
 rigtig, tryk-fladen virker. Kun MENINGEN er forkert, og mening er ikke en
 egenskab, en assertion kan laese.
 
-### Hvornaar det er vaerd at tage et billede
+#### Hvornaar det er vaerd at tage et billede
 
 ```
 en raekke, der aendrer HVAD et tryk goer
@@ -4067,7 +4067,7 @@ et layout, der skifter FORM og ikke kun stoerrelse
 **Androids blok 4 ramte alle tre paa én gang**, og det er sandsynligvis derfor
 billedet var afgoerende netop der.
 
-### Og billedet skal komponere KUN det, der undersoeges
+#### Og billedet skal komponere KUN det, der undersoeges
 
 Androids anden disciplin samme aften:
 
