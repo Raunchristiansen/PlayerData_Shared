@@ -863,6 +863,7 @@ iOS' doc alene, fordi den er maalt paa de navne, der faktisk staar tilbage.
 | navne | dansk | engelsk | n | serverens bevis |
 |---|---|---|---|---|
 | **7** | felt | `field` | **57** | `field_key`, `nullable_fields` |
+| 9 filnavne | generer | `generate` | — | **Backends maaling 02:52: eet konsistent betydning i ~15 kaldesteder paa tvaers af 9 filer** — "genererer testvektorerne". Men FILNAVNENE flyttes ikke paa den: se kaeden i KAEDER.md |
 | **8** | ekstra | `extra` | **51** | `has_extra_time` |
 | **8** | sidste | `last` | **29** | `last_sync`, `last_seen` |
 | **8** | ryd | `clear` | **18** | bydeform, som `marker` og `placer` |
