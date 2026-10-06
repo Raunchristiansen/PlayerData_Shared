@@ -2493,12 +2493,12 @@ INTERVAL  serverens 154 skemakolonner + ruterne + fejlnoeglerne i backend/app/
 
 | dansk | engelsk | iOS-blokeringer | serverens bevis |
 |---|---|---|---|
-| `felt` | `field` | 13 | `field_key` · ruterne `/sessions/nullable-fields`, `/live/nullable-fields` |
-| `tidslinje` | `timeline` | 11 | `timeline_json` |
-| `spilletid` | `play_duration` | 9 | `play_duration_min` — **ikke** `playtime`, som var mit foerste gaet |
-| `foelg` | `follow` | 8 | `follow_match_end_notifications` · fejlnoeglerne `error.dbu.group_not_followed`, `error.shared.group_not_followed` |
-| `ekstra` | `extra` | 7 | `extra_time` · `has_extra_time` |
-| `kilde` | `source` | 7 | `source` · `source_filename` |
+| felt | `field` | 13 | `field_key` · ruterne `/sessions/nullable-fields`, `/live/nullable-fields` |
+| tidslinje | `timeline` | 11 | `timeline_json` |
+| spilletid | `play_duration` | 9 | `play_duration_min` — **ikke** `playtime`, som var mit foerste gaet |
+| foelg | `follow` | 8 | `follow_match_end_notifications` · fejlnoeglerne `error.dbu.group_not_followed`, `error.shared.group_not_followed` |
+| ekstra | `extra` | 7 | `extra_time` · `has_extra_time` |
+| kilde | `source` | 7 | `source` · `source_filename` |
 
 `spilletid` er den vigtigste af de seks: **jeg ville have skrevet `playtime`**,
 og serveren siger `play_duration`. Et gaet havde givet to navne for samme
@@ -2514,10 +2514,10 @@ laast · gemt · lokal · logik     nul kolonner, nul ruter, nul fejlnoegler
 
 | dansk | engelsk | iOS-blokeringer |
 |---|---|---|
-| `laast` | `locked` | 9 |
-| `lokal` | `local` | 8 |
-| `logik` | `logic` | 7 |
-| `ny` | `new` | 18 |
+| laast | `locked` | 9 |
+| lokal | `local` | 8 |
+| logik | `logic` | 7 |
+| ny | `new` | 18 |
 
 **`gemt` var den risikable, og den er MAALT, ikke antaget.** `gemme` betyder
 baade *save* og *hide* paa dansk. Laest paa seks iOS-kaldesteder:
@@ -2692,7 +2692,7 @@ valgfri -> optional  og det er ET ord, ikke to
 
 | dansk | engelsk |
 |---|---|
-| `valgfri` | `optional` |
+| valgfri | `optional` |
 
 ### Fejlklassen, og den har ikke haft et navn
 
@@ -2750,6 +2750,61 @@ oversaettelse, og hvor beviset staar.
 Androids form er forlaegget: de laeste testens KDoc, saa at `valgfri` var ét
 begreb, og standsede. **Tre af deres fire fund i dag kom fra at laese
 kaldestedets dokumentation**, ikke fra en bedre ordliste.
+
+## A30. FORMATET i denne fils tabeller er ÉN form — og min inkonsistens kostede en maaling
+
+**06-10-2026 kl. 11:20.** iOS' planlaegger laeste **118 raekker**, hvor der var
+**132**. De 14, den missede, var mine egne nyeste.
+
+```
+de 101 aeldre raekker   | pause  | `break` |        dansk UDEN backtick
+mine 11 nye (A26/A27)   | `felt` | `field` |        dansk MED backtick
+```
+
+**iOS' parser laeste kun den foerste form**, saa `felt`, `kilde`, `ny`, `laast`,
+`lokal`, `logik`, `ekstra`, `tidslinje` var **usynlige** — netop de ord, der var
+nye nok til at blokere noget.
+
+**Alle backticks er nu fjernet fra den DANSKE kolonne**, saa filen har ét
+format. Maalvaerdien beholder sine, fordi den er en identifikator.
+
+### Hvorfor retningen er den sikre
+
+```
+iOS      har rettet deres parser til at laese BEGGE former
+Android  laeser den gamle form (de 101)
+```
+
+**Saa normalisering til den gamle form virker for begge.** Havde jeg i stedet
+bedt dem acceptere backticks, skulle Android have aendret noget for at laese en
+fil, de allerede kunne laese.
+
+### Og det er SJETTE instans af samme form i dette arbejde
+
+```
+inkonsistent fed antalskolonne   fire af fem nye raekker faldt bort   (A5)
+afsnit A's split-raekke          opstilling -> lineup laest som afgjort
+prosa paa en datalinje           syv falske par, paa -> et vandt
+split('_') tabte underscore      hvert _private navn saa aendret ud
+-s som flertalsendelse           alia · basi · statu · familie        (A28)
+backtick i EEN kolonne           14 raekker usynlige                  (denne)
+```
+
+**Hver gang var det et DOKUMENT, der skulle laeses af baade mennesker og
+vaerktoej** — og hver gang kostede uensartetheden en maaling, ikke en fejl.
+
+> Et dokument med to formater har ét format for hver laeser, og ingen af dem
+> ser den anden.
+
+### Reglen for den, der tilfoejer en raekke
+
+```
+| dansk ord | `engelsk_maal` | eventuelt bevis |
+```
+
+**Det danske ord UDEN backtick. Maalvaerdien MED.** Og efter en tilfoejelse:
+taeller raekkerne, og saml tallet mod en platforms parser, foer afsnittet
+meldes som brugbart.
 
 ## B. Entydige — jeg foreslår, ingen beslutning nødvendig
 
