@@ -202,7 +202,7 @@ for k in noegler:
 | `aldersregler` | alder + regler | `age_rules` | **TABELLEN `age_rules`** |
 | `holdliste` | hold + liste | `team_list` | **FILEN `team_list.py`** |
 | `kamphaendelser` | kamp + haendelser | `match_events` | — |
-| `holdkort` | hold + kort | `team_card` | — |
+| `holdkort` | hold + kort | `teamsheet` | **SAMMENSAT gav det forkerte svar her:** `hold -> team` og `kort -> card` er begge rigtige, og `team_card` er stadig forkert. Det engelske begreb er ÉT ord. Se A19 |
 
 **De tre foerste er regnet UDEN at se paa serveren, og de rammer det, serveren
 allerede hedder.** En regel, der genskaber et navn, nogen har valgt i haanden,
@@ -550,7 +550,7 @@ tolererer nu begge.
 | **7** | navn | `name` | `dbu_club_name`, `created_by_name`, `event_name` (39) |
 | **4** | aktivitet | `activity` | `activity_type_key`, `activity_type_category` (93) |
 | **4** | klub | `club` | `dbu_club_id`, `dbu_club_name`, `dbu_club_colors` (9) |
-| **3** | holdkort | `team_card` | ruten `get_team_card_players` (`1f02ddd`, batch 4) |
+| **3** | holdkort | `teamsheet` | **RETTET i A19.** Stod som `team_card` med beviset "ruten `get_team_card_players`" — det er et FUNKTIONSNAVN. Ruten er `@router.get("/teamsheet-players")` og tabellerne `dbu_teamsheets`/`dbu_club_teamsheets`. 68 eksisterende `team_card`-navne er kendt gaeld, se A19 |
 | **3** | tider | `times` | `period_times_json` |
 | **3** | nulstil | `reset` | `password_reset_tokens`, `idx_password_reset_tokens_family` |
 | **3** | tjek | `check` | `get_player_check`, `/dbu/player-check` |
@@ -1892,6 +1892,94 @@ uden en maaling endnu.
 **`markering`** har intet serverbevis, og `marker` i listen er BYDEFORMEN
 («marker dette»), ikke navneordet. `periodeMarkering` kan vaere `marker` eller
 `marking`, og de to betyder ikke det samme.
+
+## A19. RUTERNE SVEJET SYSTEMATISK — og `holdkort` var forkert
+
+**Maalt 06-10 kl. 05:33.** De syv foregaaende rute-afgjorte ord blev fundet
+ét ad gangen. Ruten og dens handler staar i PAR i kilden, saa klassen kan
+udtoemmes paa én maaling:
+
+```
+INTERVAL  96 rute/handler-par i backend/app/ @origin/master
+          25 par hvor handler OG rute hver har ord, den anden ikke har
+```
+
+### Fem nye ord, laest direkte af kontrakten
+
+| dansk | engelsk | ruten |
+|---|---|---|
+| bekraeftelse | `confirmation` | `@router.post("/resend-confirmation")` paa `send_bekraeftelse_igen` |
+| stilling | `standings` | `@router.get("/standings")` paa `get_stilling` |
+| laas | `lock` | `@router.post("/lock")` paa `tag_laas` (`live.py:1176`) |
+| traeningstype | `training_type` | `@router.post("/api/training-types")` paa `add_traeningstype`. Ruten afgoer det SAMMENSATTE ord direkte, saa SAMMENSAT behoever ikke gaette |
+| genskab | `restore` | `@router.post("/families/{family_id}/restore")` paa `genskab_familie`. Backend fandt den selvstaendigt samme nat og har udfoert den |
+
+### Og to TIE-BREAKS til A5b — som IKKE flytter ordene ud af A5b
+
+```
+@router.get("/divisions")   paa  get_raekker          raekke     = division HER
+@router.get("/lineups")     paa  get_opstillinger     opstilling = lineup   HER
+```
+
+**Det er de to stoerste enkeltposter paa hele listen** (Androids maaling: 51 og
+19 navne). Men ruten afgoer kun den betydning, RUTEN handler om:
+
+```
+AFGJORT af ruten   DBU-raekken = division   ·  opstillingslisten = lineup
+STADIG A5b         GpsRaekke/BaenkRaekke/HistorikRaekke  = row
+                   match_lineup.formation                = formation
+```
+
+Begge bliver derfor i A5b med ruten tilfoejet som tie-break for den navngivne
+betydning. **At flytte dem ud ville goere `GpsRaekke` til `GpsDivision`.**
+
+### `holdkort -> team_card` var FORKERT, og beviskolonnen sagde hvorfor
+
+Posten stod som afgjort med beviset *"ruten `get_team_card_players`"*.
+**`get_team_card_players` er et FUNKTIONSNAVN, ikke en rute.** Den rigtige rute
+og serverens egne tabeller siger noget andet:
+
+```
+@router.get("/teamsheet-players")      dbu.py:438
+CREATE TABLE dbu_teamsheets            db.py:298
+CREATE TABLE dbu_club_teamsheets       db.py:330
+db.py:270  "Spillerens navn som det optraeder i DBU's egne holdkort
+            (dbu_teamsheets.navn)"     <- serveren oversaetter ordet SELV
+```
+
+**Forekomster, maalt i alle tre traeer:**
+
+```
+            team_card   teamsheet
+backend          6         83
+Android         47         18
+iOS             21         12
+```
+
+Serverens seks er: handleren selv, to kommentarer OM den, en test og
+ratchet-filen. **Alt andet i serveren hedder `teamsheet`.**
+
+Og klienterne **kalder ruten**: `DbuRepository.kt` og
+`DBURepository+Datainput.swift` henter begge `/teamsheet-players` — og har
+navngivet deres modeller `TeamCard`, `TeamCardPlayer`, `TeamCardPlayersResponse`
+efter handleren. Samme begreb, og det engelske ord er laest af det forkerte sted.
+
+**Posten er rettet til `holdkort -> teamsheet`.**
+
+### MEN: de 68 eksisterende `team_card`-navne roeres IKKE i nat
+
+47 hos Android, 21 hos iOS. At rette dem er mekanisk, men det er **arbejde, der
+allerede er gjort, som skal gores om** — og prioriteringen af det er Mortens,
+ikke min. Posten er rettet, saa intet NYT navn bliver forkert; de gamle staar
+som kendt gaeld, til han har set regningen.
+
+**Og fejlformen er projektets mest gentagne, nu inde i selve listen:** et
+funktionsnavn blev laest som en kontrakt. Samme fejl som `kampdato -> match_date`
+(jeg maalte `_parse_match_date`), som Backends `FaellesKamp`-flag (de maalte
+Swift-egenskabens navn), og som `live_contract.py` findes for at forhindre.
+
+> En rute er en kontrakt. En `def` er en implementering. De staar paa samme
+> linje i kilden, og kun den ene binder.
 
 ## B. Entydige — jeg foreslår, ingen beslutning nødvendig
 
