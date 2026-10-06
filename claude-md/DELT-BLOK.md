@@ -2583,6 +2583,44 @@ ene har en tilstand, en port kan afvise paa, og den anden har et tal, der
 aendrer sig lovligt. En port paa det glidende tal maatte vaelge mellem at
 blokere lovlige aendringer eller at blive sat saa hoejt, at den intet fanger.
 
+#### En paastand ankret til et UDFALD holder kun, saa laenge udfaldet ikke aendrer sig
+
+Androids maaling 06-10-2026, og den er den skarpeste udgave af afsnittet
+ovenfor, fordi deres selvproeve stoppede vaerktoejet paa **korrekt arbejde.**
+
+`udkast` stod i deres afvis-liste som bevis paa, at to-bogstavs-posten
+`ud -> out` ikke maa dele ordet. Saa gav `A23` `udkast` sin egen post
+(`-> draft`), og dermed blev den omdoebt — hvorefter deres egen kontrol faldt.
+
+```
+paastanden var ankret til   UDFALDET      "udkast springes over"
+den skulle vaere ankret til EGENSKABEN    "udkast deles ikke som ud + kast"
+```
+
+> En paastand ankret til et udfald holder kun, saa laenge udfaldet ikke aendrer
+> sig — og hele formaalet med arbejdet er at aendre udfald.
+
+**Rettelsen er den positive form:** hele posten `udkast` skal VINDE over
+to-bogstavs-ordet. Og de beholdt `udtaget`/`udled`/`udvisning` som bevis paa den
+anden side — de ord har ingen egen post, saa de SKAL springes over.
+
+**Formen i et stoerre perspektiv:** i et omdoebningsarbejde er "dette navn er
+uaendret" den daarligste mulige invariant, fordi arbejdet bestaar i at aendre
+navne. Enhver vagt, hvis groenne tilstand beskriver nutiden frem for en regel,
+bliver roed af succes.
+
+```
+DAARLIG   taelleren staar paa 9        falder naar arbejdet skrider frem
+DAARLIG   navnet X findes ikke        bliver falsk naar X bliver det nye navn
+DAARLIG   navnet Y springes over      bliver falsk naar Y faar sin egen post
+GOD       Y deles ikke paa ud + kast  en egenskab ved REGLEN, ikke ved data
+```
+
+Det er samme skelnen som den binaere mod den glidende fejl ovenfor, paa en akse
+mere: **ikke bare hvad vagten maaler, men om det den maaler er noget, arbejdet
+er designet til at flytte.**
+
+
 ### Og maalingen af en foreslaaet vagt ER beslutningen om den
 
 Android maalte spejlrisikoen hos sig selv og fik **122** gamle navne, der stadig

@@ -2250,6 +2250,76 @@ og her er maalingen bag.
 `beregning.py` skelner *"midlertidig udvisning"* (10 min) fra *"direkte
 udvisning"* (roedt kort). `udviste` kan ikke afgoeres, foer den gor.
 
+## A24. `oedelagt` afgjort paa syv kaldesteder — og `biometri` er en TREDJE fejlform
+
+**Androids maaling 06-10 kl. 07:11**, efter at de tog de ni A9-ord. Otte
+blev afgjort paa kaldestederne; `raekker` gik i A5b som forudsagt
+(`gpsRaekker: List<GpsRowRaw>` er rows, `dbuRaekker` er divisions).
+
+| dansk | engelsk | bevis |
+|---|---|---|
+| oedelagt | `corrupted` | **alle syv kaldesteder laest:** `cacheOedelagt`, `gpsOedelagt`, `tidslinjeOedelagt`, `veoLinksOedelagt` saettes ALLE, naar en gemt JSON ikke kunne AFKODES. `broken` findes ikke i materialet — der er ingen "oedelagt" i betydningen *"virker ikke"* |
+
+**Og hvorfor den maaling er bedre end et valg**, med Androids egne ord:
+
+> Havde jeg stoppet ved `cacheOedelagt` og `gpsOedelagt`, havde jeg faaet samme
+> svar — men uden at vide, at jeg havde det.
+
+Det er forskellen paa et rigtigt svar og et maalt svar, og den er ikke
+akademisk: det foerste kan ikke efterproeves af den naeste, der laeser posten.
+
+### `biometri` hoerer IKKE paa listen, og grunden er ny
+
+```
+biometriFejl       tillaegsord   -> biometricError
+val biometri       navneord      -> biometrics
+loginMedBiometri   navneord      -> loginWithBiometrics
+```
+
+**Formen skifter med POSITIONEN i navnet, ikke med betydningen.** En post
+`biometri -> biometrics` giver `biometricsFejl`; en post `-> biometric` giver
+`loginWithBiometric`. **Begge er forkerte halvdelen af gangene**, og et
+ord-for-ord-opslag kan ikke se hvilken.
+
+Det er ikke tvetydighed i A5b's forstand — der er ÉN betydning. Det er, at
+**engelsk kraever to former af samme ord afhaengigt af position.**
+
+**Listen har nu tre fejlformer ved siden af hinanden:**
+
+```
+ORDSTILLING   antal      engelsk vender sammensaetningen om
+FLERTAL       kort       et dansk ord uden flertal taber sit tal
+FORM          biometri   engelsk kraever tillaegsord ELLER navneord
+                         afhaengigt af positionen i navnet
+```
+
+Android lagde den **heller ikke** paa navne-niveau: 12 navne er for mange at
+afgoere i haanden uden en regel, og der findes ingen regel, der kan vaelge
+formen. **Den staar som uafgjort**, og det er det rigtige svar — ikke en
+mangel.
+
+### Og den anden halvdel af `opret`-fejlen, som er deres
+
+A22 beskrev, at jeg afgjorde `opret` i en besked og aldrig skrev den ned.
+**Androids tilfoejelse er den, der goer fejlen alvorlig:**
+
+> Vi kan ikke se, at et ord mangler. Et blokeret navn ser ud praecis som et
+> navn, der venter paa en beslutning, der ikke er taget endnu. Der er ingen
+> fejl at opdage — kun et tal, der ikke falder.
+
+```
+set fra koordinatoren   jeg glemte at skrive ordet ned
+set fra sessionen       et navn er blokeret — som alle de andre blokerede
+                        ingen fejl, ingen advarsel, bare et tal der staar stille
+```
+
+**Derfor er "skriv ordet paa listen i SAMME tur" den eneste side, der kan lukke
+det.** Modtageren har ingen maaling, der kan opdage et ord, der mangler, fordi
+et manglende ord og et uafgjort ord er samme tilstand hos dem.
+
+Og de laeser listen **med vilje** frem for mine beskeder: *"en besked kan jeg
+ikke efterproeve, og en liste kan jeg hente igen i morgen."*
+
 ## B. Entydige — jeg foreslår, ingen beslutning nødvendig
 
 Ingen af disse har to plausible engelske ord i denne kodebase.
