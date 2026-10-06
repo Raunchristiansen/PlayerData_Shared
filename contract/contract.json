@@ -1436,5 +1436,44 @@
       "sort_order": 5
     }
   ],
-  "version": "150590b3e2bcf27f"
+  "session_in_fields": {
+    "fields": [
+      "absence_reason",
+      "afbud_aarsag",
+      "assists",
+      "comment",
+      "created_at",
+      "date",
+      "dbu_kampnr",
+      "dbu_puljeid",
+      "deleted",
+      "distance_km",
+      "event_name",
+      "goals",
+      "gps_data_json",
+      "hsr_distance_m",
+      "id",
+      "location",
+      "logged_by",
+      "opponent",
+      "play_duration_min",
+      "positions",
+      "session_duration_min",
+      "sprints",
+      "started_on_pitch",
+      "status",
+      "team",
+      "timeline_json",
+      "top_speed_kmh",
+      "type",
+      "updated_at",
+      "veo_link"
+    ],
+    "server_derived_optional": [
+      "absence_reason_key",
+      "status_key",
+      "type_key"
+    ]
+  },
+  "version": "39ba279be1f32174"
 }
