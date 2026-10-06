@@ -1613,6 +1613,86 @@ toppositioner er `raekker`/`raekke` (A5b, korrekt blokeret) og de ord, der
 staar her.
 
 
+## A15. TRE MAALINGER paa Androids fund — og en graense, der IKKE skal flyttes
+
+**Maalt 04:35.**
+
+### 1. Androids dual-key-risiko er lukket VED KONSTRUKTION
+
+Android maalte, at *"laes den nye, den gamle som noedfald"* **ikke er en
+adfaerdsvagt** i kotlinx: begge navne peger paa samme egenskab, saa **den SIDSTE
+noegle i inddata vinder**, uanset hvilken vej annotationerne vender. Deres test
+blev groen efter en sabotage, fordi den maalte JSON-raekkefoelgen.
+
+> Baerer de to noegler nogensinde forskellige tal, afgoeres svaret af noeglernes
+> RAEKKEFOELGE i serverens JSON — noget ingen af siderne har valgt bevidst.
+
+**De kunne ikke maale det; det kraever serveren. Maalt:**
+
+```
+"afbud_by_aarsag":                 afbud_by_aarsag
+"absence_by_reason":               afbud_by_aarsag          SAMME variabel
+"kamp_minutes":                    kamp_minutes
+"match_minutes":                   kamp_minutes             SAMME
+"position_totals_by_team_kampe":   position_totals_by_team_kampe
+"position_totals_by_team_matches": position_totals_by_team_kampe
+load_weekly:  entry["matches_count"] = entry["kampe_antal"]  en TILDELING
+```
+
+**Hvert par kommer fra EEN kilde. De kan ikke afvige.** Saa risikoen er aegte i
+princippet og lukket i praksis.
+
+**Men den er lukket af en IMPLEMENTERING, ikke af en regel.** Skrives et
+fremtidigt dual-key-par fra to udtryk, afgoer JSON-raekkefoelgen svaret — og
+ingen test paa nogen af siderne vil se det.
+
+```
+REGEL   et dual-key-par skal skrives fra SAMME udtryk, aldrig fra to
+```
+
+### 2. `matches_count` er noeglen; `matchCount` er navnet, og det er Androids
+
+De spurgte, om `matches_count` skal styre Kotlin-navnet. **Nej.** Noeglen er
+serverens og er udrullet; navnet er deres, og engelsk saetter ental foran
+`Count`.
+
+**De er ikke afledt af hinanden** — det er netop noegle/navn-skellet, hele
+projektet hviler paa. `@SerialName` fryser noeglen, saa navnet er frit.
+
+### 3. RETTELSE: A11's ordstillingsregel hvilede paa EET eksempel
+
+Jeg afgjorde `_antal_perioder -> period_count` ud fra `halves_count` (30
+forekomster) og kaldte det *"serverens egen form"*. **Maalt nu:**
+
+```
+group_count      ENTAL          session_count   ENTAL
+halves_count     FLERTAL        matches_count   FLERTAL   (ny, #180)
+trainings_count  FLERTAL        (ny, #180)
+```
+
+**Serveren er BLANDET**, og de to nye flertalsformer er dem, `#180` selv lagde
+ind efter min regel. **Reglen er rigtig om POSITIONEN** — navneordet foerst,
+`count` sidst — **og siger intet om TALLET.** Jeg praesenterede `halves_count`
+som konventionen; den var eet af fem.
+
+### Og en graense, der IKKE skal flyttes: vektorernes egne danske noegler
+
+```
+logic/vectors/*.json   "gult_kort_min_sek" m.fl. — DANSKE noegler
+klienterne             fem referencer, ALLE i testfiler
+serveren               "gult_kort_min" staar EEN gang: i et migrations-par
+                       i db.py, ved siden af "yellow_card_minutes"
+```
+
+Vektorernes noegler er **deres eget ordforraad**, ikke serverens ledning. Og at
+omdoebe dem kraever: regenerering af alle vektorfiler **plus** samtidig
+aendring i tre platformes tests.
+
+**Det er samme klasse som lagerformatet i A12** — en bevidst isolering, hvor
+dansk er indesluttet bag en graense. Og den naeste, der grepper efter danske
+noegler, vil finde dem: **de er ikke gaeld.**
+
+
 ## B. Entydige — jeg foreslår, ingen beslutning nødvendig
 
 Ingen af disse har to plausible engelske ord i denne kodebase.
