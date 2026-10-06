@@ -1377,7 +1377,7 @@ Deres tal — 774 ord, 527 med eet navn, 13 % i de 25 tungeste — var rigtige.
 **Forklaringen paa HVORFOR de tungeste ikke kunne afgoeres var ikke maalt**, og
 den var forkert for syv af dem.
 
-## INGEN_FLERTAL — 22 noegler, boejningsreglen ALDRIG maa roere
+## INGEN_FLERTAL — 24 noegler, boejningsreglen ALDRIG maa roere
 
 **Tilfoejet 03:41, fordi Androids vaerktoej lavede `Kampfoerer -> MatchBefores`.**
 
@@ -1387,10 +1387,41 @@ INGEN_FLERTAL
   BYDEFORMER      bekraeft · beregn · byg · fjern · foelg · gem · hent
                   indlaes · nulstil · registrer · ryd · saet · slet · slip
                   tjek · vaelg · vis
+                  filtrer · soeg
 ```
 
-**Ingen af de 22 har et flertal.** Boejningsreglen maa derfor aldrig forsoege at
+**Ingen af de 24 har et flertal.** Boejningsreglen maa derfor aldrig forsoege at
 laese et `-er`/`-r` som en flertalsendelse paa dem.
+
+### UDVIDET til 24 kl. 05:38 — og den foerste var MIN egen A17-post
+
+Android maalte to boejningsfejl, deres vaerktoej lavede:
+
+```
+SoegeFiltre  ->  SearchesFilters     `soege` boejet som flertal af `soeg`
+filtrer      ->  filterses           `-r` laest som flertal af `filtre`
+```
+
+**Den anden er en konsekvens af A17.** Jeg tilfoejede `filtre -> filters`, fordi
+ruten `/filters` afgjorde den — og `filtrer` er den danske BYDEFORM («filtrer
+listen»), som ser ud som `filtre` plus et flertals-`r`. Posten var rigtig;
+**den aabnede et hul, jeg ikke maalte, da jeg lagde den ind.**
+
+```
+INGEN_FLERTAL, tilfoejet
+  BYDEFORMER      filtrer · soeg
+```
+
+Android afgjorde begge paa **ERKLAERINGEN**, ikke paa ordet: `fun filtrer(...)`
+er et verbum, `data class SoegeFiltre(` er navneordet "soegefiltre". Det er den
+rigtige maade, fordi de to former er identiske som strenge og kun erklaeringen
+skiller dem.
+
+**Reglen, der foelger for mig:** naar du tilfoejer en post, hvis dansk ord har en
+BYDEFORM der ligner ordet plus `-r` eller `-er`, saa laeg bydeformen i
+INGEN_FLERTAL i SAMME tur. `filtre`/`filtrer` er det foerste maalte par;
+`vaelge`/`vaelger` og `beregne`/`beregner` har samme form, og de to staar der
+allerede — ved et tilfaelde, fordi de kom ind som bydeformer fra starten.
 
 ### Hvorfor en "KUN paa et helt ord"-markering IKKE var svaret
 

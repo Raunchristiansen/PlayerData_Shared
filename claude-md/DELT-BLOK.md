@@ -1617,6 +1617,42 @@ Rettelsen er at **normalisere det, der ikke er indholdet**: interpolationen til
 `#`, saa teksten maales og ikke symbolet. Det er grunden til, at iOS' grundlinje
 overlevede deres egen omdoebning, mens Androids ikke gjorde.
 
+### En anden platforms symbol ser ud som dit eget — og kun prosaen skiller dem
+
+Android maalte det 06-10-2026, og de havde selv sendt advarslen faa timer foer:
+
+> iOS' navne ser formmaessigt ud praecis som vores, og kun ordet "iOS'" ved
+> siden af skiller dem.
+
+**De skrev saetningen, og lavede saa fejlen alligevel** — i et bulk-swap af 79
+foraeldede prosa-referencer, hvor ingen enkelt linje blev laest. Syv linjer af
+formen **"Port af iOS' `X`"** blev omdoebt, og `X` var Swift-symboler.
+
+Udfaldet var todelt, og den anden halvdel er et fund for begge sider:
+
+```
+STADIG DANSK HOS IOS — rullet tilbage
+  enum Aktivitet · enum AktivitetKategori · enum KampeLogik
+  enum TidslinjeTekst · struct KlubFarver · actor LokalDB
+
+ANDROIDS PROSA VAR FORAELDET OM IOS — swappet var tilfaeldigvis RIGTIGT
+  enum TeamCard        Android skrev stadig `HoldKort`
+  enum TeamSelection   Android skrev stadig `HoldValg`
+```
+
+**Dokumentationen af, hvad man er en port AF, raadner uden at nogen kan se det.**
+Den beskriver en anden platforms kode, saa den eneste maade at validere den er at
+maale det andet trae — og det goer ingen som rutine. Alle syv er efterproevet i
+iOS' kilde (`9068978`).
+
+**Formen er en REGEL i vagten, ikke en grundlinjepost:** en backtick umiddelbart
+efter `iOS'` er deres og doemmes ikke. Uden den melder vagten hver eneste
+"Port af iOS' X" som doed kode — og **en vagt, der kaemper mod rigtig prosa,
+bliver slaaet fra**, af samme grund som 37-noegle-vagten i afsnittet ovenfor.
+
+**Har du "Port af Android' X"-linjer, gaelder det samme for dig.** Maal dem mod
+det andet traee, ikke mod dit eget.
+
 ### En liste fortæller hvilke værdier der findes, aldrig hvad de betyder i din kode
 
 Androids formulering, 04-10-2026, efter at have fået en ordforrådsliste fra
@@ -2430,6 +2466,69 @@ Koordinator, 2026-10-04, fundet i sit eget værktøj: `check-parent-cards.sh` he
 Samme familie som denne fils egne afsnit om et filter, der ikke rammer noget ("Et håndskrevet mønster er selv et måleinstrument"), og om en test-modulliste der manglede filer (#128) — et værktøj, der kun rapporterer sit RESULTAT, kan ikke skelne "jeg så alt, og alt var i orden" fra "jeg så en brøkdel, og den brøkdel var i orden". Rettelsen: scriptet rapporterer nu selve SIT UDSNIT ("INTERVAL 100 lukkede kort set, #6-#137" pr. repo) ved siden af konklusionen — hullet er dermed synligt uden at nogen skal opdage det ved et uheld.
 
 **Reglen, generaliseret:** et instrument, der kan se en DELMÆNGDE af det, det påstår at dække (en side af resultater, en tidsgrænse, et filter), skal sige HVILKEN delmængde det så — ikke kun hvad den fandt i den.
+
+### Da hullet var i vagtens MATERIALE og ikke i dens doemning
+
+Androids maaling 06-10-2026, og det er den skarpeste udgave af
+interval-reglen ovenfor.
+
+`DatainputGem` henviste i prosa til `FormRegelLogik.typeNoegle`, efter at
+objektet var omdoebt til `FormRuleLogic`. Vagten mod doede prosa-referencer var
+**groen**. De rettede den til at doemme HVERT led i en kvalificeret reference —
+og **den var stadig groen.**
+
+```
+historiske() samlede kun `fun`-erklaeringer fra git
+  -> et omdoebt OBJEKT havde ALDRIG staaet i det historiske saet
+  -> kvalifikatoren kunne ikke doemmes, uanset hvor mange led man saa paa
+
+kun fun                          34 fund
++ object/class/interface/enum   121 fund   ->  80 nye, 79 var aegte
+```
+
+Deres formulering:
+
+> Jeg rettede doemningen og troede, hullet var lukket. Det var MAALINGEN, der
+> manglede materiale — ikke doemningen, der manglede led.
+
+**Det er en tredje akse ud over resultat og interval:** en kontrol kan have
+rigtig logik, rapportere sit interval aerligt, og stadig vaere blind — fordi
+dens KORPUS ikke indeholder den slags ting, fejlen sidder i. Og den ser
+praecis ud som en kontrol, der virker.
+
+**Spoerg derfor om tre ting, ikke to:**
+
+```
+hvad svarer den          resultatet
+hvor langt kiggede den   intervallet
+HVAD kiggede den PAA     korpus   <- den, der blev glemt
+```
+
+**Og `val`/`var` blev holdt bevidst ude:** de er korte og hyppige (`n`, `x`), og
+en prosa-backtick ville begynde at ramme en forlaengst fjernet lokal variabel.
+**Typer er distinktive; variabler er ikke.** Et stoerre korpus er ikke altid et
+bedre korpus — det er en afvejning, og den skal vaere maalt.
+
+### En beskyttelse, man ikke har bygget med vilje, kan fjernes af en der ikke ved den beskytter noget
+
+Samme nat bad koordinatoren Android passe paa posten `ud -> out`: to bogstaver,
+og `udkast`, `udtaget`, `udvisning`, `udled` begynder alle med dem. En
+delstrengs-erstatning giver `outkast`, **og den kompilerer.**
+
+Android maalte det foer brug, og posten var sikker. **Men svaret var ikke
+beroligende:**
+
+> Beskyttelsen kommer af et tre-bogstavs-minimum i min sammensaetningsregel,
+> som blev sat for `vaelger = vaelg + er` — en helt anden grund. Saenker nogen
+> den graense af en tredje grund, begynder `udkast` tavst at dele.
+
+Reglen er nu en selvproeve i begge retninger: at `logUd -> logOut` virker, OG at
+de fire `ud`-ord springes over.
+
+**Formen, og den gaelder ud over denne post:** naar en maaling viser, at du er
+beskyttet, saa maal OGSAA hvad der beskytter dig. Er svaret en graense sat af en
+anden grund, er du ikke beskyttet — du er heldig, og den naeste, der roerer
+graensen, ved det ikke.
 
 ### En hypotese om en anden platform er stadig en hypotese
 
