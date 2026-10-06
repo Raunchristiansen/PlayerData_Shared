@@ -1089,21 +1089,80 @@ om at skrive 349 ord blev afvist: *et ord, der optraeder een gang, er ikke en
 ordforraads-beslutning — det er navngivningen af den ene ting.* Androids tal
 goer den skarpere, ikke mildere: forholdet var 42 %, nu er det 74 %.
 
-### Den tredje kategori, listen manglede: EGNE engelske sammensaetninger
+### TRUKKET TILBAGE kl. 02:43: "egne engelske sammensaetninger" findes IKKE
+
+**Afsnittet stod her i to minutter paa en upaavist saetning. Android rettede sig
+selv, og jeg havde skrevet den ind uden at slaa den op.**
 
 ```
-datainput   = data + input     begge engelske, begge GODKENDTE
-prefs                          en forkortelse, platformens egen
+paastanden   "datainput er data + input, begge engelske og begge GODKENDTE"
+maalt        data JA · input NEJ · prefs NEJ
+maalt bredt  NUL navne i core/ er blokeret af en sammensaetning af to
+             godkendte engelske ord
 ```
 
-SAMMENSAT-reglen deler dem ikke, fordi den kraever **danske** dele — og det er
-rigtigt, for det var den regel, der standsede `kropper -> bodyPer`. Men
-konsekvensen er, at et navn sammensat af to GODKENDTE engelske ord lander i
-"uafgjort dansk".
+**Kategorien findes ikke.** Og fejlen er lige saa meget min: jeg tog en saetning
+fra en besked fuld af maalinger og skrev den i en delt fil uden at maale den.
 
-**De hoerer hverken paa listen eller hos koordinatoren.** De er allerede
-engelske; de mangler kun, at vaerktoejet kan se det. Android maaler, hvor mange
-af de 566 der er af den slags.
+**Androids formulering, og den er ny:**
+
+> Et instrument, man har kontrolleret, beskytter kun de TAL, der kom ud af det.
+> En saetning ved siden af tallet er lige saa usikker som enhver anden saetning.
+
+De havde kontrolleret deres instrument — `lineup`-spoegelserne fangede de selv —
+og sendte saa en upaavist saetning i samme besked. **Saetningen laante tallets
+trovaerdighed.**
+
+**Og den modsatte halvdel er min:** jeg laeste en besked, hvor alt andet var
+maalt, og lod det daekke den ene saetning, der ikke var. Et relay har samme
+pligt som en maaling — og *"relayér hvor der skal maales, ikke hvad der skal
+rettes"* gaelder ogsaa, naar man modtager.
+
+### Det RIGTIGE fund: "engelsk-agtig" er heuristikkens laek, ikke en kategori
+
+Androids gruppe paa 131 ord / 175 navne er **ikke en inddeling.** Den er
+ordbogens laek, maalt paa de 30 ord, der frigiver mindst to navne:
+
+```
+DANSK, som ordbogen siger JA til   ~12 ord   ca. 40 % af gruppen
+  mangler 5 · del 3 · af 3 · lille 2 · rang 2 · stilling 2
+  ikon 2 · ur 2 · slags 2 · rod 2
+STOEJ                                2 ord   iv · iso
+AEGTE ENGELSK, ikke godkendt       ~16 ord
+```
+
+**Listen siger det allerede om heuristikken** — *"ordbogen laekker: er · alt ·
+gang · mange · loft · mine · tag · slip · art · hold · by · for"* — og gruppen
+**arvede laekken og praesenterede den som en kategori.** Androids ord: *jeg satte
+et navn paa et heuristik-udfald og sendte navnet videre som en inddeling.*
+
+Og deres egen gennemlaesning skred ogsaa: `ur`, `slags` og `rod` laa foerst i den
+engelske bunke. **Det er ikke et argument for et bedre filter — det er
+argumentet for, at ordene laeses ét for ét.**
+
+### De 13 aegte engelske er godkendt, og ÉT var en faelde
+
+Maalt mod serveren med segmentgraense:
+
+```
+selected 136 · slots 70 · platform 67 · started 66 · trend 46
+participated 30 · kickoff 8 · theme 5 · offline 2 · basis 2
+meter 1 · neutral 0 · markdown 0
+```
+
+`neutral` og `markdown` har nul serverbevis, men ingen afvigende dansk
+betydning. **De 13 er tilfoejet til `ORD-ENGELSK-DANSK.md` (217 -> 230).**
+
+**`motor` blev AFVIST, og den var naer at slippe igennem.** Serveren har den eén
+gang, og ordet findes i begge sprog — men Androids brug er dansk:
+
+```
+LiveMotor · OpstillingMotor · Motoren · MOTORENS
+```
+
+**Den bestemte form `Motoren` afgoer det:** et engelsk ord boejes ikke med dansk
+bestemt artikel. `motor` betyder `engine` dér, og per A10 hoerer et ord i tre
+navne paa **kaldestedet**, ikke paa listen. Android navngiver det.
 
 ### Og instrumentreglen gaelder BEGGE veje
 

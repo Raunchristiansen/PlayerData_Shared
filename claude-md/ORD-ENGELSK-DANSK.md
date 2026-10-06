@@ -53,7 +53,7 @@ staar paa.** Et menneske afgoer det paa NAVNET.
 > Et ord, der findes i begge sprog med forskellig betydning, kan ikke afgoeres
 > paa listen. Det afgoeres paa navnet.
 
-## GODKENDT ENGELSK — 217 ord
+## GODKENDT ENGELSK — 230 ord
 
 26 af dem er godkendt af **alle tre uafhaengigt.**
 
@@ -86,7 +86,9 @@ staar paa.** Et menneske afgoer det paa NAVNET.
   slot           stage          start          state          stats          status         stop         
   strip          substitution   sync           table          tags           team           teams        
   text           to             toggle         token          totals         training       type
-  total          veo             
+  total          veo
+  basis          kickoff        markdown       meter          neutral        offline        participated   platform       selected       slots          started        theme          trend        
+   
   types          unique         until          updated        upload         url            value        
   verification   verify         version        vocabularies   wizard       
 
