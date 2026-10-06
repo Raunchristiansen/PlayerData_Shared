@@ -719,6 +719,7 @@ ikke vaelge.
 | **plads** | `slot` · `position` | **BEGGE er godkendt engelsk, og begge er serverens egne lineup-ord** (`slot_id`, `slots`, `start_slots` mod `position_minutes.position`). `valgtTomPlads` er en tom PLADS i opstillingen; `indPaaNyPlads` (`LineupEngine.kt:434`) er en spiller, der kommer ind paa en ny POSITION. Maalt 06-10 kl. 05:25: 7 navne hos Android |
 | **holdkort** | `teamsheet` · `team_card` | **maalt 06-10 kl. 05:50, efter at A19 havde afgjort den forkert TO gange.** DBU's officielle holdkort: serveren har `dbu_teamsheets`, `dbu_club_teamsheets` og `@router.get("/teamsheet-players")`; iOS' `holdkortSpillere()` henter netop den. **Men statistik-kortet i brugerfladen er ogsaa `holdkort`:** Androids `object TeamCard` (`core/stats/PositionBane.kt:108`, var `object HoldKort`, omdoebt i `6ab9ec7`) og iOS' `enum TeamCard` (`Core/Stats/StatsLogik.swift:435`). **To platforme valgte `TeamCard` uafhaengigt af hinanden** — det er et argument, ikke en fejl. 25 forekomster hos Android staar paa den forkerte side; de 19 paa stats-siden er korrekte |
 | **side** | `page` · `side` | **en NY form: det danske ord kolliderer med et GODKENDT ENGELSK ord, ikke med en anden kandidat.** Dansk `Side` er en side/skaerm (`HoldkortSide`, `baggrundSiden`); engelsk `side` er holdets side, som serveren har i `match_sides`/`"side"`/`"home"`/`"away"` og klienterne allerede bruger (`TeamSide`, `assistSide`, `scorerSide`). `error.main.page_gone` = *"Siden er ikke laengere tilgaengelig"* er web-siden. Et vaerktoej kan ikke skelne `HoldkortSide` fra `TeamSide` paa strengen. Maalt 06-10 kl. 06:10, se A21 |
+| **udviste** | `sent_off` · `sin_binned` | arver `udvisning`s tvetydighed: `beregning.py` skelner *"midlertidig udvisning"* (10 min) fra *"direkte udvisning"* (roedt kort), og `udviste` er boejning af samme. 5 navne hos Android (`egneUdviste`). Kan ikke afgoeres foer `udvisning`. Se A23 |
 | **kode** | `code` · `password` | `adgangskode` ejer allerede `password` (A, serverens `password_hash`). Men `indPaaNyPlads(kode: String, ...)` er en PLADS-kode, ikke en adgangskode — samme fil, samme linje. `nyKode`/`kodeOk` kan vaere begge, og kun kaldestedet ved det. 6 navne |
 | **udvisning** | `sin_bin` · `dismissal` | **maalt 06-10 kl. 04:55 i jeres egen kode, ikke gaettet.** `beregning.py:322` *"en midlertidig udvisning"*, `:485` *"10 minutters udvisning"* — en tidsbegraenset bortvisning. Men `:329` *"en direkte udvisning"*, som er **roedt kort**. Eet dansk ord, to fodboldbegreber, praecis `opstilling`-formen. Serverens `format_rules.red_card` daekker KUN den anden. Rammer `_udvisning_slut_ms` og `_udvisning_minutter` (`live.py:438`) |
 
@@ -2169,6 +2170,85 @@ samme linje, saa det er nemt at laese dem som en oversaettelse. **De er en
 PAASTAND og en BESKED om samme fejl** — ikke to udgaver af samme ord. Et ordpar
 kraever, at det danske ord og det engelske ord betegner det samme, ikke blot at
 de staar i samme `ApiError`.
+
+## A22. `opret` var afgjort i en BESKED og aldrig skrevet ned
+
+**Maalt 06-10 kl. 06:50, fordi `opret` blokerede 8 navne hos Android.**
+
+Jeg skrev til Backend kl. 05:20, at `opret -> create` var *"din afgoerelse,
+udfoert"*. **De udfoerte den. Jeg skrev den aldrig paa listen.**
+
+```
+verificeret i Backends trae @origin/master
+  create_shared_match      (var opret_faelles_kamp)
+  create_tournament        (var opret_stoevne)
+  def opret_*              NUL tilbage
+```
+
+| dansk | engelsk | bevis |
+|---|---|---|
+| opret | `create` | Backends to handlere, omdoebt og udrullet. `create` stod allerede i GODKENDT ENGELSK |
+
+**Konsekvensen var maalbar:** Android kunne ikke bruge ordet, fordi deres
+vaerktoej laeser listen — ikke mine beskeder. 8 navne stod blokeret paa et ord,
+der var afgjort for halvanden time siden.
+
+> Et ord afgjort i en besked er afgjort for ÉN session. Listen er det eneste
+> sted, der gaelder for alle tre.
+
+Det er ottende gang i dette projekt, at noget baerende kun fandtes ét sted, og
+foerste gang det var et ORD. Reglen staar nu: **afgoer du et ord i en besked,
+skriv det paa listen i SAMME tur** — praecis som en maaling hoerer paa kortet og
+ikke kun i et relay.
+
+### Og en instrumentfejl i selve maalingen
+
+Jeg ledte efter det nye navn som `def create_faelles_kamp` — altsaa mit GAET
+paa resultatet, hvor kun ét ord var skiftet. **Backend havde omdoebt hele
+navnet**: `opret` + `faelles` + `kamp` -> `create` + `shared` + `match`. Min
+grep gav nul og modsagde deres melding, saa jeg maalte igen.
+
+```
+jeg soegte efter   mit gaet paa det nye navn
+jeg burde soege    hvad der ER der   (git grep 'def create_\w+')
+```
+
+**Et nul, der modsiger en melding fra en session, der har maalt, er mit
+instrument — ikke deres fejl.**
+
+## A23. `kladde` og `udkast` er BEGGE `draft` — og det er besluttet, ikke opstaaet
+
+A18 flagede kollisionen: to danske ord, ét engelsk maal. **Maalt i Androids
+kode, og de er samme begreb i to roller:**
+
+```
+core/datainput/Kladde.kt:145    data class Kladde          OBJEKTET
+core/datainput/Kladde.kt:35     data class KladdeHaendelse
+features/datainput/
+  DatainputModel.kt:111         UDKAST_OPHOLD_MS = 1_000L  MEKANISMEN
+  DatainputModel.kt:382         udkastJob                  (autogem)
+  MainActivity.kt:70            gemUdkastNu()
+```
+
+`Kladde` er kladden; `udkast` bruges om det at GEMME den. Begge er `draft` paa
+engelsk, og sammenfoejningen skaber ingen navnekollision —
+`Kladde -> Draft`, `gemUdkastNu -> saveDraftNow`, `udkastJob -> draftJob`.
+
+| dansk | engelsk | note |
+|---|---|---|
+| kladde | `draft` | objektet |
+| udkast | `draft` | samme begreb, brugt om autogem-mekanismen. **Bevidst sammenfoejning** |
+
+**To danske ord mod ét engelsk er tilladt, naar de er synonymer** — men det
+skulle BESLUTTES, ikke opstaa af to uafhaengige poster. Det er det, A18 bad om,
+og her er maalingen bag.
+
+### Og `udviste` arver A5b
+
+`udviste` blokerer 5 navne (`egneUdviste`, `udviste`). Den er boejning af
+`udvise`, som hoerer til `udvisning` — og **`udvisning` staar i A5b**, fordi
+`beregning.py` skelner *"midlertidig udvisning"* (10 min) fra *"direkte
+udvisning"* (roedt kort). `udviste` kan ikke afgoeres, foer den gor.
 
 ## B. Entydige — jeg foreslår, ingen beslutning nødvendig
 
