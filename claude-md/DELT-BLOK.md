@@ -2151,6 +2151,61 @@ Fundet på iOS 2026-10-01 (#19): en `fatalError` i en `static let`, der skulle l
 
 **Konsekvensen, der er værd at huske:** en test, der aldrig rører koden, der læser fra bundlen/konteksten, beviser intet om DEN kode — kun om den rene logik ved siden af. Og en kodesti, der virker fint lokalt, fordi testen aldrig når den linje, kan stadig indeholde en rigtig fejl, som kun en kørende app (eller en hostet test) ville finde — se næste afsnit.
 
+### Det eneste, ingen enhedstest roerer, er SAMMENSAETNINGEN
+
+**Afsnittet ovenfor handler om en test, der ikke KOERER koden. Dette handler om,
+at alle tests koerer koden, og appen stadig ikke kan aabnes.**
+
+Androids maaling 06-10-2026, da `Android#83`s enhedsverifikation blev lukket:
+
+```
+04-10   CrashlyticsSporing gjorde appen UAABNELIG
+        984 unit-tests var GROENNE
+06-10   1115 groenne tests kan stadig ikke sige noget om det
+```
+
+> Det eneste, ingen unit-test roerer, er sammensaetningen. **Appen blev startet.**
+
+**Wiring, afhaengighedsrækkefoelge og opstart er ikke en funktion, man kan
+kalde.** De findes kun, naar alle delene er sat sammen — og en groen suite siger
+intet om dem, hvor mange tests den end rummer.
+
+### Hvad "sammensaetningen er maalt" betyder paa hver platform
+
+```
+Android · iOS   appen er STARTET paa en enhed eller simulator, og den
+                forventede sideeffekt er maalt PAA DISKEN eller i brugerfladen
+Backend         den koerende container har svaret paa ruten — ikke at
+                funktionen er importeret, og ikke at testen bestod
+```
+
+Begge halvdele skal maales. Androids eget eksempel:
+
+```
+frisk start      appen koerer, stemplet SKREVET med den rigtige vaerdi
+FORKERT stempel  cachen RYDDET ved naeste start, stemplet skrevet om,
+                 og appen koerer stadig
+```
+
+**Den anden halvdel er den, der taeller.** En stempling uden en virkende rydning
+ville lade en gammel identitet overleve et skemaskifte — **og den kunne bestaa
+med ledningen klippet over.**
+
+### Og en groen suite kan vaere en suite, der ikke koerte
+
+Koordinatoren maalte 06-10 kl. 02:02 `#174`s to tests i sit eget miljoe:
+
+```
+Ran 2 tests in 0.000s
+OK (skipped=2)      <- begge SPRUNGET OVER: "kraever fastapi"
+```
+
+**`OK (skipped=2)` er ikke groent. Det er "ikke koert"** — og sidste linje siger
+`OK`. Var testfilen laengere, var skip-grunden faldet uden for en `tail`.
+
+> Spoerg aldrig "bestod den". Spoerg "hvor mange KOERTE".
+
+
 ### En manglende decode-nøgle kan ligge skjult bag en anden fejl
 
 Samme kort (#19): en JSON-decoder for et nyt svar manglede en `CodingKeys`-mapning for ét felt (serveren sendte `display_da`, Swift-typen havde kun den camelCase-navngivne property uden eksplicit nøgle) — en ægte fejl, der ville have kastet `DecodingError.keyNotFound` i den RIGTIGE app, første gang svaret blev afkodet. Den blev ikke fundet af nogen test, fordi testkørslen crashede (se afsnittet ovenfor) FØR afkodningslogikken nogensinde kørte — crashet maskerede fejlen fuldstændigt.
