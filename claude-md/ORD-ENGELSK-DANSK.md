@@ -88,6 +88,7 @@ staar paa.** Et menneske afgoer det paa NAVNET.
   text           to             toggle         token          totals         training       type
   total          veo            init
   stat
+  test           tests          link           rule           goal           second         filters
   unknown        wrong          invalid        attempt        registration   registrations  file
   basis          kickoff        markdown       meter          neutral        offline        participated   platform       selected       slots          started        theme          trend        
    

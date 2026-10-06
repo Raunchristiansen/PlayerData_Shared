@@ -2596,6 +2596,84 @@ er · af · med · i · at · ikke · nu
 godkendte `match`. Samme klasse som Androids `filterses`/`freshes`/`valids`.
 **Et instrument, der melder dem som kandidater, taeller sin egen output.**
 
+## A28. ET ORD GODKENDT I ÉT TAL ER GODKENDT I BEGGE — og `test` hoerer paa listen
+
+**Afgjort 06-10-2026 kl. 10:40, fordi Android stod stille paa det.** `test`
+blokerede **65 testklassenavne** — mere end de 114 oevrige udaekkede ord
+tilsammen.
+
+### `test` er GODKENDT ENGELSK, ikke en mapning
+
+```
+test · tests        GODKENDT ENGELSK      behold ordet, omdoeb RESTEN
+```
+
+Androids begrundelse, og den er rigtig:
+
+> `test` er engelsk, det er suffikset paa hver eneste testklasse i hvert eneste
+> sprog, og det er **ikke en oversaettelse** — det hoerer i GODKENDT ENGELSK,
+> ikke i mapningen.
+
+**Og det er samme skelnen som A-afsnittets `dbu`/`veo`-rettelse 06-10 kl. 01:30:**
+et ord i "godkendt engelsk" lader navnet blive omdoebt rundt om sig
+(`SpilletidTest -> PlayTimeTest`), hvor "skal ikke omdoebes" kan laeses som
+*spring HELE navnet over.*
+
+### REGLEN, fordi `test` ikke var det eneste
+
+**Maalt systematisk paa de 245 godkendte ord:** flere staar kun i ét
+grammatisk tal, og den manglende form blokerer navne, selv om ordet er afgjort.
+
+```
+links    STAAR      link     manglede      <- Androids fund
+rules    STAAR      rule     manglede
+goals    STAAR      goal     manglede
+seconds  STAAR      second   manglede
+filter   STAAR      filters  manglede      <- den anden retning
+```
+
+> **Et ord, der er godkendt engelsk i ental, er godkendt i flertal — og
+> omvendt.** Listen beskriver ORD, ikke boejninger.
+
+**Det er en regel og ikke en liste**, fordi en liste over de fem ovenfor ville
+efterlade den sjette. Androids egne ord om samme form tidligere samme dag:
+*"`filters`/`filter` — praecis samme form."*
+
+### DEN ENE UNDTAGELSE, og den er MAALT
+
+```
+tags     STAAR i GODKENDT ENGELSK
+tag      STAAR i MAALT DANSK      — "tag" (roof) og bydeformen af "at tage"
+```
+
+**`tag` maa IKKE afledes af `tags`.** Reglen gaelder altsaa med ét forbehold:
+
+> ...**medmindre den anden form staar i MAALT DANSK.** Tjek det, foer du afleder.
+
+Og det er ikke et hypotetisk forbehold: `tag` er ét af de ni ord i afsnittet
+*"de laeser rigtigt og betyder noget andet"*. `mine` og `slip` er de to andre i
+samme klasse, og de har ingen flertalsform paa listen at blive afledt fra — men
+det er et tilfaelde, ikke en beskyttelse.
+
+### Og mit eget instrument fandt fem falske, da jeg maalte reglen
+
+Jeg ledte efter ord paa `-s`, hvis ental manglede:
+
+```
+alias -> alia      basis -> basi      status -> statu
+families -> familie      vocabularies -> vocabularie
+```
+
+**Fem af ti traef var ikke ord.** `-s` er ikke en flertalsendelse; den er et
+bogstav. Samme klasse som `minut -> minutter` (dobler konsonanten) og Androids
+`filterses`/`freshes`/`valids`.
+
+> En boejningsregel, der kun kender ét suffiks, producerer ikke-ord og melder
+> dem som huller.
+
+**Derfor staar de fem afledte ord i teksten ovenfor som MAALTE, ikke som
+genererede** — hvert enkelt laest, foer det blev tilfoejet.
+
 ## B. Entydige — jeg foreslår, ingen beslutning nødvendig
 
 Ingen af disse har to plausible engelske ord i denne kodebase.
