@@ -4124,3 +4124,68 @@ Det er samme form som den tunge laas `/tmp/playerdata-tungt.lock`: koordinering
 paa en delt ressource, hvor det eneste, der adskiller to koersler, er at nogen
 har skrevet ned, hvem der ejer hvad.
 
+### En saetning, der var sand om arbejdet, brugt som en EGENSKAB ved arbejdet
+
+**Android, 06-10-2026, fundet af dem selv under `#100` runde 6.**
+
+`Android#99`s kort advarede ordret:
+
+> *"En filomdoebning UDEN klasseomdoebning efterlader et misforhold, compileren
+> TILLADER. Groen build, aendret form."*
+
+**I runde 1 skrev de i commit-beskeden, at *"kortets fare er allerede sket, bare
+den anden vej"*** — de fjorten `#124`-boern havde omdoebt KLASSERNE, og
+filnavnene haltede efter. Altsaa ingen fare.
+
+**Det var sandt for runde 1's 25 filer. Fra runde 2 vendte det, og ingen maalte
+det igen.**
+
+```
+98 filnavnsaendringer i alt paa dagen
+25 efterlod typen med sit DANSKE navn inde i filen
+
+WarningStore.kt     indeholdt stadig  AdvarselStore
+CardState.kt                          KortTilstand
+Dependencies.kt                       Afhaengigheder
+```
+
+**Og den farligste del er, at de skrev beroligelsen selv.** En advarsel paa et
+kort blev afvist med en maaling af det foerste skridt — og maalingen blev staaende
+som en egenskab ved alle de foelgende.
+
+> En maaling af "hvad der lige skete" er ikke en maaling af "hvad der sker". Og
+> en beroligelse, man skriver til sig selv, bliver ikke efterproevet af nogen.
+
+### Og instrumentet overrapporterede TO gange, foer tallet var rigtigt
+
+```
+"filer med praecis EEN type, der ikke hedder som filen"      28
+   Components.kt har een enum og mange Composables — den er
+   opkaldt efter sit INDHOLD. Ikke et misforhold
+
+"filer jeg omdoebte, hvor det gamle navn stadig er en type"  42
+   17 var MAPPEflytninger: filnavnet var uaendret
+
+gammelt STEM != nyt STEM, OG det gamle stem er en type       25   RIGTIGT
+```
+
+**Begge gange saa tallet plausibelt ud.** Det, der standsede dem, var ikke et
+bedre instrument:
+
+> *"Det, der standsede mig, var en saetning der ikke kunne passe:
+> `AccountRepository.kt indeholder stadig AccountRepository`."*
+
+**Et resultat, der modsiger noget man ved, er den billigste alarm der findes** —
+samme form som et `find`, der melder nul filer, mens nogen lige har committet.
+
+### Reglen
+
+```
+spoerg om hver beroligelse   er den en maaling af det, der SKETE,
+                             eller af det, der SKER
+og saerligt                  hvis den afviser en advarsel paa et kort,
+                             skal den maales igen for hver runde
+```
+
+**702 forekomster rettet, kollisionsproeve koert foerst, nul misforhold tilbage.**
+
