@@ -2467,6 +2467,98 @@ Samme familie som denne fils egne afsnit om et filter, der ikke rammer noget ("E
 
 **Reglen, generaliseret:** et instrument, der kan se en DELMÆNGDE af det, det påstår at dække (en side af resultater, en tidsgrænse, et filter), skal sige HVILKEN delmængde det så — ikke kun hvad den fandt i den.
 
+### Et vaerktoej, der kan goere kode USYNLIG, fejler ikke — det bliver faerdigt for tidligt
+
+Androids fund 06-10-2026, og det er den alvorligste af nattens
+instrumentfejl, fordi den ikke har nogen fejltilstand.
+
+`A21` braekkede `TidslinjeTekst.kt`, og aarsagen laa i fundamentet, ikke i
+runden:
+
+```kotlin
+"${ev.spilleminut?.let { "$it'" } ?: "–"} — ${beskrivelse(ev, modstander)}"
+```
+
+**En streng inde i en `${}` inde i en streng.** Den ydre strengskanner stoppede
+ved det INDRE citationstegn, saa alt efter tegn 3484 i filen blev regnet som
+ikke-kode.
+
+```
+linje  71   fun manglendeTidslinje(r: Registration)   OMDOEBT
+linje 131   fun linjer(r: Registrering)                USYNLIG
+```
+
+**Det var en HALV omdoebning i samme fil, der afsloerede det** — ikke en test,
+ikke en vagt. Havde filen ikke tilfaeldigvis haft to brug af samme type paa hver
+sin side af bruddet, var den ikke opdaget.
+
+> Et faerdigt vaerktoej uden fund ser ud som et rent trae.
+
+Og det er en grad vaerre end de to beslaegtede fejl samme nat — koordinatorens
+`formRegler`-tal paa 31 og Androids historiske saet uden typer. **Dér var
+MAALINGEN ufuldstaendig. Her var MATERIALET afkortet**, og alle senere maalinger
+paa filen var rigtige om det, de saa.
+
+### Spraengradius maales med ét script, og maalingen kan kopieres
+
+```
+for hver fil: slutter sidste kode-spaend FOER filens ende,
+              og staar der erklaeringer i halen?
+
+filer med den form:        1
+erklaeringer usynlige:    12
+```
+
+Den form findes ogsaa andre steder: **Swift har `\(...)` med samme indlejring,
+og Pythons f-strenge tillader nested quotes fra 3.12.**
+
+### Men klassen findes KUN hvis du skanner — den kan ikke findes hvis du parser
+
+Maalt i alle tre traeer 06-10 kl. 06:25:
+
+```
+Android   regex-skanner                          HAVDE fejlen, rettet
+iOS       SwiftParser + SwiftSyntax, en
+          SyntaxRewriter over TokenSyntax        IMMUN ved konstruktion
+Backend   INGEN mekanisk omskriver, og deres
+          eet #124-script bruger ast.NodeVisitor  IMMUN ved konstruktion
+```
+
+En rigtig parser kan ikke "blive faerdig for tidligt" ved et indlejret
+citationstegn: interpolation er en node i traeet, ikke et tegn i en streng.
+
+**Og iOS' dokumenterede opfoersel er rigtig i BEGGE retninger**, af samme grund:
+*"Roerer KUN tokens af arten identifier. Strenge, kommentarer og tekst i
+literaler er ikke identifikatorer og forbliver uroert; kode i
+streng-interpolation ER tokens og omskrives."* En streng inde i en `\(...)` er
+stadig en streng-token, altsaa ikke en identifikator.
+
+**Afvejningen, og den skal navngives og ikke skjules:** Android er den eneste,
+der BYGGEDE en mekanisk omskriver, og de omdoebte ogsaa klart flest navne (287 i
+trin 2). Vaerktoejet betalte sig. **Fejlklassen kom med i prisen**, og den
+rigtige konklusion er ikke "byg ikke vaerktoejet" — det er at maale
+spraengradius med det script ovenfor, hver gang skanneren roeres.
+
+### Og den SPEJLVENDTE risiko er Backends, fra samme graense
+
+Backends `scripts/tael-strengbindinger-124.py` findes af den modsatte grund, og
+dens egen dokumentation siger det:
+
+> Backend har ingen compiler, saa et omdoebt navn, der OGSAA forekommer som en
+> streng-literal et andet sted (`logging.getLogger(...)`, `assertLogs(...)`,
+> `getattr(...)`), kan drive uden en synlig fejl.
+
+```
+Androids fejl    skanneren stopper   ->  IDENTIFIKATOREN bliver tilbage
+Backends risiko  omskrivningen rammer ->  STRENGEN bliver tilbage
+```
+
+**Begge er "omdoebningen og strengen er uenige", fra hver sin ende.** Og ingen af
+dem giver en fejl: den ene efterlader kode, der ikke blev omdoebt, den anden en
+streng, der skulle have vaeret. Derfor har begge brug for en TAELLING foer og
+efter, ikke en test.
+
+
 ### Et submodul har TRE lag, og "bagud" betyder noget forskelligt i hvert
 
 Koordinatoren maalte 06-10-2026, at Androids `shared/`-checkout var 34 commits
