@@ -1412,6 +1412,68 @@ Rettelsen var at matche **andet argument til `live(`**, altså den ene form, hvo
 fragment bliver en sti, og at generere snapshottet af serverens egne stier under
 `/live/`. Det er forskellen på at rette otte tilfælde og at lukke en klasse.
 
+### Et anker, der er noget arbejdet flytter, holder kun til naeste gang
+
+Natten 05/06-10-2026 fandt de tre sessioner **seks kontroller, der var ankret til
+noget, omdoebningen selv flyttede.** Ingen af dem var roede foer de blev kigget
+paa, og fem af de seks kunne ingen compiler se.
+
+```
+et klassenavn      en selvkontrol slog klassen op VED NAVN
+en JSON-noegle     kontrakt["enhed"] — en dansk noegle i en delt fil
+et ANTAL           kontrakt["regler"].size == 6 — antal PROSA-saetninger
+en linjes TEKST    en assert, der ikke kunne skelne to ENS erklaeringer
+en identifikator   en frossen tekst med ${KontoRegler.X} i interpolationen
+en POSITION        et nyt parameter indsat som nummer TO
+```
+
+**Den sidste er den eneste, en compiler burde kunne se — og den kan den netop
+ikke, naar typerne er kompatible:**
+
+```kotlin
+Periode("1. halvleg", "11:00", "11:35")   ->  label + labelKey + start
+```
+
+Alle tre er `String`. Det oversatte, og testen meldte `1. halvleg: 11:35––`.
+
+> **Et nyt parameter hoerer SIDST.** Et positionelt kaldested er ankret til
+> raekkefoelgen, og compileren kan ikke se, at betydningen skred.
+
+**Maalt paa tvaers:** Swift og Kotlins navngivne argumenter beskytter kaldestedet
+(`Periode(noegle:, label:)`), og en Python-`dict` med noegler har ingen
+positionsfaelde. **Men det var en maaling, ikke en antagelse** — Android
+formodede det om iOS og kaldte det selv en hypotese, fordi deres forrige
+generalisering ikke holdt.
+
+### Hvad man goer i stedet
+
+```
+ANKRE TIL   det der goer stedet entydigt — en datanoegle testen allerede
+            afhaenger af, en struktur, en invariant
+ALDRIG TIL  et navn · et antal · en linjes tekst · en position · prosa
+```
+
+**Og sabotagen skal gaa i BEGGE retninger.** Androids `#86` er forlaegget:
+
+```
+A  skift noeglens navn + tilfoej en regel   GROEN   testen maa ikke roeres
+B  skift den baerende datanoegle            ROED    enheden ER aendret
+C  skift vaerdiens FORM                     ROED    konverteringen mangler
+```
+
+B og C beviser, at testen maaler noget. **A beviser, at den ikke maaler det
+forkerte** — og uden A er en rettelse bare en anden maade at vaere foelsom paa.
+
+### Og den dyre halvdel: en vagt, der kaemper mod arbejdet, bliver slaaet fra
+
+Tre frosne tekster kom tilbage som NYE, fordi en identifikator inde i en
+interpolation var omdoebt — samme saetning, andet symbol. En vagt, der fejler ved
+hver omdoebnings-commit, bliver slaaet fra, og saa daekker den ingenting.
+
+Rettelsen er at **normalisere det, der ikke er indholdet**: interpolationen til
+`#`, saa teksten maales og ikke symbolet. Det er grunden til, at iOS' grundlinje
+overlevede deres egen omdoebning, mens Androids ikke gjorde.
+
 ### En liste fortæller hvilke værdier der findes, aldrig hvad de betyder i din kode
 
 Androids formulering, 04-10-2026, efter at have fået en ordforrådsliste fra
