@@ -92,6 +92,7 @@ staar paa.** Et menneske afgoer det paa NAVNET.
   unknown        wrong          invalid        attempt        registration   registrations  file
   basis          kickoff        markdown       meter          neutral        offline        participated   platform       selected       slots          started        theme          trend        
    
+  input          model          models         history        dependencies   duration
   types          unique         until          updated        upload         url            value        
   verification   verify         version        vocabularies   wizard       
 

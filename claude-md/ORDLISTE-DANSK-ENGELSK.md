@@ -2976,3 +2976,61 @@ den ikke holder i deres kode, måler vi igen.
 - **Backends variabelnavne.** Se intervallet ovenfor — mit tal er et gulv.
 - **Værdier i data.** `sessions.status` indeholder `'Udtaget'` som DATA, og det
   er `#141`/`#156`, ikke `#124`.
+
+## A32 — ord, der blokerede 90 FILNAVNE, og ét af dem var doemt i PROSA
+
+**Androids maaling 06-10-2026 under `#99`** (filnavne og mappenavne). De fik 36
+filnavne igennem og 90 afvist. **De fire hyppigste blokkere:**
+
+```
+Modeller   10 navne        Datainput   5
+Model       5              Historik    3
+```
+
+Plus `Afhaengigheder`, som listen ikke har i NOGEN boejning — saa deres
+selvkontrol falder paa den, og **deres tal 72 er et UNDERtal.**
+
+### Og `Datainput` var allerede doemt — i broedteksten
+
+Linje 1137 i denne fil siger:
+
+> *"datainput er data + input, begge engelske og begge GODKENDTE"*
+
+**`data` staar i GODKENDT ENGELSK. `input` gjorde IKKE.** Dommen blev skrevet
+som prosa og aldrig foert ind i de data, vaerktoejet laeser.
+
+```
+en doem i en saetning    et menneske kan laese den
+en doem i listen         et vaerktoej kan laese den
+```
+
+Det er samme skelet som alt andet i dette projekt: **noget baerende fandtes kun
+ét sted, og det sted var ikke det, nogen laeser programmatisk.** Her kostede det
+fem filnavne i fem dage.
+
+### De tre nye mapninger
+
+| dansk | engelsk | grundlag |
+|---|---|---|
+| historik | `history` | entydig. Ét plausibelt engelsk ord |
+| afhaengigheder | `dependencies` | entydig i en kodebase. Ental `afhaengighed` -> `dependency` foelger af A28 |
+| modeller | `models` | dansk flertal. Ental `model` er SAMME ord paa begge sprog og staar nu i GODKENDT ENGELSK |
+
+**`model` er ikke en omdoebning.** Ordet er identisk paa dansk og engelsk, saa
+`Model` i et navn skal blive staaende — den hoerer i godkendt-listen, ikke her.
+`Modeller` er derimod en dansk boejning og skal til `models`.
+
+### Og hvorfor det ikke bare er "tilfoej ordene"
+
+**Listen er AUTORITETEN, og Androids vaerktoej har ret i at afvise et ord, den
+ikke kender.** Det er den rigtige opfoersel: et ord, der mangler, skal
+tilfoejes af et menneske, der har set at det ikke ogsaa er dansk — ikke gaettes
+af et vaerktoej.
+
+> En liste, der mangler et ord, er ikke en fejl i vaerktoejet. Den er en fejl i
+> listen, og den SES kun, fordi vaerktoejet naegter at gaette.
+
+Det er modsat af den fejlform, filen ellers advarer om: her meldte instrumentet
+**for lidt** daekning, ikke for meget — og et undertal faar nogen til at maale
+igen. Et overtal ville have lukket arbejdet for tidligt.
+
