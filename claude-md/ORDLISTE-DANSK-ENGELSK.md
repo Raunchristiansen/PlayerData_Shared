@@ -2806,6 +2806,59 @@ vaerktoej** — og hver gang kostede uensartetheden en maaling, ikke en fejl.
 taeller raekkerne, og saml tallet mod en platforms parser, foer afsnittet
 meldes som brugbart.
 
+## A31. TRE ORD, der blokerede tre filnavne — og `selvmaal`s faelde
+
+**Afgjort 06-10-2026 kl. 12:30, fordi Backend standsede paa dem i `#176` del 2
+frem for at gaette.** Seks af ni filnavne gik igennem; tre blev blokeret.
+
+| dansk | engelsk | grundlag |
+|---|---|---|
+| kontrakt | `contract` | **serverens egne navne:** `contract/contract.json` i det delte repo, `sessions_contract.py`, `live_contract` |
+| samme | `same` | entydig. Ét plausibelt engelsk ord |
+| selvmaal | `own_goal` | entydig som ORD — **men se faelden nedenfor** |
+
+`kontrakt` er den staerkeste af de tre: **serveren har allerede ordet tre
+steder**, saa det er ikke en beslutning, kun en efterproevning.
+
+### FAELDEN: `selvmaal` er OGSAA en wire-noegle
+
+```
+iOS      Kladde.swift      selvmaal = "selvmaal"    <- CodingKey, DANSK
+server   live.py:746/822   selvmaal=True
+```
+
+**Ordet staar paa ledningen i dag, og det er dansk.** Saa de to ting skal holdes
+adskilt:
+
+```
+FILNAVNET      generer-selvmaal-vektorer.py -> generate-own-goal-vectors.py
+               FRIT. Et scriptnavn krydser ingen graense
+WIRE-NOEGLEN   "selvmaal" i event-JSON
+               #156's omraade. Kraever begge klienter aendret OG UDGIVET
+```
+
+**At ordet er afgjort betyder altsaa IKKE, at noeglen maa omdoebes.** Det er samme
+skelnen som `afbud_aarsag`: ordet er `absence_reason`, men noeglen skiftede
+additivt og venter paa `#156` trin 3.
+
+> Et ord kan vaere afgjort, mens ét af dets FOREKOMSTER er frosset. Listen
+> afgoer ordet; endepunktet afgoer noeglen.
+
+### Og det er grunden til, at Backends stop var rigtigt
+
+De omdoebte seks filnavne og standsede paa tre. **Havde de gaettet `selvmaal`,
+havde de sandsynligvis ramt filnavnet korrekt** — men det er held, ikke metode,
+og naeste gang kunne ordet have vaeret et, hvis engelske form var tvetydig
+(`kort`, `plads`, `maal`).
+
+```
+seks gik igennem   ordene var afgjort
+tre standsede      ordene var ikke -> meldt som ORD, ikke som filnavne
+```
+
+**Det er formen fra "send ord, aldrig lister", brugt af modtageren.** De sendte
+tre ord op; jeg afgjorde dem mod serverens navne; filnavnene er deres.
+
 ## B. Entydige — jeg foreslår, ingen beslutning nødvendig
 
 Ingen af disse har to plausible engelske ord i denne kodebase.
