@@ -1561,6 +1561,58 @@ delstreng er sikker, en sammensaetning er ikke.
 > SAMMENSAETNING, hvis dele hver for sig staar i mapningen.
 
 
+## A14. `forventet`, og to ord der slet ikke er danske
+
+**Maalt 04:19 paa de ord, der blokerer flest af Backends resterende def-navne.**
+
+| navne | dansk | engelsk | n | serverens bevis |
+|---|---|---|---|---|
+| **2** | forventet | `expected` | **12** | `expected_status`, `expected_name` — ved siden af `forventet_status` |
+
+### `init` og `dev` stod i INGEN af de to lister
+
+```
+init   godkendt engelsk?  NEJ   overdetektion?  NEJ
+dev    godkendt engelsk?  NEJ   overdetektion?  NEJ
+```
+
+**De blokerede tre def-navne hver**, og de er ikke danske:
+
+```
+init   engelsk forkortelse for initialize — universel i kode
+dev    forkortelse for development/developer, som repo · api · dsl
+```
+
+`init` er **tilfoejet til GODKENDT ENGELSK**. `dev` er tilfoejet til
+OVERDETEKTION, hvor `repo`, `dsl`, `hid`, `api` og `json` allerede staar.
+
+**Det er samme hul som `dbu` og `veo` kl. 01:30:** et ord, der ikke er dansk,
+men som ingen har sagt noget om, blokerer navne — og hverken ordbogen eller
+godkendelseslisten kan afgoere det, fordi det er en **forkortelse.**
+
+### Og to "blokeringer" var min egen maalings graense
+
+```
+minutter       flertal af `minut -> minute` — BOEJNINGSREGLEN daekker den
+traeningstype  traening + type — SAMMENSAT daekker den
+```
+
+Mit maaleskript deler paa `_` og slaar hver del op. **`traeningstype` er ét
+token uden underscore**, saa den fandt ingen del i mapningen og meldte ordet som
+blokerende. **Det er ikke en blokering; det er at mit instrument ikke kan det,
+reglerne kan.**
+
+> Et instrument, der er svagere end reglen, melder reglens arbejde som
+> resterende.
+
+Det er samme form som Androids `lineup`-spoegelser: deres vaerktoej kunne ikke
+genkende sin egen udgang. Mit kan ikke genkende SAMMENSAT-reglens.
+
+**Saa de to oeverste i min egen blokeringsliste var stoej.** De rigtige
+toppositioner er `raekker`/`raekke` (A5b, korrekt blokeret) og de ord, der
+staar her.
+
+
 ## B. Entydige — jeg foreslår, ingen beslutning nødvendig
 
 Ingen af disse har to plausible engelske ord i denne kodebase.
