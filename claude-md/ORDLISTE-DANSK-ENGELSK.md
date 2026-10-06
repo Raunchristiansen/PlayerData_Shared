@@ -3061,7 +3061,6 @@ store   AuthStore.kt · AdvarselStore.kt · FormRegelStore.kt · HoldlisteStore.
 | ark | `sheet` | `KampArk.kt`, `StoevneArk.kt`. **Serverens eget ord:** `teamsheet`, `/teamsheet-players` |
 | sektion | `section` | `KampeSektion.kt`, `SamletSektion.kt`, `TraeningSektion.kt`. Entydig |
 | statistik | `stats` | `StatistikFane.kt`, `StatistikModel.kt`. **Serverens eget ord:** `stats.py`, `/api/stats` — ikke `statistics` |
-| traek | `pull` | `TraekForAtHente.kt` = "pull to refresh" — **men se nedenfor** |
 
 ### `store` og `traek` er tvetydige som ORD, og det skal staa
 
@@ -3080,10 +3079,40 @@ DISSE navne, ikke over ordene.**
 > Et ord, der findes i begge sprog, afgoeres paa navnet. At det er afgjort ét
 > sted goer det ikke afgjort alle steder.
 
-**Saa: et vaerktoej maa IKKE mekanisk erstatte `traek -> pull` eller behandle
-`store` som engelsk uden for de maalte navne.** Dukker `Traek` op i en ny fil,
-skal den laeses igen — `Traek.kt` alene er ikke maalt mod sit indhold her, kun
-mod sit navn.
+**Saa: et vaerktoej maa IKKE behandle `store` som engelsk uden for de maalte
+navne.**
+
+### RETTET 06-10 kl. 17:55: `traek` har INGEN enkelt mapning — Android laeste filerne
+
+**Jeg skrev `traek -> pull` og noterede, at `Traek.kt` kun var maalt paa sit
+NAVN. Android laeste indholdet, og de to filer kraever to FORSKELLIGE ord:**
+
+```
+TraekForAtHente.kt   PullToRefreshBox, "traek ned for at hente"        -> pull
+Traek.kt             detectDragGesturesAfterLongPress · TraekTilstand
+                     "traek mellem kamptruppen og banen"               -> DRAG
+```
+
+**Ét dansk ord, to filer, to engelske ord.** Tvetydigheden er dermed MAALT, ikke
+teoretisk — og `traek` hoerer udelukkende i afsnittet *"kan ikke afgoeres paa en
+liste"*, ved siden af `side`, `min` og `sort`.
+
+**`traek` har ingen mapning. Den afgoeres pr. FIL, af en, der har laest filen.**
+
+### Og filen modsagde sig selv, hvilket Androids vaerktoej fangede
+
+Efter A33 stod `traek` BAADE som en mapning OG i `KAN_IKKE_AFGOERES`. Deres
+`simpelt()` tjekker den sidste FOERST, saa vaerktoejet valgte det forsigtige.
+
+> *"Samme form som `Datainput` i runde 2: dommen fandtes ét sted, mens et andet
+> sted i SAMME fil sagde noget andet — og det sted var det, vaerktoejet laeser.
+> Dengang prosa mod data; her to datablokke mod hinanden."*
+
+**Og denne gang var det forsigtige svar det RIGTIGE.** Uden `KAN_IKKE_AFGOERES`
+var `Traek.kt` blevet til `Pull.kt` — en fil om drag-and-drop.
+
+> En modsigelse i listen loeses ikke ved at vaelge den nyeste post. Den loeses
+> ved at fjerne den forkerte — og her var den forkerte MIN.
 
 ### Og fire af Androids afviste var ikke listens skyld
 
