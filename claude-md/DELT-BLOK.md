@@ -1518,6 +1518,65 @@ Rettelsen var at matche **andet argument til `live(`**, altså den ene form, hvo
 fragment bliver en sti, og at generere snapshottet af serverens egne stier under
 `/live/`. Det er forskellen på at rette otte tilfælde og at lukke en klasse.
 
+### Et delt dokument maa kun baere noegler, BEGGE klienter kender
+
+**Mortens beslutning 06-10-2026 (`Backend#114`), paa en maaling af begge
+klienter.** Den gaelder `sessions.timeline_json` og opstillingsdokumentet — de
+steder, hvor en klient laeser, retter noget ANDET, og skriver tilbage.
+
+```
+TIDSLINJEN
+  iOS      DatainputLogik.swift:825   var d: [String: Any] = [ ... ]
+  Android  TidslinjeJson.kt           buildJsonObject { put(...) }
+OPSTILLINGEN
+  iOS      OpstillingModeller.swift:63  encode(to:) + CodingKeys
+  Android  OpstillingModeller.kt:46     @Serializable
+```
+
+**Ingen af de fire har en passthrough-pose.** Begge klienter bygger dokumentet
+fra en typet model, saa **enhver noegle, klienten ikke kender, forsvinder, naeste
+gang den klient skriver.**
+
+### LAESE og BAERE er ikke det samme
+
+Det er den forveksling, reglen findes for:
+
+```
+LAESE   Android ignoreUnknownKeys = true   Swift ignorerer per design
+        -> en ukendt noegle kaster IKKE. Begge er tolerante
+BAERE   ingen af dem                       -> noeglen er VAEK ved naeste skrivning
+```
+
+**En server, der tilfoejer et felt til et delt dokument uden at begge klienter
+kender det, mister feltet tavst** — uden fejl, uden log, og uden at nogen roerte
+det felt.
+
+### Hvad reglen koster, og hvad den sparer
+
+```
+KOSTER   en server kan ikke tilfoeje et felt til et delt dokument uden
+         en build-runde. Hver gang
+SPARER   #184 brugte TRE maalinger paa at opdage, at en markoer i
+         event-dict'et ikke kunne overleve. Reglen siger det paa
+         fem sekunder
+```
+
+Prisen betales i forvejen: `#153`s additive form (serveren sender begge,
+klienten laeser den nye, serveren fjerner den gamle) findes netop fordi en
+kontraktaendring kraever en udgivelse.
+
+### Og alternativet var det farlige
+
+En passthrough-pose ville lade en server tilfoeje felter frit. **Men saa
+roundtripper hver klient vaerdier, den ikke kan validere** — og et korrupt eller
+foraeldet felt baeres videre af netop den klient, der skulle have opdaget det.
+
+Denne fil har tre tilfaelde, hvor *"bevar hvad du ikke forstaar"* skjulte en fejl
+i dage.
+
+> Tolerance paa LAESEsiden er robusthed. Tolerance paa SKRIVEsiden er at
+> videresende noget, man ikke har forstaaet.
+
 ### En omdoebning kan SKYGGE en egenskab — og compileren siger ingenting
 
 **iOS' maaling 06-10-2026, under `#89`.** Den er den foerste fejlform i
