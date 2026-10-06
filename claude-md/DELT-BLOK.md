@@ -2467,6 +2467,74 @@ Samme familie som denne fils egne afsnit om et filter, der ikke rammer noget ("E
 
 **Reglen, generaliseret:** et instrument, der kan se en DELMÆNGDE af det, det påstår at dække (en side af resultater, en tidsgrænse, et filter), skal sige HVILKEN delmængde det så — ikke kun hvad den fandt i den.
 
+### Et submodul har TRE lag, og "bagud" betyder noget forskelligt i hvert
+
+Koordinatoren maalte 06-10-2026, at Androids `shared/`-checkout var 34 commits
+bagud og manglede fem nye ordliste-afsnit, og konkluderede, at de ikke kunne
+laese den faelles liste. **Android maalte det og havde ret imod mig.**
+
+```
+1  pin, committet i sessionens repo    flyttes kun med en commit
+2  LOKAL origin/main-ref               flyttes af git fetch
+3  checkout (HEAD)                     flyttes af checkout/submodule update
+```
+
+Maalt i Androids trae, samme sekund:
+
+```
+1 pin                95cc402   34 bagud
+2 origin/main-ref    b6d0f83   AJOUR — havde alle fem afsnit
+3 checkout           95cc402   34 bagud
+```
+
+**Deres vaerktoej laeser lag 2**, og det er bygget mod praecis den
+foraeldelsesfejl:
+
+```python
+# .scripts/omdoeb_core.py
+r = subprocess.run(["git","-C",str(ROD/"shared"),"show",f"origin/main:{relsti}"], ...)
+_REF_BRUGT[relsti] = "origin/main"        # eller: det UDTJEKKEDE submodul
+...
+print(f"  {fil.split('/')[-1]:28} laest fra {ref}")   # hver koersel
+```
+
+**Jeg maalte lag 3 — det lag, ingen laeser programmatisk.** Og de to lag ser
+identiske ud i enhver `git log` paa sessionens eget repo, fordi de begge bliver
+til den samme hash dér.
+
+### Konsekvensen: en laesevej er stoerre end et commit
+
+Androids formulering:
+
+> Et commit er ikke en forbindelse — men en LAESEVEJ er. Vores gaar uden om
+> pinnen, og den optegner hvilken ref den brugte.
+
+**Og pinnen flyttes med rette ikke.** `PlayerData_Shared` baerer baade data og
+`DELT-BLOK.md`, altsaa sessionens egne instruktioner, og en session maa ikke
+loefte en pegepind til aendringer i dem. iOS afviste det to gange og havde ret;
+Android loefter den heller ikke. **Forskellen mellem dem er ikke modet — det er,
+at den ene har en laesevej, der ikke kraever et loeft.**
+
+### Hvad der kan kopieres, og hvad der ikke kan
+
+```
+VIRKER IKKE   "hent oftere"        en regel, der skal huskes hver gang
+VIRKER        laes `git show origin/main:<fil>`
+              OG print hvilken ref du faktisk brugte
+```
+
+Den anden halvdel er den, der goer det til et instrument i stedet for en vane:
+**en laesning, der ikke siger hvilken ref den laeste, kan ikke skelnes fra en
+foraeldet.** Det er samme krav som "et vaerktoej skal rapportere sit eget
+interval", paa en akse mere.
+
+**Og graensen, der STAAR:** lag 2 opdateres af en `fetch`. Androids tre foerste
+runder var ajour, fordi de havde hentet; den fjerde laa efter deres sidste
+hentning, og dér arbejdede de paa koordinatorens ord alene. **En laesevej
+fjerner pin-problemet, ikke fetch-problemet** — den gor det bare synligt, fordi
+refen bliver printet.
+
+
 ### Da hullet var i vagtens MATERIALE og ikke i dens doemning
 
 Androids maaling 06-10-2026, og det er den skarpeste udgave af
