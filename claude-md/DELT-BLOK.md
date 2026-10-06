@@ -2206,6 +2206,62 @@ OK (skipped=2)      <- begge SPRUNGET OVER: "kraever fastapi"
 > Spoerg aldrig "bestod den". Spoerg "hvor mange KOERTE".
 
 
+### Og en suite, der slet ikke BLIVER kaldt, raadner tavst
+
+Afsnittet ovenfor handler om tests, der blev SPRUNGET OVER og meldte `OK`.
+Dette handler om det naeste trin: en suite, der oversaettes, men som ingen
+port nogensinde udfoerer.
+
+Androids maaling 06-10-2026, foerste gang deres instrumenttests blev koert:
+
+```
+3 af 63 roede
+  NatteSkaermeTest.theLittleExtra   "raekke_navn" "blokerende_hold" "stilling"
+                                    modellen vil have division_name,
+                                    blocking_teams, standings
+  NatteSkaermeTest.myDetails        "navn" "antal_registreringer"
+                                    modellen vil have username, session_count
+```
+
+Gaten OVERSAETTER `androidTest`; den koerer dem ikke. Emulator-jobbet kan ikke
+koere, saa suiten koeres kun, naar en telefon er tilsluttet. **De to tests havde
+vaeret roede siden noeglerne skiftede.** Deres formulering:
+
+> Nyttelast i en test, der aldrig koeres, raadner tavst — og en omdoebning af
+> noegler er praecis det, der faar den til at raadne.
+
+**Og de spurgte de to andre platforme frem for at generalisere:** *"jeg har IKKE
+maalt jeres traeer."* Koordinatoren maalte begge 06-10 kl. 05:00, og de tre svar
+er forskellige — hvilket er grunden til, at spoergsmaalet var vaerd at stille:
+
+```
+Android   suiten koeres ikke i porten, og den BAERER nyttelast   -> raadnet
+Backend   26 af 62 filer gated paa fastapi, men CI koerer dem,
+          og alle 26 staar i modul-listen. NUL huller            -> intet raadnet
+iOS       -only-testing:FodboldTrackerTests udelader hele
+          FodboldTrackerUITests. Men nul JSON-noegler i maalet    -> kan ikke raadne
+```
+
+**iOS' tilfaelde er alligevel det mest alvorlige**, og ikke af den grund
+Android ledte efter. Den ene test, porten udelader, er
+`FodboldTrackerLaunchTests` — bygget 29-09 efter en iOS/Android-krydsafstemning,
+fordi *"appen havde INTET testmaal, der beviser den rent faktisk kan STARTE"*,
+og dens egen dokumentation henviser til **Androids crash** som grunden. Det er
+sammensaetningen fra afsnittene ovenfor, og sikkerhedsnettet mod den haenger
+ikke op. (`PlayerData_iOS#83`)
+
+**Spoergsmaalet, der er billigt at stille paa enhver platform:** findes der en
+testsuite, der kun oversaettes og ikke koeres — og baerer den nyttelast? Og
+spoerg det paa HVER platform. Tre traeer gav tre forskellige svar her.
+
+**Og en vagt mod formen er ikke altid svaret.** Android maalte en: JSON-noegler
+i tests, som intet i `main/` laeser. Resultatet var **37 noegler i 123
+forekomster**, og de fleste legitime (`helt_nyt_felt` er bevidst ukendt for en
+`ignoreUnknownKeys`-test). De byggede den ikke, og skrev maalingen OG fravalget
+ind i `ci.sh`, saa den naeste ikke maaler det forfra. Samme konklusion som
+`kdoc_referencer`s 60-mod-19: **et instrument, der melder 37 hvor faa er aegte,
+bliver slaaet fra.** Svaret er at koere suiten, ikke at bygge en proxy for den.
+
 ### En manglende decode-nøgle kan ligge skjult bag en anden fejl
 
 Samme kort (#19): en JSON-decoder for et nyt svar manglede en `CodingKeys`-mapning for ét felt (serveren sendte `display_da`, Swift-typen havde kun den camelCase-navngivne property uden eksplicit nøgle) — en ægte fejl, der ville have kastet `DecodingError.keyNotFound` i den RIGTIGE app, første gang svaret blev afkodet. Den blev ikke fundet af nogen test, fordi testkørslen crashede (se afsnittet ovenfor) FØR afkodningslogikken nogensinde kørte — crashet maskerede fejlen fuldstændigt.
