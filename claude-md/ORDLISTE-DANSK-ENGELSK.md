@@ -2674,6 +2674,83 @@ bogstav. Samme klasse som `minut -> minutter` (dobler konsonanten) og Androids
 **Derfor staar de fem afledte ord i teksten ovenfor som MAALTE, ikke som
 genererede** — hvert enkelt laest, foer det blev tilfoejet.
 
+## A29. `valgfri` er ÉT ord — og sammensatte ord er en fejlklasse for sig
+
+**Afgjort 06-10-2026 kl. 11:10, paa Androids fund.** Deres vaerktoej foreslog:
+
+```
+TypeValgfriTest  ->  TypeSelectionFreeTest      NONSENS
+```
+
+```
+valg -> selection    RIGTIGT
+fri  -> free         RIGTIGT
+valgfri -> optional  og det er ET ord, ikke to
+```
+
+**Beviset stod i testens egen KDoc:** *"`Registration.type` er VALGFRI"*.
+
+| dansk | engelsk |
+|---|---|
+| `valgfri` | `optional` |
+
+### Fejlklassen, og den har ikke haft et navn
+
+```
+C2 (kendt)   et KORT dansk ord er DELSTRENG af et andet
+             hold -> team giver Inteam, beteamt, Placeteamer
+A29 (ny)     et SAMMENSAT dansk ord, hvis DELE hver er mappede,
+             men hvis HELHED betyder noget andet
+             valgfri = optional, ikke "selection-free"
+```
+
+**Forskellen er, hvor kontrollen skal sidde.** C2 loeses ved at matche paa hele
+ord i en camelCase-opdeling. **A29 kan IKKE loeses paa den maade** — `valgfri`
+ER et helt ord i opdelingen, og begge dele er lovlige mapninger. Den loeses kun
+ved, at ordet staar paa listen som sig selv.
+
+> Et sammensat ord slaar sammensat-reglen til, netop fordi delene er rigtige.
+
+### Familien, vi allerede havde maalt uden at navngive den
+
+C2's tabel indeholder praecis denne klasse, uden at kalde den noget:
+
+```
+indhold     content      ikke "in-team"
+forhold     ratio        ikke "for-team"
+ophold      stay         ikke "op-team"
+beholdt     kept         ikke "be-teamt"
+tilstand    state        ikke "til-stand"   (afgjort i C3)
+```
+
+**Fem var allerede fundet, og `valgfri` er den sjette.** De blev fundet én ad
+gangen af den, der ramte dem — ikke af en liste.
+
+### OG JEG BYGGEDE IKKE EN LISTE, med vilje
+
+Jeg proevede. Mit udtræk af mapnings-ordene fra denne fil gav **937 ord**, hvoraf
+hovedparten var PROSA — `afgjorde`, `advarslen`, `aldrig`, `alle`. Femte gang
+samme fejl i dette arbejde, og denne gang inde i de indrammede blokke, hvor
+reglen *"pars kun det indrammede"* skulle have beskyttet.
+
+**En detektor, jeg ikke kan stole paa, skal ikke producere en liste.** Min egen
+regel siger det:
+
+> SEND ordet · maalvaerdien · forekomsttallet · hvor beviset staar
+> SEND IKKE en liste over konkrete navne
+
+**Saa dette afsnit er en REGEL plus seks maalte instanser — ikke et facit.**
+
+### Hvad hver platform skal goere i stedet
+
+**Rammer sammensat-reglen et navn, hvor resultatet lyder forkert: STANDSE og
+meld ORDET.** Ikke navnet, ikke filen — ordet, dets rigtige engelske
+oversaettelse, og hvor beviset staar.
+
+Androids form er forlaegget: de laeste testens KDoc, saa at `valgfri` var ét
+begreb, og standsede. **Tre af deres fire fund i dag kom fra at laese
+kaldestedets dokumentation**, ikke fra en bedre ordliste.
+
 ## B. Entydige — jeg foreslår, ingen beslutning nødvendig
 
 Ingen af disse har to plausible engelske ord i denne kodebase.
