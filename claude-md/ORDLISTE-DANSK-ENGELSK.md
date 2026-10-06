@@ -865,6 +865,7 @@ iOS' doc alene, fordi den er maalt paa de navne, der faktisk staar tilbage.
 | **7** | felt | `field` | **57** | `field_key`, `nullable_fields` |
 | 9 filnavne | generer | `generate` | — | **Backends maaling 02:52: eet konsistent betydning i ~15 kaldesteder paa tvaers af 9 filer** — "genererer testvektorerne". Men FILNAVNENE flyttes ikke paa den: se kaeden i KAEDER.md |
 | **5** | fjern | `remove` | 1 | **Afgjort paa KOLLISIONEN, ikke paa tallet.** `slet` ejer allerede `delete` (36 forekomster), og de to er forskellige operationer i koden: `_fjern_token` fjerner et token fra en liste, `slet_stoevne`/`slet_min_konto` sletter en raekke. `remove` har n=1, men det er det ENESTE ord, der ikke kolliderer |
+| **5** | kampprogram | `fixtures` | 9 | **SERVEREN HAR RUTEN:** `dbu.py:497` `@router.get("/fixtures")`, og `db.py:2249` skriver selv `dbu.py::get_kampprogram (/fixtures)`. `#171`s moenster — ruten blev engelsk, `def`'en blev ikke. Se afsnittet nedenfor |
 | **8** | ekstra | `extra` | **51** | `has_extra_time` |
 | **8** | sidste | `last` | **29** | `last_sync`, `last_seen` |
 | **8** | ryd | `clear` | **18** | bydeform, som `marker` og `placer` |
@@ -1201,6 +1202,42 @@ sender tal — og begge skal proeve deres vaerktoej mod dets eget output.
 afgjort hele tiden. Projektet skriver dansk uden diakritter i identifikatorer
 (`#124` maalte: kun 36 navne med ae/oe/aa direkte), saa noeglerne skal ogsaa
 skrives saadan. En parser, der ikke normaliserer, missede seks poster.
+
+### Jeg afviste `kampprogram` TO GANGE paa et antal uden at laese linjerne
+
+**Maalt kl. 03:05, og det var det modsatte af min antagelse.**
+
+```
+app/dbu.py:497        @router.get("/fixtures")          <- RUTEN
+app/db.py:2249        # dbu.py::get_kampprogram (/fixtures)
+app/dbu.py:796        resource="fixtures"
+app/dbu_sync.py:1279  "pool %s's fixture fetch dropped ..."
+tests/*               seks forekomster — AEGTE pytest-fixtures
+```
+
+**Fodbold-betydningen ligger i `app/`. Pytest-betydningen ligger i `tests/`.**
+Og ruten afgoer ordet paa ledningen: serveren svarer allerede paa `/fixtures`,
+og `test_route_navngivning.py:57` har `"fixtures"` paa sin liste over godkendte
+rutenavne.
+
+**Begge mine afvisninger lyder saadan:**
+
+> Ni `fixtures` i en Python-kodebase er lige saa sandsynligt pytest-opsaetning
+> som fodboldprogram.
+
+Det var rigtigt om TALLET og forkert om koden. **Jeg maalte, at ordet forekom
+ni gange, og konkluderede om hvad det betyder** — nattens egen fejlklasse, i
+det afsnit hvor den staar beskrevet.
+
+**Og `schedule` var ikke et alternativ:** alle seks forekomster er
+cron-scheduleren (`dbu-scheduler`, `scheduler-process`, `purge_expired`-
+intervallet). Ordet er optaget af et andet begreb, saa der var kun eet svar
+hele tiden.
+
+**Backend afviste den paa samme grundlag som mig**, og med min egen regel:
+*"forcing one would be exactly the n=1-style guess you're avoiding."* De havde
+ret i at ikke gaette — **og ingen af os slog ruten op.** Det var ikke et gaet,
+der manglede; det var en maaling.
 
 ## B. Entydige — jeg foreslår, ingen beslutning nødvendig
 
