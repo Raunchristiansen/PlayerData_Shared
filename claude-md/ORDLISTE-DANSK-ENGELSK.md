@@ -1445,6 +1445,69 @@ selvproeve.
 Det er Androids saetning, og den er grunden til, at denne blok er en **blok** og
 ikke en saetning i en kolonne.
 
+## A12. `lager` — afgjort ved at LAESE koden, ikke ved at vaelge mellem to tal
+
+**Rute-metoden svarede ikke:** Backend maalte NUL forekomster af `lager` i
+`@router`-dekoratorer og NUL i `test_route_navngivning.py`s godkendelsesliste.
+Saa afgoerelsen var koordinatorens, og jeg havde afvist ordet paa
+`store` 9 mod `storage` 0 — altsaa paa et tal.
+
+| navne | dansk | engelsk | n | hvad kaldestedet siger |
+|---|---|---|---|---|
+| **10** | lager | `storage` | 0 | **lagerets REPRAESENTATION**, ikke verbet "at lagre". Se nedenfor |
+
+### Hvad de ti funktioner faktisk goer
+
+```python
+_slot_til_lager(s: SlotIn) -> dict
+    {"spiller_navn": s.player_name, "troejenr": s.shirt_number}
+_slot_fra_lager(s: dict) -> dict
+    {"player_name": s.get("spiller_navn"), "shirt_number": s.get("troejenr")}
+```
+
+**Det er ikke "til lagring". Det er dansk-noegle <-> engelsk-noegle.** API-modellen
+er engelsk; det GEMTE dokument (`kamp_opstilling`) har danske noegler, og de ti
+funktioner er graenselaget.
+
+`lager` er altsaa et **navneord** om den gemte form — `storage`, ikke `store`.
+Og `n = 0` i serveren betyder her ingenting: ordet beskriver et begreb, serveren
+ikke har haft et engelsk navn til.
+
+### Og de ti navne er IKKE gaeld — de er en bevidst isolering, der er vogtet
+
+Jeg var paa vej til at skrive et kort om, at `kamp_opstilling`s gemte noegler er
+danske og udaekkede. **Svaret stod i koden, adresseret til en koordinator
+04-10:**
+
+> Lagerformatet var ALDRIG vogtet af `#116`, kun af `#128`s egne
+> Pydantic-feltnavne, som nu tilfaeldigvis ogsaa var lagerets navne. Den
+> reelle, NYE risiko er at DENNE oversaettelse kan fejle stille, uden at `#116`
+> ser det — **derfor pinning-testen**, ikke en udvidelse af `#116` selv.
+
+Maalt: `test_opstilling_lager_remap.py` findes, og `test_feltnavne.py` har
+`test_hvert_kendt_dansk_felt_findes_i_virkeligheden` plus
+`test_intet_ukendt_feltnavn`.
+
+**Saa der er intet hul.** De danske noegler er indesluttet bag et graenselag,
+risikoen er navngivet, og en test holder den. **At omdoebe de ti funktioner er
+derfor den mindst vaerdifulde omdoebning i projektet** — navnene siger allerede
+praecis, hvad de goer, og `til_lager`/`fra_lager` er et par, en laeser forstaar.
+
+### Lektien er min
+
+**Jeg naaede at maale fire gange og var naer at oprette et kort om noget, der
+var spurgt om og besvaret for to dage siden** — i en kodekommentar skrevet til
+en koordinator.
+
+```
+jeg maalte   @router (nul) · test_route_navngivning (nul) · #141 · #156 · #114
+jeg missede  kommentaren LIGE OVER funktionen
+```
+
+Det er samme form som *"filnavne i et repo -> der findes intet svar -> OGSAA
+kortets kommentarer"*: **jeg soegte i kort og i ruter, og svaret laa i koden.**
+
+
 ## B. Entydige — jeg foreslår, ingen beslutning nødvendig
 
 Ingen af disse har to plausible engelske ord i denne kodebase.
