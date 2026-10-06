@@ -1660,6 +1660,92 @@ TYPE-navn       sikker at omdoebe i en batch
 LOKAL / PARAM   opportunistisk, én ad gangen, naar filen alligevel roeres
 ```
 
+### Et RIGTIGT svar fra et defekt instrument efterlader intet spor
+
+**Androids maaling 06-10-2026, og den er den skarpeste udgave af
+selvproeve-reglen, nogen har leveret i dette projekt.**
+
+De skulle maale, om nogen af dagens **761 nye navne** skyggede en property. Deres
+foerste instrument svarede **nul**. Det rigtige svar var **ogsaa** nul.
+
+> Havde jeg stolet paa v1, var konklusionen blevet rigtig **af held**. Det er
+> den farligste udgang, fordi den ikke efterlader et spor.
+
+### Hvad v1 var blind for, og det var den HYPPIGSTE form
+
+v1 samlede properties med et moenster paa `val`/`var` i klassekroppen:
+
+```kotlin
+class Player(val playerName: String) {      // playerName ER en property
+    fun f(playerName: String) { ... }       // <- en SKYGGE, usynlig for v1
+}
+```
+
+**Konstruktoer-properties.** Og i den kodebase er naesten alle modeller
+konstruktoer-properties — **saa v1's nul daekkede netop det sted, hvor skygger
+ville vaere.**
+
+### Det, der fangede den, var IKKE traeet
+
+```
+traeets svar      nul        -- og det var rigtigt
+selvtjekket       v1 bestod lokal-val-skyggen
+                  v1 FEJLEDE parameter-skyggen
+```
+
+**Selvtjekket kraevede, at instrumentet finder begge former i konstruerede
+eksempler.** Foerst da v1 fejlede den ene, blev konstruktoer-parametre samlet
+som properties — og **foerst derefter laeste de traeets svar.**
+
+> Lad maalingen bevise sig selv, FOER du laeser dens svar.
+
+Reglen stod der i forvejen. **Det nye er, hvorfor den gaelder, selv naar svaret
+er rigtigt:** et korrekt tal fra et defekt instrument ser ud som et korrekt tal.
+Der er ingen roed test, ingen uenighed, ingen anledning til at kigge igen — og
+naeste gang instrumentet bruges, paa en kodebase hvor svaret IKKE er nul, melder
+det stadig nul.
+
+```
+defekt instrument + forkert svar   -> nogen bestrider det, og det rettes
+defekt instrument + RIGTIGT svar   -> ingen bestrider det, og det bliver brugt igen
+```
+
+### Og det ene fund var KORREKT kode
+
+Efter rettelsen fandt instrumentet ét tilfaelde:
+
+```kotlin
+private val squad = listOf("Mia Bo", "Ali Hansen", ...)
+private fun show(start: DraftEvent, squad: List<String> = this.squad, ...)
+```
+
+**En parameter, hvis standardvaerdi ER propertyen.** `this.` staar der netop
+fordi den skygger — det er Kotlins idiom for *"samme navn, overskrivbar i det
+enkelte kald"*.
+
+**Og det er selve testen paa, om en skygge er bevidst:**
+
+> En utilsigtet skygge ville ikke kunne skrive `this.squad`; den ville laese
+> parameteren og ikke vide det.
+
+Saa en vagt mod skygning skal kunne skelne — ellers melder den korrekt kode som
+en fejl. Samme skelnen som Backends builtin-vagt, der med vilje IKKE faelder
+skygning uden et kald.
+
+### Hvad maalingen ikke daekker, sagt som et argument og ikke en maaling
+
+Android navngav selv de tre huller: en lokal der skygger en **top-level** `val`
+i samme fil, en parameter der skygger en **extension receiver**, og en
+lambda-parameter der skygger en ydre lambdas parameter.
+
+Deres vurdering af, at de ikke er vaerd at maale, hviler paa at alle tre kraever,
+at det nye navn tilfaeldigt rammer et navn i samme fils ydre scope — og at
+omdoebningerne gik fil for fil, hvor en kollision i samme fil ville give et
+brudt build i de fleste former.
+
+**De sagde selv, at det er et argument og ikke en maaling.** Det er den rigtige
+maerkning, og den er grunden til, at man kan tage stilling til den senere.
+
 ### En splitter bruges for det, den FJERNER — og maales paa det, den BEHOLDER
 
 **Fjerde instans af samme form i omdoebningsarbejdet, og den sidste var den
