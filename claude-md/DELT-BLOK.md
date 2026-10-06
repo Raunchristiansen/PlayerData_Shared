@@ -2559,6 +2559,75 @@ streng, der skulle have vaeret. Derfor har begge brug for en TAELLING foer og
 efter, ikke en test.
 
 
+#### En BINAER fejl kan vaere en gate-kontrol. En GLIDENDE skal vaere en taelling, der diff'es
+
+Androids formulering 06-10-2026, efter at de havde automatiseret
+spraengradius-maalingen ovenfor (`spander.py`, `e9ed00d`: *11 former skelnes,
+nul usynlige haler*, sabotage-efterproevet):
+
+> En fejl, der er BINAER, kan vaere en gate-kontrol. En, der GLIDER, skal vaere
+> en taelling, der diff'es — en gate paa et glidende tal bliver enten slaaet
+> fra eller frosset forkert.
+
+Og det forklarer, hvorfor de to sider af samme graense har forskellig FORM:
+
+```
+Androids fejl    en usynlig hale FINDES eller ej      BINAER   -> gate
+Backends risiko  et antal streng-bindinger DRIVER     GLIDENDE -> taelling
+                                                                  foer/efter,
+                                                                  sorteret, diff
+```
+
+**Begge er "omdoebningen og strengen er uenige", fra hver sin ende.** Men den
+ene har en tilstand, en port kan afvise paa, og den anden har et tal, der
+aendrer sig lovligt. En port paa det glidende tal maatte vaelge mellem at
+blokere lovlige aendringer eller at blive sat saa hoejt, at den intet fanger.
+
+### Og maalingen af en foreslaaet vagt ER beslutningen om den
+
+Android maalte spejlrisikoen hos sig selv og fik **122** gamle navne, der stadig
+staar i en streng. **Naesten alle var dansk brugertekst:** `"Opstilling"` er
+fanens navn, `"Kort"`, `"Familie"`, `"efter"` i en saetning. Moensteret kunne
+ikke skelne et gammelt identifikatornavn fra et almindeligt dansk ord.
+
+Indsnaevret til den form, der ER farlig — **hele strengen er navnet, OG navnet
+har mindst to camelCase-led** — blev svaret **3**:
+
+```
+"GpsRaekkeRaa"   buildClassSerialDescriptor   klassen hedder GpsRowRaw
+"TroejeNummer"   PrimitiveSerialDescriptor    objektet hedder ShirtNumber
+"GpsRaekke"      buildClassSerialDescriptor   klassen hedder GpsRow
+```
+
+Alle tre er serializer-descriptornavne, og efterproevet: ingen polymorf
+serialisering haenger paa dem, saa navnet er ren typeidentitet og fejlbesked.
+**Ingen adfaendsaendring — men en foraeldet paastand i en besked, nogen en dag
+laeser under en fejlsoegning.** Rettet, med hvert nyt navn kontrolleret mod en
+klasse, der findes.
+
+**De byggede den IKKE som en vagt**, og begrundelsen er symmetrisk i begge
+ender:
+
+```
+ved 122   den ville blive slaaet fra        (som 37-noegle-vagten)
+ved   3   der er ikke nok tilbage til at
+          retfaerdiggoere en skralde, der
+          skal vedligeholdes
+```
+
+**Det er anden gang samme nat, en vagt blev fravalgt EFTER at vaere maalt, og
+begge gange var tallet selv svaret.** Den foerste var 37 noegler i 123
+forekomster.
+
+> Maal den vagt, du overvejer at bygge, FOER du bygger den. Outputtet afgoer
+> baade om den kan bruges og om den er noedvendig — og et instrument, der melder
+> 122 hvor tre er aegte, er ikke et uferdigt instrument. Det er det forkerte
+> signal.
+
+**Og skriv maalingen OG fravalget ned**, saa den naeste ikke maaler det forfra.
+Android lagde begge i `ci.sh`.
+
+
 ### Et submodul har TRE lag, og "bagud" betyder noget forskelligt i hvert
 
 Koordinatoren maalte 06-10-2026, at Androids `shared/`-checkout var 34 commits
