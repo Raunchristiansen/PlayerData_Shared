@@ -2820,6 +2820,87 @@ Samme familie som denne fils egne afsnit om et filter, der ikke rammer noget ("E
 
 **Reglen, generaliseret:** et instrument, der kan se en DELMÆNGDE af det, det påstår at dække (en side af resultater, en tidsgrænse, et filter), skal sige HVILKEN delmængde det så — ikke kun hvad den fandt i den.
 
+### "Jeg kan ikke efterproeve det" — aldrig "det findes ikke" — naar du kun har maalt din egen laesevej
+
+**Androids egen formulering, 06-10-2026 kl. 22:05, efter at de havde meldt et
+citat fra koordinatoren som opdigtet.**
+
+Koordinatoren underbyggede et svar med et citat, indledt *"CLAUDE.md siger"*.
+Android slog det op:
+
+```
+NORMALTILSTAND / "fuld swap" / "fire Claude-sessioner" / available
+  DELT-BLOK.md               0 traef
+  shared/claude-md/          0 traef
+  ~/PlayerData/claude-md/    0 traef
+```
+
+De meldte: *"Saetningen er ikke en gengivelse af en regel; den er skrevet i
+aften."*
+
+**Citatet var aegte.** Det staar i `koordinator/CLAUDE.md:703-706` — en
+FJERDE CLAUDE.md, som ingen platform-session har paa sin laesevej.
+
+**Deres egen opdeling, og den er den praecise:**
+
+```
+maalingen      nul traef i tre filer      RIGTIG, og stadig rigtig
+konklusionen   "den findes ikke"          FOR BRED -- nul traef i tre filer
+                                          siger intet om en fjerde, de ikke
+                                          vidste fandtes
+```
+
+> Den aerlige saetning var: *"jeg kan ikke efterproeve dette citat fra noget paa
+> min laesevej."* Det er en aegte indvending, og den havde vaeret nok.
+
+**Og det er samme skelnen som denne fils egen testregel** — *"findes der en
+vaerdi, hvor den rigtige og den forkerte kode ville svare forskelligt, og ligger
+den inden for det, testen faktisk proever?"* — anvendt paa en paastand i stedet
+for paa en test. Svaret var nej, og det blev laest som ja.
+
+**Androids tre gange paa én aften, samme form:**
+
+```
+#102   greppede paa annotationer, sluttede om ALLE forekomster   2 af 3 fundet
+#103   laeste to af fire filer paa sin egen liste                1 overset
+citatet maalte sine EGNE filer, sluttede om korpuset             0 af 1
+```
+
+*"Hver gang var instrumentet rigtigt i sit omraade, og hver gang raakte
+konklusionen uden for det."*
+
+**Og den er ikke bare hoeflighed.** Et *"det findes ikke"* om en regel er den
+dyreste slags paastand i denne opsaetning: den naeste, der laeser det, slaar det
+ikke op igen. Havde ingen efterproevet, stod der nu i tre sessioners hoveder, at
+koordinatoren opdigter regler.
+
+### Du kan ikke vide, hvad du ikke har laest, foer du kender laesevejen
+
+Androids anden halvdel, og den er den bredere:
+
+> *"Den fjerde CLAUDE.md er vaerd at vide om i sig selv. Jeg troede der var tre
+> platforme plus DELT-BLOK. **Naar jeg ikke kender laesevejen, kan jeg heller
+> ikke vide, hvad jeg ikke har laest.**"*
+
+```
+PlayerData_iOS/CLAUDE.md          iOS laeser
+PlayerData_Android/CLAUDE.md      Android laeser
+PlayerData_Backend/CLAUDE.md      Backend laeser
+claude-md/DELT-BLOK.md            alle tre laeser  (denne fil)
+koordinator/CLAUDE.md             KUN koordinatoren -- dens arbejdsmaade
+```
+
+**Den femte er ikke jeres**, og den skal ikke laeses som jeres instruktioner.
+Men den findes, og et citat derfra ser ud som en regel, I burde kende.
+
+**Koordinatorens pligt er derfor at citere med FIL og LINJE** — og at sige det,
+naar en regel kun staar i dens egen fil. **Jeres er at sige "jeg kan ikke
+efterproeve det" frem for "det findes ikke."**
+
+Og naar de to instruktionsfiler kan sige noget om samme emne, er DENNE fil
+sandheden for jeres adfaerd, fordi den er den, I laeser.
+
+
 ### Et vaerktoej, der kan goere kode USYNLIG, fejler ikke — det bliver faerdigt for tidligt
 
 Androids fund 06-10-2026, og det er den alvorligste af nattens
