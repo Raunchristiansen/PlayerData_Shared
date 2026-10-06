@@ -2727,6 +2727,71 @@ forekomster.
 Android lagde begge i `ci.sh`.
 
 
+### At BEVARE information, der foer blev oedelagt, gor nye stier NAABARE
+
+Androids `#92` 06-10-2026, og det er en fejlklasse, der kun opstaar naar man
+retter noget.
+
+Kortet bad om ét: hold op med at erstatte et manglende `updated_at` med `nu`
+ved indlaesning af en server-haendelse. **De fandt TRE skrivesider, der blev
+naabare af netop den rettelse.**
+
+```
+TidslinjeJson   skrev id OG updated_at i SAMME betingelse
+                -> en MATCH-haendelse uden stempel sendte "updated_at": ""
+LiveLogik:366   put("updated_at", ...) UBETINGET
+                -> samme tomme felt
+```
+
+Deres egen formulering i koden:
+
+> It could not happen before #92, because `DraftEvent.fra` replaced every
+> absent stamp with `now`. Preserving the absence is what makes the case
+> reachable, so the condition had to be split in the same change.
+
+**Reglen:** naar en rettelse bevarer et signal, der foer blev kastet vaek, skal
+SAMME aendring maale, hvad der nu kan ske. Et felt, der aldrig var tomt, har
+ingen kode, der haandterer tomt — og den mangel er usynlig, indtil feltet kan
+blive tomt.
+
+```
+foer   stien fandtes, men var uopnaaelig   -> ingen test faldt
+efter  stien er naabar                     -> den gamle kode er nu forkert
+```
+
+### Og en KORREKT kommentar over INKORREKT kode er usynlig, saa laenge stien er uopnaaelig
+
+Det skaerpende i samme fund: **kommentaren over `TidslinjeJson` sagde reglen
+rigtigt hele tiden** — *"serveren skelner mellem 'intet stempel' og 'tomt
+stempel'"* — mens koden lige under skrev begge felter i samme betingelse og
+dermed brod den.
+
+```
+kommentaren  rigtig, og har vaeret det laenge
+koden        forkert, men uopnaaelig
+resultatet   ingen kunne se uenigheden
+```
+
+**En gennemlaesning ville have fundet den; ingen test kunne.** Det er
+argumentet for at laese kommentaren og koden som ÉT udsagn, der kan vaere
+selvmodsigende — ikke som dokumentation ved siden af en implementering.
+
+### Og den tredje del: samme felt, to oprindelser, to rigtige standarder
+
+De beholdt `Tid.isoNu()` som standard PAA EGENSKABEN og aendrede kun
+laesestien fra serveren:
+
+```
+lokalt oprettet (DatainputModel:725)   "nu" ER sandheden
+laest fra serveren                      FRAVAER er sandheden
+```
+
+**Kortet bad om at bevare fravaer. Det bad ikke om at skelne oprindelse** — og
+uden den skelnen havde en lokalt oprettet haendelse mistet sit rigtige stempel.
+Samme felt, og hvilken standard der er korrekt afhaenger af, hvor vaerdien kom
+fra.
+
+
 ### Et submodul har TRE lag, og "bagud" betyder noget forskelligt i hvert
 
 Koordinatoren maalte 06-10-2026, at Androids `shared/`-checkout var 34 commits
