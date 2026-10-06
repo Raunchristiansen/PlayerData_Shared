@@ -96,6 +96,7 @@ staar paa.** Et menneske afgoer det paa NAVNET.
   main           play           store
   root           auth           components     onboarding     crashlytics
   prefs          topbar         overlay
+  cross          permission     target         tracking       gate           jar
   types          unique         until          updated        upload         url            value        
   verification   verify         version        vocabularies   wizard       
 

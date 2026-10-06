@@ -3173,7 +3173,7 @@ root · auth · components · onboarding · crashlytics · prefs · topbar · ov
 | detalje | `detail` | `HistorikDetalje` |
 | lille | `small` | `LilleEkstraSkaerm` |
 | kolonne | `column` | `KamptrupKolonne` |
-| indhold | `content` | allerede maalt i C2: 13 navne, alle `content` |
+| indhold | `content` | **HELE ordet** er entydigt. Se rettelsen nedenfor — C2 er IKKE beviset |
 | traenings | `training` | `training` staar i godkendt engelsk |
 | krydstjek | `cross_check` | `KrydstjekKort` |
 | udviklings | `development` | `UdviklingsGrafer` |
@@ -3283,4 +3283,57 @@ jeres kald; begge er korrekte engelske navne.
 
 **Faren var latent, ikke sket:** `sortTekstPaa` i fire filer og `sortValue` i én
 stod uroerte. Men de ville alle vaere blevet hybrider i runde 5.
+
+### RETTET 06-10 kl. 18:35: min begrundelse for `indhold` pegede paa en ADVARSEL
+
+**Android fangede det, da selvproeven kom i gaten.** A34's raekke sagde
+*"allerede maalt i C2"*. **C2 siger det modsatte:**
+
+> **ADVARSEL — DETTE ER IKKE EN MAPPING.** Listen nedenfor er ord, der **IKKE
+> maa omdoebes.**
+
+Og C2 navngiver praecis denne fejl som grunden til, at advarslen findes:
+*"`indhold` endte i deres ordbog som `content` og gjorde `Indhold` til et..."*
+
+**Jeg citerede advarslen som bevis for det, den advarer imod.**
+
+### Men mapningen er RIGTIG — og forskellen er operationen, ikke ordet
+
+```
+C2 handler om     DELSTRENGS-erstatning: hold -> team
+                  som ville goere Indhold til Inteam
+A34 handler om    HELE ORDET: indhold -> content
+                  som er entydigt rigtigt
+```
+
+**Samme ord i begge afsnit, af modsatte grunde.** C2 beskytter `indhold` mod at
+blive flaenset af en `hold`-erstatning. A34 oversaetter `indhold` som ét ord.
+
+**De to kan sameksistere, fordi vaerktoejet har `del_sammensat`** — den haandterer
+sammensatte ord, saa `hold` inde i `indhold` aldrig behandles som et selvstaendigt
+ord.
+
+### Den rigtige begrundelse
+
+`indhold` er entydigt `content` paa dansk. Maalt i Androids traee:
+`OpstillingIndhold`, `FoelgKampIndhold` og elleve andre — **alle er indhold i
+betydningen content.** Det er dén maaling, raekken hviler paa, ikke C2.
+
+> Et afsnit, der ADVARER mod en operation paa et ord, er ikke et bevis for en
+> ANDEN operation paa samme ord. Advarsler og domme skal citeres hver for sig.
+
+### Og Androids egen rettelse er den staerkere
+
+De forankrede selvproeven til en EGENSKAB i stedet for et udfald:
+
+```python
+c2_er_prosa()   C2 maa have NUL parsebare tabelraekker
+```
+
+**Den flytter sig ikke, naar et ord bliver doemt** — og den ville fange, at C2
+fik en engelsk kolonne tilbage for et ord, ingen af os kender i dag. Saboteret:
+en indsat tabelraekke i C2 faelder den.
+
+Deres egen bemaerkning om det: *"tredje gang i den SAMME funktion, at en paastand
+var ankret til et UDFALD i stedet for en egenskab."*
 
