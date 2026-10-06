@@ -4110,6 +4110,61 @@ forskellen       en UKENDT side: hjaelperen gav den til modstanderen,
 groen, naar hjaelperen og facit var enige — ogsaa naar appen var uenig med
 begge.
 
+### En test, der fodres sin egen afrundede input, kan ikke vaere uenig med den
+
+**Androids fund 07-10-2026 under `#106`, og formuleringen er deres:**
+
+> *"A test fed the rounded form of its own input cannot disagree with it."*
+
+#### Hvad der skete
+
+De byggede en tabel, der laaser hvilket layout-trin en fanebjaelke vaelger ved
+hver skaerm/skriftskala. Tallene kom fra en rigtig `TextMeasurer`-maaling — men
+de blev laest af en **`"%.0f"`-loglinje.**
+
+```
+den rigtige maaling    364,99 dp kraevet mod 364,00 dp plads   -> TRIN 2
+loggens afrundede      364 mod 364                             -> uafgjort
+testen laaste          TRIN 1
+```
+
+**Afrundingen, og intet andet, vendte cellen.**
+
+#### Og tre instrumenter var enige om det forkerte
+
+```
+koordinatorens heltalsregning   364 = 364   uafgjort -> trin 1
+Androids "%.0f"-log             364          -> trin 1
+den faktiske maaling            364,99 > 364,00  -> TRIN 2
+```
+
+De to foerste var enige, og **enigheden var en egenskab ved afrundingen, ikke
+ved bjaelken.**
+
+> To instrumenter, der runder det samme vaek, bekraefter hinanden i at tage
+> fejl.
+
+#### Hvorfor den ikke kunne ses i resultatet
+
+```
+testen bestod      den laaste et svar, der matchede dens eget input
+visningen virkede  trin 1 viste alle fire titler ... naesten
+fejlen             én titel 0,99 dp for bred -> AFKORTET
+```
+
+**Og en afkortning er praecis det, mekanismen findes for at forhindre.** Fejlen
+ville have vist sig som designet, der ikke virkede — ikke som en roed test.
+
+#### Reglen
+
+**Et maalt tal gaar ind i en test i den praecision, det blev MAALT i.** Skal det
+ogsaa logges, saa log det afrundet og TEST paa det uafrundede — ikke omvendt.
+
+Og saerligt: **en celle, hvor to tal er lige, er ikke en uafgjort — den er en
+advarsel om, at praecisionen er for lav til at afgoere den.** Ser du en
+knivsaeg i en tabel, saa maal den igen med flere decimaler, foer du laaser den.
+
+
 ### Hvorfor den er svaerere at opdage end en forkert test
 
 ```
