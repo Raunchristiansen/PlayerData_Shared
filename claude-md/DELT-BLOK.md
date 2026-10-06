@@ -1518,6 +1518,77 @@ Rettelsen var at matche **andet argument til `live(`**, altså den ene form, hvo
 fragment bliver en sti, og at generere snapshottet af serverens egne stier under
 `/live/`. Det er forskellen på at rette otte tilfælde og at lukke en klasse.
 
+### En dict-noegle er intern eller PAA LEDNINGEN efter hvor dict'en GAAR HEN
+
+**Maalt 06-10-2026, da iOS fandt en latent brudt sti under `#95`.**
+
+`#155` omdoebte *"17 server-interne danske kolonnenavne til engelsk"*. **For 16
+af de 17 var klassifikationen rigtig. For den ene var den forkert, og den brod
+en klient.**
+
+```
+dbu_sync.py:674/689
+-  r["rangering"] = i
++  r["ranking"] = i
+```
+
+**Den dict ER svaret.** Den gaar direkte ud gennem `/divisions` (via
+`_med_name_alias`), saa noeglen var paa ledningen — ikke intern.
+
+**Virkningen:** iOS' `Raekke` havde et **PAAKRAEVET `Int`**, der laeste
+`rangering`. En manglende paakraevet noegle faelder afkodningen, **saa hele
+`/divisions`-listen ville have fejlet.**
+
+### Hvad `#155` gjorde RIGTIGT 16 gange, saa forskellen er synlig
+
+```
+-  "ranking": p["rangering"]          ->  +  "ranking": p["ranking"]
+-  "klub_navn": row["dbu_klub_navn"]  ->  +  "klub_navn": row["dbu_club_name"]
+-  "troeje": ...row["hjemme_troeje"]  ->  +  "troeje": ...row["home_shirt"]
+```
+
+**Noeglen (venstre side) BEVARET, kun kolonnelaesningen (hoejre side) omdoebt.**
+Det er praecis den rigtige form: en SQL-kolonne er intern, en JSON-noegle er
+ikke.
+
+```
+d["noegle"] = row["kolonne"]
+ ^^^^^^^^^     ^^^^^^^^^^^^
+ LEDNINGEN     INTERN
+```
+
+**Og i `dbu_sync.py` var der ingen hoejre side** — dict'en blev BYGGET, ikke
+oversat fra en raekke. Saa der var kun den ene halvdel, og den var paa
+ledningen.
+
+### Hvorfor den slap igennem
+
+**Modulet heder `dbu_sync` og handler ellers om intern synk-data.** Dict'en
+lignede intern, fordi dens NABOER var det.
+
+> Et moduls navn siger, hvad modulet mest goer. Det siger ikke, hvad hver
+> enkelt dict i det bliver brugt til.
+
+### Og hvorfor det var LATENT og ikke opdaget
+
+`/divisions` kaldes kun i **DBU-opsaetningsguiden**. Ingen har koert den siden
+`#155`. **En brudt sti, der kun rammer en sjaelden flow, er ikke mindre brudt —
+den er bare ikke maalt endnu.**
+
+### Kontrollen, der fanger den
+
+**Foer en noegle omdoebes: foelg dict'en til dens `return`.**
+
+```
+bliver dict'en RETURNERET fra en @router-funktion?    LEDNINGEN
+bliver den skrevet til en kolonne eller en fil?        kan vaere intern
+bliver den givet videre til en anden funktion?         FOELG DEN VIDERE
+```
+
+Og den billigste version: **grep efter noeglen i klienternes `CodingKeys` /
+`@SerialName`.** Findes den dér, er den paa ledningen, uanset hvad serveren
+kalder sit modul.
+
 ### Et delt dokument maa kun baere noegler, BEGGE klienter kender
 
 **Mortens beslutning 06-10-2026 (`Backend#114`), paa en maaling af begge
