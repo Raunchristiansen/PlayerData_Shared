@@ -94,6 +94,8 @@ staar paa.** Et menneske afgoer det paa NAVNET.
    
   input          model          models         history        dependencies   duration
   main           play           store
+  root           auth           components     onboarding     crashlytics
+  prefs          topbar         overlay
   types          unique         until          updated        upload         url            value        
   verification   verify         version        vocabularies   wizard       
 

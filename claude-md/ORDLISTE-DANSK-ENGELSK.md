@@ -3125,3 +3125,102 @@ ORDBOGSregel i stedet for en formregel, og dens selvkontrol er den OMVENDTE —
 alle 155 danske ord koert igennem, **0 daekket.** Kunne ét dansk ord saettes
 sammen af godkendte engelske stumper, var reglen usikker.
 
+## A34 — de 46 ord fra Androids runde 3, og TO af dem kunne ikke doemmes paa listen
+
+**Androids maaling 06-10-2026 under `#100`:** 48 filnavne blokeret af 46 ord.
+`Gemmer` og `Traek` blokerer to hver; resten ét hver.
+
+**Fire blev laest i deres filer foer de blev doemt** — og to af dem viste sig at
+betyde noget andet, end ordet lader ane.
+
+### Engelske — hoerer i godkendt-listen, ikke her
+
+```
+root · auth · components · onboarding · crashlytics · prefs · topbar · overlay
+```
+
+`Crashlytics` er et produktnavn, `Prefs` en etableret forkortelse, og `Topbar`
+ét ord paa engelsk.
+
+### Danske — mapninger
+
+| dansk | engelsk | grundlag |
+|---|---|---|
+| gemmer | `storage` | `LoginGemmer`, `KeystoreLoginGemmer` — den GEMMER noget. **Ikke `store`**, som allerede er optaget af tilstands-moensteret (A33) |
+| fuldskaerm | `fullscreen` | ét ord paa engelsk |
+| bjaelke | `bar` | `MiljoeBjaelke` |
+| advarsel | `warning` | `AdvarselStore` |
+| biometrisk | `biometric` | |
+| skema | `schema` | `CacheSkema` — datastruktur, ikke et tidsskema |
+| udgivelse | `release` | |
+| formular | `form` | serverens eget ord: `form_rules` |
+| staevne | `tournament` | allerede i A: `tournament_id`, `tournament_name` |
+| sortering | `sort` | |
+| diagrammer | `charts` | |
+| ikon | `icon` | |
+| fejlsporing | `error_tracking` | `fejl -> error` (A-liste) + `sporing -> tracking` |
+| tilstand | `state` | C3's beslutning: `state` overalt undtagen deltagelsesstatus |
+| tilbud | `offer` | `TilbudFraAndre` |
+| forbindelse | `connection` | `connection` staar i godkendt engelsk |
+| vedvarende | `persistent` | `VedvarendeCookieJar` |
+| paamindelse | `reminder` | `KortPaamindelse` |
+| tjeneste | `service` | `PushTjeneste`. `service` staar i godkendt engelsk |
+| fleksibel | `flexible` | |
+| kerne | `core` | `SyncKerne` |
+| eksport | `export` | `export` staar i godkendt engelsk |
+| fuldfoer | `complete` | `FuldfoerKontoSkaerm` |
+| komponenter | `components` | `DBUKomponenter`. Ental staar i godkendt engelsk |
+| detalje | `detail` | `HistorikDetalje` |
+| lille | `small` | `LilleEkstraSkaerm` |
+| kolonne | `column` | `KamptrupKolonne` |
+| indhold | `content` | allerede maalt i C2: 13 navne, alle `content` |
+| traenings | `training` | `training` staar i godkendt engelsk |
+| krydstjek | `cross_check` | `KrydstjekKort` |
+| udviklings | `development` | `UdviklingsGrafer` |
+| aktivitetstyper | `activity_types` | serverens egen tabel |
+| kampdata | `match_data` | `kamp -> match` (A) + `data` godkendt |
+| stillings | `score` | **LAEST:** `StillingsRydning` fjerner *"den loebende stillings-notifikation"* efter kampen — altsaa kampens SCORE, ikke en tabelplacering |
+
+### KAN IKKE AFGOERES PAA LISTEN — to ord
+
+**`maal` — og det er `traek`-faelden igen**
+
+```
+FoelgMaal.kt   "Den kamp en foelger kigger med i — noeglen fra en
+                notifikation om kampstart, maal eller slut"
+```
+
+**Her er `Maal` et MAAL i betydningen DESTINATION** — den kamp, man foelger. Ikke
+et fodboldmaal. Filen handler om maal, men navnet goer ikke.
+
+```
+maal   dansk GOAL    et scoret maal
+maal   dansk TARGET  en destination, et formaal
+```
+
+**Ordet hoerer udelukkende i *"kan ikke afgoeres paa en liste"*.** `FoelgMaal`
+skal sandsynligvis vaere `FollowTarget`, ikke `FollowGoal` — men det er en dom
+pr. fil, af en der har laest filen.
+
+**`notifikationsbeder`**
+
+```
+Notifikationsbeder.kt   fun interface Notifikationsbeder
+```
+
+Et funktionelt interface med ét navn og ingen prosa at doemme paa. *"Beder"* kan
+vaere **den der beder OM** tilladelse (`permission requester`) eller **den der
+beder om at vise** en notifikation (`notification presenter`).
+
+**Ikke doemt. Android laeser metoden og afgoer det.**
+
+### Og hvorfor to af fire laeste ord blev til undtagelser
+
+Jeg laeste fire filer for ikke at gaette: `StillingsRydning`,
+`Notifikationsbeder`, `FoelgMaal` og `LoginGemmer`. **To af dem betoed noget
+andet, end ordet lader ane.**
+
+> Halvdelen af de ord, der SER entydige ud, var det ikke — og det er efter at
+> `traek` allerede havde laert mig at laese. En liste over ord kan kun doemme
+> ord, der KUN har én betydning. Resten er navne.
+
