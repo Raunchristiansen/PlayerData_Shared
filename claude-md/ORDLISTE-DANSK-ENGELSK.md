@@ -2390,6 +2390,94 @@ Det er sjette gang i nat, samme skelet: **jeg maalte eet lag og konkluderede om
 det naeste.** Og de fem foerste blev fanget af en session, der laeste sin egen
 kilde. Ogsaa denne.
 
+## A26. NAAR DET ENGELSKE ORD ER TAGET: navnet faar sin ROLLE med
+
+**Afgjort af koordinatoren 06-10-2026 kl. 10:04. Det er en navnekonvention, ikke
+en produktbeslutning — samme slags som C3, og derfor ikke Mortens.**
+
+### Problemet, maalt paa to platforme uafhaengigt
+
+```
+iOS      41 navne tilbage i #124 runde 3, og de ER blokerede af netop dette:
+         Activity · Date · Color · Key · Group · Result · State · name · count
+         -- det nye navn findes ALLEREDE som framework- eller egen reference
+Android  open ER et Kotlin-noegleord (et bloedt), og dbu blokerede 17 navne
+```
+
+**Dette er IKKE A5b.** De to forveksles let, og forskellen afgoer, hvem der kan
+loese det:
+
+```
+A5b    det DANSKE ord betyder to ting      side · min · kort · plads · kode
+       -> kan ikke afgoeres paa listen, afgoeres paa NAVNET
+A26    det ENGELSKE ord er allerede taget  open · date · state · name · count
+       -> mapningen er RIGTIG, navnet skal bare baere sin rolle
+```
+
+A5b er en tvetydighed i kilden. **A26 er en kollision i maalet**, og den har et
+mekanisk svar.
+
+### Reglen
+
+**Et navn er ikke et ord. Naar det engelske ord kolliderer, tager navnet sin
+ROLLE med** — og rollen laeses paa kaldestedet, ikke paa listen.
+
+Androids maalte forlaeg, 06-10 (`d9d6324`), og det er grunden til at reglen
+staar her og ikke er et forslag:
+
+```
+aaben   fire Booleans      ->  isOpen        ikke open
+aabn    en PendingIntent-val ->  openIntent  ikke open
+```
+
+> `aaben` og `aabn` er samme ord i to former. Begge er `open` paa engelsk —
+> `isOpen` mod `open()` — modsat `biometri`, hvor engelsk kraever to
+> FORSKELLIGE ord efter position.
+
+**Mapningen `aaben -> open` er altsaa uaendret rigtig.** Det er navnet, der
+faar `is`-praefikset, fordi feltet er en Boolean.
+
+### De gaengse former, og de daekker de ni ord ovenfor
+
+```
+en Boolean            is / has / can     isOpen · hasCard · canEdit
+et objekt af en type  <rolle><Type>      openIntent · matchDate · cardState
+en maengde            <hvad>Count        registrationCount
+en noegle             <hvad>Key          statusKey · absenceReasonKey
+et resultat           <hvad>Result       syncResult
+```
+
+Formerne er ikke nye: **serveren bruger dem allerede** — `status_key`,
+`absence_reason_key`, `halves_count`, `has_break`, `started_on_pitch`. A26 siger
+kun, at klienterne bruger samme form, naar det nøgne ord er taget.
+
+### Og raekkefoelgen er en del af reglen
+
+Androids anden maaling, og den er den, der kostede dem mindst:
+
+> Den blev gjort stavnings-unik FOERST, saa de to trin hver kunne ramme ét navn.
+
+```
+EET trin   aaben -> isOpen            to aendringer i een, og oversaetteren
+                                      peger paa den forkerte halvdel
+TO trin    aaben -> aabenUnik         kun stavningen
+           aabenUnik -> isOpen        kun navnet
+```
+
+**Gaelder kun, naar den gamle stavning kolliderer med noget andet i filen.** Er
+der ingen kollision, er eet trin rigtigt.
+
+### Hvad reglen IKKE afgoer
+
+**Hvilken rolle et konkret navn har.** Det staar paa kaldestedet, og det er
+derfor der ikke foelger en liste med. Androids fire `aaben` var Booleans; den
+femte var ikke, og **det var en maaling paa kaldestedet, ikke et gaet fra
+stavningen.**
+
+Og: et bloedt noegleord kan godt bruges som navn i Kotlin. Android proevede det
+— *"prøvet ved at omdøbe og OVERSÆTTE"* — frem for at antage det. **Proev det,
+foer du udelader et ord, fordi det ligner et noegleord.**
+
 ## B. Entydige — jeg foreslår, ingen beslutning nødvendig
 
 Ingen af disse har to plausible engelske ord i denne kodebase.
