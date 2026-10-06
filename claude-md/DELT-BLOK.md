@@ -4013,6 +4013,73 @@ bestod.
 > En test paa et FRAVAER skal have noget, der er entydigt fravaerende. Ellers
 > beviser den kun, at noget andet var der.
 
+### En test maaler det, nogen vidste at proeve. Et BILLEDE viser det, ingen vidste at lede efter
+
+**Androids fund 07-10-2026 under `#108`, og deres egne ord om hvordan:**
+
+> *"Det stod ikke i kortet, ingen test var roed, og jeg ville ikke have fundet
+> det uden skaermbilledet."*
+
+### Hvad de fandt
+
+```
+MatchesTab.kt   chevronen pegede stadig til HOEJRE,
+                mens haendelsesloggen var foldet UD
+```
+
+Raekken aabnede foer en anden skaerm. Nu folder den ud paa stedet. **Ikonet lovede
+stadig en navigation, der ikke fandtes laengere.**
+
+```
+adfaerden      korrekt. Loggen foldede ud og ind
+testene        groenne. De maalte, at loggen foldede ud og ind
+ÉT ikon        pegede forkert, og intet maalte det
+```
+
+Rettet med `.rotate(if (udfoldet) 90f else 0f)`.
+
+### Hvorfor ingen test kunne fange den
+
+En test skrives mod en **forventning**, og ingen havde forventningen *"chevronen
+skal rotere"* — fordi ingen havde taenkt paa chevronen. Den var korrekt FOER
+aendringen og blev forkert af en aendring et andet sted paa raekken.
+
+```
+en test       beviser, at det du taenkte paa, virker
+et billede    viser alt paa skaermen, ogsaa det du ikke taenkte paa
+```
+
+**Og den slags fejl har ingen symptomer i kode.** Ikonet rendrer fint, farven er
+rigtig, tryk-fladen virker. Kun MENINGEN er forkert, og mening er ikke en
+egenskab, en assertion kan laese.
+
+### Hvornaar det er vaerd at tage et billede
+
+```
+en raekke, der aendrer HVAD et tryk goer
+   -- alle dens affordances skal efterproeves: ikoner, chevroner,
+      "tryk for mere"-tekster, tilgaengelighedstekster
+en skaerm, hvor et element FORSVINDER
+   -- hvad stod der omkring det, som pegede paa det
+et layout, der skifter FORM og ikke kun stoerrelse
+```
+
+**Androids blok 4 ramte alle tre paa én gang**, og det er sandsynligvis derfor
+billedet var afgoerende netop der.
+
+### Og billedet skal komponere KUN det, der undersoeges
+
+Androids anden disciplin samme aften:
+
+> *"Billedtesten komponerer KUN bjaelken: testenheden baerer stadig en rigtig
+> konto, og et skaermbillede af den rigtige Kampe-fane ville laegge en families
+> kampe i et byggeartefakt for et layout-spoergsmaal."*
+
+**Et skaermbillede er et artefakt, der overlever.** Det ender i en
+byggemappe, maaske i en commit, maaske i en rapport — og en families
+bOErnenavne hoerer ikke i noget af det for at afgoere en ikon-rotation.
+
+
 ### Og den tredje del: navngiv det, du IKKE daekker
 
 Samme session, samme dag: `sessions-nullable-fra-python.json` fik endelig en
