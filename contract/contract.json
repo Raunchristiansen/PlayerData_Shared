@@ -1439,7 +1439,6 @@
   "session_in_fields": {
     "fields": [
       "absence_reason",
-      "afbud_aarsag",
       "assists",
       "comment",
       "created_at",
@@ -1475,5 +1474,5 @@
       "type_key"
     ]
   },
-  "version": "39ba279be1f32174"
+  "version": "2512905c463f733d"
 }
