@@ -3810,6 +3810,72 @@ findes — ikke fravaeret af et navn.
 > omdoebt den til noget, der ligner data.
 
 
+### Filtrer ved KILDEN, ikke hos hver forbruger
+
+**Maalt 06-10-2026 som en forskel mellem de to klienter paa noejagtig samme
+regel: et slettet maal (tombstone) maa ikke vises.**
+
+```
+iOS       reglen sidder i HVER BEREGNING
+          GoalAssist.udled  filter { !$0.deleted }   OK
+          MatchScore.fra    filter { !ev.deleted }   OK
+          LISTEN            ingenting                HUL
+          -> en foraelder saa "Maal af Ali Hansen" 59' i listen,
+             mens taellingen sagde 2 og resultatet 2-2
+
+Android   reglen sidder ÉT sted, FOER listen deles
+          HistorikDetalje.kt:105  sorteret(events.aktive)
+          :106 og :114 laeser begge fra den filtrerede liste
+          -> matchEvents og mineHaendelser behoever slet IKKE kende deleted
+```
+
+**Androids formulering af forskellen:**
+
+> *"Hos jer sidder reglen i hver beregning og mangler i listen; hos os sidder
+> den paa det sted, begge dele stammer fra."*
+
+### Hvorfor "ret begge steder" er den daarlige rettelse
+
+Den naerliggende rettelse er at tilfoeje filteret til de to visningsfunktioner.
+**Den efterlader det TREDJE sted ubeskyttet**, naar nogen senere tilfoejer en
+liste mere — og den naeste laeser har ingen grund til at vide, at reglen findes.
+
+```
+filteret hos N forbrugere   N steder at huske, og N+1 naar nogen tilfoejer én
+filteret ved kilden         nul steder at huske
+```
+
+**Samme form som `iOS#99` del 2**, hvor en `Bool` blev fjernet og erstattet af
+den ene regel med tre tilstande — i stedet for at rette hvert kaldested.
+
+### Og testen skal kunne fejle, ikke kun bestaa
+
+Androids `SlettetHaendelseSkjultTest` daekker linjen, og dens KDoc siger hvorfor
+den er en instrumenttest:
+
+> *"The score and the player's goals are unit-testable; this one is not. A key
+> that drives display rather than a number offers nothing to assert on — only an
+> absence — and that is exactly where both platforms got zero failing tests
+> today."*
+
+**Og den kan ikke bestaa tomt:** det slettede maals scorer hedder
+`"Tombsten Testsen"` — et navn, der ikke findes andre steder. Ellers ville
+begge maal rendere identisk tekst, og testen ville maale ingenting MENS den
+bestod.
+
+> En test paa et FRAVAER skal have noget, der er entydigt fravaerende. Ellers
+> beviser den kun, at noget andet var der.
+
+### Og den tredje del: navngiv det, du IKKE daekker
+
+Samme session, samme dag: `sessions-nullable-fra-python.json` fik endelig en
+laeser. **Seks af de fjorten vektorer beregnes paa serveren og kan ikke maales
+fra klienten.**
+
+De blev **navngivet i en egen test** frem for sprunget tavst over.
+
+> En test, der stille daekker 8 af 14, laeses som om den daekkede alle 14.
+
 ### En test, der genimplementerer reglen, maaler sig selv
 
 **iOS, 06-10-2026 under `Backend#191`.** De rettede en fejl, og fandt undervejs,
