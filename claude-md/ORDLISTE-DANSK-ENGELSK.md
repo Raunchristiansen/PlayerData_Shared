@@ -3337,3 +3337,58 @@ en indsat tabelraekke i C2 faelder den.
 Deres egen bemaerkning om det: *"tredje gang i den SAMME funktion, at en paastand
 var ankret til et UDFALD i stedet for en egenskab."*
 
+## A35 — de syv sidste fra Androids blokkerliste
+
+**Seks mapninger. Den syvende (`traek`) er doemt pr. fil og hoerer ikke paa
+listen.**
+
+Tre af filerne blev LAEST foer dommen, efter at `FoelgMaal` havde vist, at en
+fil kan handle om ét og hedde noget andet.
+
+| dansk | engelsk | grundlag |
+|---|---|---|
+| andre | `others` | `TilbudFraAndre` — *"En anden familie har..."*. Andre FAMILIER |
+| grafer | `graphs` | **LAEST:** `UdviklingsGrafer` er *"spilletid i procent pr. maaned som en LINJE med punkter"*. En graf, ikke et diagram — se nedenfor |
+| hukommelse | `memory` | **LAEST:** `StaevneHukommelse` *"husker hvor mange halvlege et staevne blev spillet med"* |
+| rydning | `cleanup` | **LAEST:** `StillingsRydning` *"fjerner den loebende stillings-notifikation efter kampen"* |
+| sporing | `tracking` | `CrashlyticsSporing`. Samme ord som i `fejlsporing -> error_tracking` (A34) |
+| ur | `clock` | `Spilletidsur`. **Men se delstrengs-advarslen nedenfor** |
+
+### `grafer` og `diagrammer` er IKKE samme ord
+
+A34 gav `diagrammer -> charts`. **De to er forskellige begreber ogsaa paa
+engelsk**, og begge findes i koden:
+
+```
+Diagrammer.kt        en graf-FORKLARING med segmenter og procenter   chart
+UdviklingsGrafer.kt  en LINJE med punkter over tid                   graph
+```
+
+**En mekanisk sammenlaegning ville goere de to filer umulige at skelne.** De maa
+have hver sit ord.
+
+### `ur` er KORT og en delstreng af mange ord
+
+```
+ur   dansk CLOCK    Spilletidsur
+     delstreng i    natur · figur · urolig · kultur · struktur
+```
+
+**Kun paa et HELT ord i en camelCase-/snake_case-opdeling** — samme regel som
+`hold` i C2. Et vaerktoej, der erstatter `ur` som delstreng, producerer
+`natclock` og `figclock`.
+
+`Spilletidsur -> PlayDurationClock`: `spilletid -> play_duration` (A27) plus
+`ur -> clock`.
+
+**Og filens egen pointe er netop skelnen:** *"Udvisningen taelles i SPILLETID,
+ikke i URTID."* Et ur, der taeller spilletid — saa `Clock` er rigtigt, og
+`PlayDuration` er det, det taeller.
+
+### Hvad der staar tilbage
+
+```
+traek   doemt PR. FIL: TraekForAtHente -> pull, Traek.kt -> drag
+        staar KUN i "kan ikke afgoeres paa en liste"
+```
+
