@@ -1374,6 +1374,77 @@ Deres tal — 774 ord, 527 med eet navn, 13 % i de 25 tungeste — var rigtige.
 **Forklaringen paa HVORFOR de tungeste ikke kunne afgoeres var ikke maalt**, og
 den var forkert for syv af dem.
 
+## INGEN_FLERTAL — 22 noegler, boejningsreglen ALDRIG maa roere
+
+**Tilfoejet 03:41, fordi Androids vaerktoej lavede `Kampfoerer -> MatchBefores`.**
+
+```
+INGEN_FLERTAL
+  PRAEPOSITIONER  efter · foer · fra · paa · til
+  BYDEFORMER      bekraeft · beregn · byg · fjern · foelg · gem · hent
+                  indlaes · nulstil · registrer · ryd · saet · slet · slip
+                  tjek · vaelg · vis
+```
+
+**Ingen af de 22 har et flertal.** Boejningsreglen maa derfor aldrig forsoege at
+laese et `-er`/`-r` som en flertalsendelse paa dem.
+
+### Hvorfor en "KUN paa et helt ord"-markering IKKE var svaret
+
+Android spurgte, om hele-ord-forbeholdet kunne faa en maskinlaesbar form. **Jeg
+maalte det foerst, og svaret er nej — fordi forbeholdet gaelder naesten alt:**
+
+```
+100 af 118 mapping-noegler er DELSTRENG af et laengere ord i de tre traeer
+  afbud   -> afbudsaarsag · afbuddet       aktive -> aktiveret · deaktiveret
+  beregn  -> beregning · beregnet          delt   -> deltog · deltagelse
+  felt    -> felter · feltnavne            foer   -> foerste · foerer · udfoer
+  fri     -> frisk · friendly · valgfri    egne   -> beregnet · regnet
+```
+
+**En markering paa 100 af 118 poster er ikke en markering — det er en
+standardregel.** Hele-ord-matchning ER standarden, og den haandhaeves af
+camelCase-/snake_case-opdelingen, ikke af en kolonne.
+
+### Fejlen laa et andet sted: boejningsreglen, ikke mapningen
+
+```
+Kampfoerer   deles som Kamp + foerer
+             `foerer` er IKKE en noegle   -> navnet skal SPRINGES OVER
+             boejningsreglen gjorde i stedet: foerer -> foer + FLERTAL
+```
+
+**En praeposition har ikke flertal.** Androids egen diagnose er praecis:
+
+> `VERBESTAMMER` fanger `vaelger` — men `foer` er ikke en verbestamme. Hver gang
+> stod vagten ét lag for hoejt.
+
+**Og blokken fanger mere end `foer`.** `gemmer` stod paa Androids liste med fire
+navne: boejningsreglen ville laese den som flertal af `gem`, men `gemmer` er
+*"gemmer"* — tredje person eller et gemmested. Begge er forkerte som `saves`.
+
+### Reglen, saa den kan kodes
+
+```
+1. del navnet paa camelCase/snake_case
+2. hver DEL slaas op som et HELT ord i mapningen
+3. findes delen ikke, og er den en boejning:
+      er stammen i INGEN_FLERTAL?   -> SPRING NAVNET OVER
+      ellers                        -> boejningsreglen maa proeve
+4. springes en del over, springes HELE navnet over
+```
+
+**Og prisen for en for bred spaerring er maalt:** Android proevede reglen i begge
+retninger, fordi 11 rigtige navne ellers ville falde tavst — `haendelserFoer`,
+`halvlegFoer`, `harDelteHaendelser`, `deltPush`. De er nu modproever i deres
+selvproeve.
+
+> Et forbehold, der kun staar i prosaen ved siden af posten, findes ikke for det
+> vaerktoej, der laeser posten.
+
+Det er Androids saetning, og den er grunden til, at denne blok er en **blok** og
+ikke en saetning i en kolonne.
+
 ## B. Entydige — jeg foreslår, ingen beslutning nødvendig
 
 Ingen af disse har to plausible engelske ord i denne kodebase.
