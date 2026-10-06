@@ -3392,3 +3392,14 @@ traek   doemt PR. FIL: TraekForAtHente -> pull, Traek.kt -> drag
         staar KUN i "kan ikke afgoeres paa en liste"
 ```
 
+## A36 — `reserve`, den sidste blokker
+
+| dansk | engelsk | grundlag |
+|---|---|---|
+| reserve | `fallback` | `AktivitetstyperReserve` er den INDBYGGEDE reserve, der bruges naar serverens vokabular ikke kan hentes. `fallback` staar allerede i GODKENDT ENGELSK |
+
+**Ikke `backup` og ikke `spare`.** `backup` er en kopi af data; `spare` er en
+ekstra af noget fysisk. Her er det en vaerdi, der TRAEDER I STEDET naar en anden
+ikke kan naas — og `#137`/`#134` bruger allerede ordet "reserve" i netop den
+betydning.
+

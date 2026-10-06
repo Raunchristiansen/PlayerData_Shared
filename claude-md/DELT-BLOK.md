@@ -4189,3 +4189,51 @@ og saerligt                  hvis den afviser en advarsel paa et kort,
 
 **702 forekomster rettet, kollisionsproeve koert foerst, nul misforhold tilbage.**
 
+### Dansk BOEJNING klaeber til ordet — et helordsmoenster ser den ikke
+
+**Android, 06-10-2026, runde 7 af filnavnene.**
+
+```
+omdoebt     Spilletidsur -> PlayDurationClock
+tilbage     "Spilletidsuret" i en dansk kommentar
+```
+
+**Et ordgraenset moenster paa `Spilletidsur` rammer ikke `Spilletidsuret`.**
+Dansk bestemt form klaeber direkte til ordet uden mellemrum eller bindestreg —
+og det samme gaelder flertal (`-er`, `-ene`), genitiv (`-s`) og sammensaetninger.
+
+```
+Spilletidsur     rammes
+Spilletidsuret   rammes IKKE   bestemt form
+Spilletidsure    rammes IKKE   flertal
+Spilletidsurets  rammes IKKE   genitiv
+```
+
+**Og `kdoc_referencer` fanger den ikke**, fordi det er fri prosa og ikke en
+`[Reference]`. Saa koden er omdoebt, og teksten der forklarer den peger paa et
+navn, der ikke findes laengere.
+
+> En omdoebning efterlader PROSAEN bagud, og prosaen er det, naeste laeser
+> bruger til at forstaa koden.
+
+**Loes det ikke ved at loesne moensteret til en delstreng** — det var praecis
+den faelde, `hold -> team` ville lave `Inteam` i. Soeg i stedet efter STAMMEN i
+prosa som et separat skridt efter omdoebningen.
+
+### Og en graense, der beskytter mod noget vaerre
+
+`del_sammensat` kraever, at **hver del er mindst TRE bogstaver**. Reglen findes,
+fordi `er -> is` engang delte `vaelger` som `vaelg + er`.
+
+**Derfor kan `ur` (to bogstaver) aldrig naa et sammensat ord**, selv om baade
+`spilletid` og `ur` staar i listen.
+
+```
+loesn reglen       vaelger bliver vaelgis igen
+doem pr. FIL       Spilletidsur -> PlayDurationClock, laest og afgjort
+```
+
+Android valgte det sidste. **En graense, der blokerer et rigtigt tilfaelde, er
+ikke noedvendigvis for stram** — den kan vaere praecis stram nok til at holde et
+vaerre tilfaelde ude, og saa er en dom pr. navn den billigere udvej.
+
