@@ -3,7 +3,8 @@
     "kilde": "backend.app.beregning.calculate_goals_assists_from_timeline — PlayerData_Backend",
     "genereret": "scripts/generate-goals-assists-vectors.py",
     "rettet_2026_10_06": [
-      "Issue #188 trin 2: slettede mål tælles nu IKKE med (begge serverkopier), samme regel som goal_side.score_from_events (#146/#119, HOLD-stilling) — se vektoren 'slettet_mål_af_spilleren_selv_taelles_ikke'."
+      "Issue #188 trin 2: slettede mål tælles nu IKKE med (begge serverkopier), samme regel som goal_side.score_from_events (#146/#119, HOLD-stilling) — se vektoren 'slettet_mål_af_spilleren_selv_taelles_ikke'.",
+      "Issue #198: et selvmål begået af barnet selv tæller nu 0 personlige mål, ikke 1 (Mortens eget valg, 'Tæller IKKE som barnets mål') — se vektoren 'selvmaal_af_barnet_selv_taeller_ikke_som_maal'."
     ],
     "maalt_ikke_rettet": [
       "Legacy-testen: serveren tester NØGLENS tilstedeværelse ('scorer_type' not in e), begge klienter tester VÆRDIEN (scorerType == nil/null) — forskelligt facit når en session har både en kendt scoring og et scorer_type:null-event, se vektoren 'null_scorer_type_SAMMEN_med_en_kendt_scoring'. MÅLT direkte i stage 2026-10-06: 0 af 62 sessions med mindst ét mål (156 mål-hændelser i alt) har noget event med scorer_type-nøglen til stede og værdien null — uenigheden er derfor UDEN praktisk konsekvens i dag (ingen session kan i praksis ramme den), men stadig ikke rettet, fordi facit ville afgøre ALLE FIRE kopiers fremtidige adfærd."
@@ -169,6 +170,35 @@
         0
       ],
       "noter": "Tom hændelsesliste — et SANDT (0, 0), ikke en fejlmåling."
+    },
+    {
+      "navn": "selvmaal_af_barnet_selv_taeller_ikke_som_maal",
+      "input": {
+        "timeline": {
+          "events": [
+            {
+              "type": "mål",
+              "scorer_type": "eget_hold",
+              "scorer_navn": "Testspiller",
+              "deleted": false,
+              "selvmaal": true
+            },
+            {
+              "type": "mål",
+              "scorer_type": "eget_hold",
+              "scorer_navn": "Anden Spiller",
+              "deleted": false
+            }
+          ]
+        },
+        "spiller_navn": "Testspiller"
+      },
+      "kilde_kald": "beregning.calculate_goals_assists_from_timeline",
+      "forventet": [
+        0,
+        0
+      ],
+      "noter": "RETTET (Issue #198, 2026-10-06, Mortens eget valg: 'Tæller IKKE som barnets mål'). Barnet selv er scorer_navn på et selvmål (scorer_type='eget_hold', selvmaal=True — goal_side.effektiv_maal_side krediterer derfor HOLDMÅLET til modstanderen) — barnets PERSONLIGE tælling er (0, 0), ikke (1, 0). Det andet events (Anden Spiller, intet selvmål) bekræfter selvmålet ikke smitter af på en anden spillers helt almindelige scoring i samme tidslinje."
     }
   ]
 }
