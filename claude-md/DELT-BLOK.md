@@ -1453,6 +1453,43 @@ ANKRE TIL   det der goer stedet entydigt — en datanoegle testen allerede
 ALDRIG TIL  et navn · et antal · en linjes tekst · en position · prosa
 ```
 
+### PRAECISERING 03:20: et ANTAL som skralde-taerskel er ikke det samme som en assertion
+
+**Afsnittet ovenfor siger "ALDRIG [ankre] til et antal". Android indvendte mod
+det, og de har ret** — reglen som den stod ville forbyde deres egen rigtige
+loesning.
+
+**Forskellen er, hvad antallet GOER:**
+
+```
+FORBUDT    assertEquals(6, kontrakt["regler"].size)
+           en ASSERTION paa et antal, der vokser LOVLIGT. Tilfoejer nogen en
+           syvende regel, bliver testen roed paa noget rigtigt — og testen
+           handlede aldrig om reglerne
+
+TILLADT    en SKRALDE: (fil, navn, antal) som taerskel
+           antallet ER kontrollens mekanisme, ikke dens paastand. Den fejler
+           kun, naar tallet VOKSER, og den flytter sig ikke med en linje
+```
+
+Androids grundlinje skal kunne rumme, at `"Her stod et `aktivtKort`-opslag"` er
+**rigtig prosa om noget fjernet.** Forskellen paa det og en doed reference er
+**TEMPUS**, og det kan et moenster ikke se. Saa taersklen er den eneste mekanisme,
+der virker — og de proevede de to alternativer:
+
+```
+linjenummer     taendte vagten hver gang en linje blev indsat OVENFOR
+navnet alene    for loest: seks datids-omtaler af samme navn daekkede en NY
+                nutidsreference til det
+```
+
+**Og prisen staar i vagtens header**, hvor den kan ses: en ny datids-omtale goer
+vagten roed paa noget rigtigt. **Det er forskellen paa en tolerance, der er
+valgt, og en der har sneget sig ind.**
+
+> Et antal er et daarligt ANKER og et brugbart MAALEBAAND. Spoerg, om kontrollen
+> paastaar noget om tallet, eller bruger tallet til at opdage en aendring.
+
 **Og sabotagen skal gaa i BEGGE retninger.** Androids `#86` er forlaegget:
 
 ```
