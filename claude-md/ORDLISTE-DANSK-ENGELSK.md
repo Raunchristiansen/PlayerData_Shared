@@ -718,6 +718,7 @@ ikke vaelge.
 | typer | `types` · `type` | samme · serveren: `activity_types.legacy_type` (flertal: `types`) |
 | **plads** | `slot` · `position` | **BEGGE er godkendt engelsk, og begge er serverens egne lineup-ord** (`slot_id`, `slots`, `start_slots` mod `position_minutes.position`). `valgtTomPlads` er en tom PLADS i opstillingen; `indPaaNyPlads` (`LineupEngine.kt:434`) er en spiller, der kommer ind paa en ny POSITION. Maalt 06-10 kl. 05:25: 7 navne hos Android |
 | **holdkort** | `teamsheet` · `team_card` | **maalt 06-10 kl. 05:50, efter at A19 havde afgjort den forkert TO gange.** DBU's officielle holdkort: serveren har `dbu_teamsheets`, `dbu_club_teamsheets` og `@router.get("/teamsheet-players")`; iOS' `holdkortSpillere()` henter netop den. **Men statistik-kortet i brugerfladen er ogsaa `holdkort`:** Androids `object TeamCard` (`core/stats/PositionBane.kt:108`, var `object HoldKort`, omdoebt i `6ab9ec7`) og iOS' `enum TeamCard` (`Core/Stats/StatsLogik.swift:435`). **To platforme valgte `TeamCard` uafhaengigt af hinanden** — det er et argument, ikke en fejl. 25 forekomster hos Android staar paa den forkerte side; de 19 paa stats-siden er korrekte |
+| **side** | `page` · `side` | **en NY form: det danske ord kolliderer med et GODKENDT ENGELSK ord, ikke med en anden kandidat.** Dansk `Side` er en side/skaerm (`HoldkortSide`, `baggrundSiden`); engelsk `side` er holdets side, som serveren har i `match_sides`/`"side"`/`"home"`/`"away"` og klienterne allerede bruger (`TeamSide`, `assistSide`, `scorerSide`). `error.main.page_gone` = *"Siden er ikke laengere tilgaengelig"* er web-siden. Et vaerktoej kan ikke skelne `HoldkortSide` fra `TeamSide` paa strengen. Maalt 06-10 kl. 06:10, se A21 |
 | **kode** | `code` · `password` | `adgangskode` ejer allerede `password` (A, serverens `password_hash`). Men `indPaaNyPlads(kode: String, ...)` er en PLADS-kode, ikke en adgangskode — samme fil, samme linje. `nyKode`/`kodeOk` kan vaere begge, og kun kaldestedet ved det. 6 navne |
 | **udvisning** | `sin_bin` · `dismissal` | **maalt 06-10 kl. 04:55 i jeres egen kode, ikke gaettet.** `beregning.py:322` *"en midlertidig udvisning"*, `:485` *"10 minutters udvisning"* — en tidsbegraenset bortvisning. Men `:329` *"en direkte udvisning"*, som er **roedt kort**. Eet dansk ord, to fodboldbegreber, praecis `opstilling`-formen. Serverens `format_rules.red_card` daekker KUN den anden. Rammer `_udvisning_slut_ms` og `_udvisning_minutter` (`live.py:438`) |
 
@@ -2083,6 +2084,91 @@ delte 44 forekomster i 25 + 19 paa to begreber.
 Det sidste er det staerkeste signal, jeg gik forbi: **Android og iOS valgte
 `TeamCard` hver for sig til statistik-kortet.** To uafhaengige valg, der falder
 sammen, er et argument — ikke en fejl, der skal rettes.
+
+## A21. FEJLNOEGLERNE ER OGSAA EN KONTRAKT — syv ord, svejet systematisk
+
+**Maalt 06-10 kl. 06:04.** `valider` blev afgjort af
+`error.shared.invalid_halves_count`. Det peger paa en kontraktflade, jeg ikke
+havde svejet: **serverens fejlnoegler staar PARVIS med deres danske
+beskedtekst**, og klienterne sammenligner paa noeglen.
+
+```
+INTERVAL  53 distinkte error-noegler i backend/app/ @origin/master
+          60 forekomster MED dansk beskedtekst ved siden af
+```
+
+Formen er den samme som rute/handler-parret i A19: to sider af samme linje, hvor
+den ene er engelsk og bindende.
+
+```python
+ApiError(400, "error.account.wrong_password", "Forkert adgangskode")
+                           ^^^^^                ^^^^^^^
+```
+
+### Syv ord
+
+| dansk | engelsk | fejlnoeglen |
+|---|---|---|
+| ukendt | `unknown` | `error.sessions.unknown_training_type` = *"Ukendt traenings-type"* · `error.shared.unknown_tournament_for_group` = *"Ukendt staevne for denne pulje"* — **to noegler** |
+| forkert | `wrong` | `error.account.wrong_password` = *"Forkert adgangskode"* · `error.password.wrong_current` = *"Forkert nuvaerende adgangskode"* — **to noegler** |
+| ugyldig | `invalid` | `error.auth.link_invalid_or_expired` = *"Linket er ugyldigt eller udloebet"*. `invalid` staar i syv noegler i alt |
+| udloebet | `expired` | samme noegle, anden halvdel. `expired` stod allerede i GODKENDT ENGELSK |
+| forsoeg | `attempt` | `error.ratelimit.too_many_attempts` = *"For mange forsoeg"* |
+| registrering | `registration` | `error.shared.tournament_has_registrations` = *"Staevnet har kampe med registreringer"* |
+| registreringer | `registrations` | samme — eksplicit, saa boejningsreglen ikke skal gaette |
+| fil | `file` | `error.live.gps_file_empty` = *"Filen indeholder ingen brugbare raekker"* |
+
+**`registrering` er den tungeste:** 12 navne hos Android, 14 hos iOS
+(`Registrering`, `RegistreringerSvar`, `PushRegistrering`,
+`antalRegistreringer`). Den stod paa iOS' egen liste over resterende ord.
+
+### `fil` har en delstrengsfaelde paa DANSK side
+
+```
+fil matcher ogsaa    filter · filtre · Filters · FilterMenu · DBUFiltre
+```
+
+Maalt: Androids 25 og iOS' 23 `fil`-traef er for de flestes vedkommende
+`filter`. **De aegte er `cachefil`, `databasefil`, `eksportFil`, `DelbarFil`,
+`filen`.** Og `filtre -> filters` staar allerede paa listen fra A17, saa de to
+poster ligger oven i hinanden som strenge. **Helt ord, altid.**
+
+### Og `side` gaar til A5b — en form, ingen tidligere post har
+
+```
+dansk  Side        = en SIDE/skaerm       HoldkortSide · baggrundSiden
+engelsk side       = holdets SIDE         TeamSide · assistSide · scorerSide
+```
+
+**Det danske ord og det GODKENDTE ENGELSKE ord er den samme streng.** Serveren
+har `match_sides`, `"side"`, `"home"`, `"away"` for holdsiden, og klienterne
+bruger den allerede paa engelsk. Samtidig er `error.main.page_gone` =
+*"Siden er ikke laengere tilgaengelig"* en web-side.
+
+Et vaerktoej kan ikke skelne `HoldkortSide` fra `TeamSide` paa strengen, og en
+mekanisk `side -> page` ville omdoebe holdsiden. **Posten kan derfor ikke staa i
+mapningen overhovedet** — samme begrundelse som `opstilling` og `holdkort`, men
+af en ny grund: ikke to engelske kandidater, men ét dansk ord der KOLLIDERER med
+et godkendt engelsk.
+
+### Hvad jeg IKKE afgjorde af de 60
+
+```
+udfyldes -> required     noeglen siger `required`, men dansk siger
+                         "skal udfyldes" — en semantisk match, ikke et ordpar
+tilgaengelig -> gone     noeglen er `page_gone`, teksten "ikke laengere
+                         tilgaengelig". To forskellige udsagn
+brugernavn -> username   error.auth.username_required = "Familienavn skal
+                         udfyldes", men error.admin.invalid_credentials =
+                         "Forkert brugernavn". Samme engelske ord til
+                         familienavn OG brugernavn — maal kaldestedet
+```
+
+**De tre er fejlformen, metoden inviterer til:** noeglen og teksten staar paa
+samme linje, saa det er nemt at laese dem som en oversaettelse. **De er en
+PAASTAND og en BESKED om samme fejl** — ikke to udgaver af samme ord. Et ordpar
+kraever, at det danske ord og det engelske ord betegner det samme, ikke blot at
+de staar i samme `ApiError`.
 
 ## B. Entydige — jeg foreslår, ingen beslutning nødvendig
 
