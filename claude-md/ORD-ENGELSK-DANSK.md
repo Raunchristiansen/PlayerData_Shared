@@ -53,7 +53,7 @@ staar paa.** Et menneske afgoer det paa NAVNET.
 > Et ord, der findes i begge sprog med forskellig betydning, kan ikke afgoeres
 > paa listen. Det afgoeres paa navnet.
 
-## GODKENDT ENGELSK — 230 ord
+## GODKENDT ENGELSK — 231 ord
 
 26 af dem er godkendt af **alle tre uafhaengigt.**
 
@@ -86,7 +86,7 @@ staar paa.** Et menneske afgoer det paa NAVNET.
   slot           stage          start          state          stats          status         stop         
   strip          substitution   sync           table          tags           team           teams        
   text           to             toggle         token          totals         training       type
-  total          veo
+  total          veo            init
   basis          kickoff        markdown       meter          neutral        offline        participated   platform       selected       slots          started        theme          trend        
    
   types          unique         until          updated        upload         url            value        
@@ -127,7 +127,7 @@ marker      dansk BYDEFORM   markerHalvleg = "markér halvlegen". Stod 0 gange i
 ## OVERDETEKTION — hvorfor et ord rammer heuristikken, ikke en TREDJE kategori
 
 Forkortelser, varemaerker og fragmenter rammer heuristikkerne, men skal ikke
-omdoebes: `repo`, `dsl`, `hid`, `api`, `json`, og enkeltbogstav-fragmenter som
+omdoebes: `repo`, `dev`, `dsl`, `hid`, `api`, `json`, og enkeltbogstav-fragmenter som
 `b` i `b64url` og `v` i `v1`.
 
 ### RETTET 06-10 kl. 01:30: `dbu` og `veo` er FLYTTET til GODKENDT ENGELSK
