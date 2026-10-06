@@ -1272,6 +1272,79 @@ engelsken allerede ER afgjort — fordi en klient kalder den.
 `@router`-dekorator og i rutenavne-godkendelseslisten.** Det tager fem sekunder
 og er den eneste kilde, der er bindende.
 
+## A11. SYV ORD FRA ANDROIDS "TUNGESTE 15" — og metoden er IKKE loebet toer
+
+**Maalt kl. 03:19.** Android meldte, at `#124` trin 2 var loebet toer for `core/`:
+0 navne kan omdoebes rent, 1539 af 2018 springes over, og 527 af 774 ord laaser
+praecis eet navn. **Deres konklusion var, at ordlistemetoden er spent.**
+
+De foreslog samtidig, at `delt`/`delte` og `foer`/`efter` *"ikke sikkert hoerer i
+en ordliste"*, fordi engelsk vender sammensaetningen frem for at oversaette ord
+for ord.
+
+**Maalt: det gaelder ingen af dem. Alle syv oversaetter direkte.**
+
+| navne | dansk | engelsk | n | serverens bevis |
+|---|---|---|---|---|
+| **8** | spilletid | `play_duration` | **63** | `play_duration_min` |
+| **5** | kategori | `category` | **101** | `activity_types.category` |
+| **5** | kilde | `source` | **53** | `source = 'confirmed'` |
+| **6** | egne | `own` | **51** | |
+| **7** | delte | `shared` | **98** | `shared_matches`, `shared_tournaments` |
+| **6** | delt | `shared` | **98** | samme — men **KUN paa et helt ord** |
+| **6** | efter | `after` | **21** | |
+| **7** | foer | `before` | **11** | men **KUN paa et helt ord** |
+
+**50 af Androids egne navne**, efter deres egen optaelling.
+
+### Hvorfor de SAA strukturelle ud: delstreng-faelden, tredje gang i nat
+
+```
+delt   -> attendanceDeltog · Deltagelse     delt er delstreng af DELTOG/DELTAGELSE
+foer   -> FoererFarve · FoererPille         foer er delstreng af FOERER
+```
+
+**`deltog` er "deltog", `deltagelse` er "deltagelse", og `foerer` er "foerer" —
+tre andre ord.** De aegte forekomster oversaetter uden videre:
+
+```
+delteVeoLinks  -> sharedVeoLinks      aktivFoer   -> activeBefore
+delteJson      -> sharedJson          foerLogUd   -> beforeLogout
+harDelteHaendelser -> hasSharedEvents efterFlyt   -> afterMove
+```
+
+**Saa `delt` og `foer` er vokabular, ikke struktur** — de skal blot bruges med
+hele-ord-reglen, praecis som `hold` og `ord`.
+
+### Hvad der STAAR af deres konklusion
+
+Metoden er ikke spent, men **halen er stadig lang**, og A10's beslutning staar:
+527 ord, der laaser eet navn hver, hoerer paa kaldestedet. **Forskellen er, at
+de 25 TUNGESTE stadig kan afgoeres** — og syv af de femten blev det her.
+
+```
+tilstand   C3 afgoer den: status ved deltagelse, state ellers. Kontekst
+klubber    falder ud af `klub -> club` plus boejningsreglen
+kampnr     i A3 — ingen engelsk alias paa ledningen
+fortryd    `undo` har n=1. Et forslag, ikke en afgoerelse
+skal · kan · ud   modalverber og praepositioner — DE er strukturelle
+```
+
+**Af de femten var syv afgoerlige, fire afgjort andetsteds, og tre reelt
+strukturelle.** Een — `fortryd` — er stadig et forslag.
+
+### Og lektien er ikke om ordene
+
+**Android maalte rigtigt og foreslog en forkert aarsag**, og jeg accepterede
+naesten rammen i stedet for at maale ordene. Det er anden gang i nat med samme
+par: foerst `datainput`, nu denne.
+
+> Et instrument, man har kontrolleret, beskytter kun de TAL, der kom ud af det.
+
+Deres tal — 774 ord, 527 med eet navn, 13 % i de 25 tungeste — var rigtige.
+**Forklaringen paa HVORFOR de tungeste ikke kunne afgoeres var ikke maalt**, og
+den var forkert for syv af dem.
+
 ## B. Entydige — jeg foreslår, ingen beslutning nødvendig
 
 Ingen af disse har to plausible engelske ord i denne kodebase.
