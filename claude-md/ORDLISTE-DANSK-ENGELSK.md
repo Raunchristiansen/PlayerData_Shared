@@ -3155,7 +3155,7 @@ root · auth · components · onboarding · crashlytics · prefs · topbar · ov
 | udgivelse | `release` | |
 | formular | `form` | serverens eget ord: `form_rules` |
 | staevne | `tournament` | allerede i A: `tournament_id`, `tournament_name` |
-| sortering | `sort` | |
+| sortering | `sorting` | **IKKE `sort`** — se rettelsen nedenfor |
 | diagrammer | `charts` | |
 | ikon | `icon` | |
 | fejlsporing | `error_tracking` | `fejl -> error` (A-liste) + `sporing -> tracking` |
@@ -3223,4 +3223,64 @@ andet, end ordet lader ane.**
 > Halvdelen af de ord, der SER entydige ud, var det ikke — og det er efter at
 > `traek` allerede havde laert mig at laese. En liste over ord kan kun doemme
 > ord, der KUN har én betydning. Resten er navne.
+
+### RETTET 06-10 kl. 18:25: `sortering -> sort` gjorde `sort` til et ENGELSK maal
+
+**Androids vaerktoejs selvproeve afviste det, og den havde ret:**
+
+```
+SELVPROEVE FEJLEDE: 'sortFarve' blev omdoebt til 'sortColor'
+'sort' er dansk = BLACK, ikke sorteret
+```
+
+**Mekanismen er vaerktoejets idempotens-regel, som er RIGTIG og ikke skal
+fjernes:**
+
+```kotlin
+if (l in engelske_maal(ob)) return l, False, False   // allerede maalet
+```
+
+Den findes, fordi `PositionMinute` engang blev `PositionMinutes` i to koersler i
+traek. **Men i det oejeblik `sort` bliver et engelsk MAAL, betyder den ogsaa, at
+dansk `sort` (= BLACK) slipper igennem som "allerede engelsk"** — og saa bygger
+vaerktoejet hybriden `sortFarve -> sortColor`.
+
+### Og de to lister modsagde hinanden
+
+```
+ORD-ENGELSK-DANSK   `sort` staar i "KAN IKKE AFGOERES PAA EN LISTE"
+                    Android DANSK · iOS DANSK · Backend ENG
+A34 (denne fil)     sortering -> sort, som goer sort til et engelsk maal
+```
+
+**Samme ord, to filer, modsat dom.** Det er tredje gang i dag en modsigelse
+mellem to datasteder blev fanget af et vaerktoej og ikke af en laeser — foerst
+`Datainput` (prosa mod data), saa `traek` (to datablokke), nu denne (to FILER).
+
+### Rettelsen, og hvorfor den ikke er "sort i KAN_IKKE_AFGOERES"
+
+Android foreslog at laegge `sort` i `KAN_IKKE_AFGOERES`. **Det ville efterlade
+modsigelsen staaende** — ordet ville vaere baade et engelsk maal og et
+uafgoerligt dansk ord, praecis som `traek` var det i faa timer.
+
+**`sortering -> sorting` i stedet.** Saa bliver `sort` aldrig et engelsk maal, og
+der er ingen modsigelse at loese.
+
+```
+sortering  ->  sorting      entydigt, og roerer ikke sort
+sort       dansk BLACK      staar fortsat kun i "kan ikke afgoeres"
+```
+
+**`SpillerSortering -> PlayerSort` fra runde 4 er stadig et godt NAVN** — en
+dom pr. navn, som altid. Vil I have `PlayerSorting` for konsistens, er det
+jeres kald; begge er korrekte engelske navne.
+
+### Og hvor den blev fanget, er pointen
+
+> *"Gaten koerer `spander.py`s selvproeve, ikke `omdoeb_core`s. Jeg saa den,
+> fordi jeg koerte vaerktoejet i haanden. En selvproeve, der kun koerer naar
+> nogen kalder vaerktoejet, beskytter kun den der kalder det."*
+
+**Faren var latent, ikke sket:** `sortTekstPaa` i fire filer og `sortValue` i én
+stod uroerte. Men de ville alle vaere blevet hybrider i runde 5.
 
