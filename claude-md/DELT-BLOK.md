@@ -3061,6 +3061,42 @@ Androids krav, 2026-10-04, efter to uafhængige tilfælde samme dag: iOS' testk�
 
 Samme form som denne fils egne "Få testen til at fejle, før du stoler på at den består" (ødelæg med vilje det testen skal fange, bekræft rødt, ret tilbage) — men skærpet fra en anbefaling til et KRAV specifikt for frysninger/facit-opdateringer: det er ikke nok at vide reglen generelt, proceduren skal tvinge den, hver gang et facit selv er ved at blive rettet, ikke kun når en ny test skrives.
 
+### Og gendan sabotagen med `cp`, ikke med `git checkout --`
+
+**Androids maaling 06-10-2026, tre tilfaelde paa ét doegn.** Den hoerer lige her,
+fordi en frysning KRAEVER en sabotage — og gendannelsen bagefter er det skridt,
+hvor arbejdet kan forsvinde.
+
+> `git checkout -- <fil>` gendanner fra **INDEKSET**, ikke fra den tilstand, du
+> lige havde. I et omdoebningsarbejde, hvor aendringerne ligger i arbejdstraeet
+> og ikke er committet, betyder det, at hele filens omdoebning rulles tilbage —
+> tavst, og uden at noget andet roerer sig.
+>
+> Det ramte Android tre gange paa ét doegn: en rettelse i en KDoc, fire
+> `@SerialName`-noegler, og **31 navne i én fil**, der maatte laegges ind igen i
+> fire runder, hvor compileren pegede.
+>
+> **Gendan en sabotage eller en midlertidig aendring med `cp` fra en backup,
+> taget FOER aendringen.** Det er én linje mere og den eneste form, der ikke
+> afhaenger af, hvad indekset tilfaeldigvis indeholder.
+
+```
+FOER       cp Fil.kt /tmp/Fil.kt.bak
+sabotér    ret Fil.kt, bekraeft vagten bliver ROED
+GENDAN     cp /tmp/Fil.kt.bak Fil.kt        <- uafhaengig af indekset
+ALDRIG     git checkout -- Fil.kt           <- indekset afgoer udfaldet
+```
+
+**Hvorfor den er tavs, og det er pointen:** kommandoen lykkes. Exitkoden er 0,
+filen findes, og testen bliver groen igen — fordi den tester den GAMLE kode. Der
+findes ikke et signal, der siger "du mistede en times arbejde".
+
+Og den er i familie med denne fils egne tilfaelde, hvor **den sidste
+handlings udfald blev laest som hele kaedens**: `git push -q && echo "pushet"`
+paa en no-op, `cat` paa en laase-MAPPE, og `gh` der returnerer 0, mens shellen
+havde spist en kodeblok. **Et vellykket sidste skridt beviser ikke, at det
+mellemliggende overlevede.**
+
 ### En test af "rydder den?" kan ikke se "rydder den for meget?"
 
 Android, 2026-10-04 (build 24): Morten fandt at en ny kamp viste den FORRIGE kamps 2-0 og kort — kladden blev kun delvist ryddet ved kampskift. Androids rettelse (`vaelgKamp` rydder UBETINGET) var sabotagetestet og bevist: rydningen virker. Men en familie, der skrev en kommentar FØR de valgte kamp, mistede teksten i samme sekund — en tavs datafejl rettet ved at indføre en anden.
