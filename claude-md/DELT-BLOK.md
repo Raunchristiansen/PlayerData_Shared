@@ -3759,6 +3759,65 @@ med en groen test omkring sig findes ikke igen ved et uheld.
 > Spoerg om en vektor: hvem skrev facit — et menneske eller koden? Svaret
 > afgoer, om den kan komme foer eller efter.
 
+### En vektorfil beviser kun noget om den VEJ, den koeres igennem
+
+**Android, 06-10-2026 under `Backend#191`.** Otte delte vektorer, en groen test,
+og en levende fejl bagved.
+
+> *"`SelvmaalVektorTest` var groen hele tiden, fordi den gaar ad
+> HISTORIKvejen. Otte vektorer, to veje, og kun den ene var maalt."*
+
+```
+historik-vejen   MatchScore/historik-udledningen     TESTET -> groen, korrekt
+live-vejen       server-haendelse -> DraftEvent.fra -> LiveLogic.score
+                 ALDRIG koert mod de samme vektorer
+```
+
+**Resultatet, maalt gennem live-vejen:**
+
+```
+haendelse_med_ukendt_side        facit 11-7     live 13-7
+selvmaal_med_ukendt_side_null    facit 19-23    live 19-24
+selvmaal_med_ukendt_side_tom     facit 29-14    live 29-15
+```
+
+**Og iOS fandt KUN den foerste**, fordi de proevede vejen med ét maal uden
+selvmaal. Hele saettet gennem hele vejen gav tre.
+
+### Hvad der var i stykker, og hvorfor det er laererigt
+
+`LiveLogic.score` var **rigtig hele vejen.** Den spoerger `Side.fra(scorerType)`,
+og en ukendt side falder til `else`.
+
+**Men siden var holdt op med at vaere ukendt, foer scoren saa den.**
+`DraftEvent.fra` satte `eget_hold` ved enhver tom `scorer_type`.
+
+```
+begrundelsen   RIGTIG og staar stadig: det AELDRE fritekstformat har
+               scorer/assist som fri tekst uden type, og dér ER eget hold korrekt
+fejlen         betingelsen var for BRED. Den saa paa at typen MANGLEDE,
+               ikke paa om fritekstens egne markoerer var der
+rettelsen      val fritekst = !ev.scorer.isNullOrEmpty() || !ev.assist.isNullOrEmpty()
+```
+
+**En funktion kan vaere korrekt og stadig svare forkert, fordi dens INPUT blev
+normaliseret et lag tidligere.** Det er samme skelet som Backends *"byte-identisk
+kode er ikke identisk opfoersel"*, men den anden vej: dér laa forskellen i
+kalderen, her i den, der kaldte foer.
+
+### Reglen
+
+```
+spoerg ikke   "er reglen daekket af en vektor"
+spoerg        "hvilke VEJE naar frem til reglen, og koeres vektoren
+               gennem dem ALLE"
+```
+
+**Og saboter i den retning, der ligner en rettelse.** Androids note: *"fjern
+standardvaerdien helt"* ville have bestaaet brud-testen — og saa havde man byttet
+én tavs fejl for en anden paa data, ingen kan taste ind igen.
+
+
 ### En vektor daekker den formel, der genererede den — ikke den, der ligner den
 
 **Fundet uafhaengigt af to sessioner inden for samme time, 06-10-2026.**
