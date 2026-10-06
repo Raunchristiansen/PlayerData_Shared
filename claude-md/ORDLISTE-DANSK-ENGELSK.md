@@ -716,6 +716,7 @@ ikke vaelge.
 | **raekke** | `division` · `row` | **51 navne, maalt af Android.** DBU-raekken er `division`; `GpsRaekke`/`BaenkRaekke`/`HistorikRaekke` er `row`. Se afsnittet ovenfor · serveren: `dbu_groups.division_name` |
 | positioner | `positions` · `position` | mappingens post er dansk FLERTAL mod engelsk ENTAL · serveren: `position_minutes.position` (flertalsreglen: `positions`) |
 | typer | `types` · `type` | samme · serveren: `activity_types.legacy_type` (flertal: `types`) |
+| **udvisning** | `sin_bin` · `dismissal` | **maalt 06-10 kl. 04:55 i jeres egen kode, ikke gaettet.** `beregning.py:322` *"en midlertidig udvisning"*, `:485` *"10 minutters udvisning"* — en tidsbegraenset bortvisning. Men `:329` *"en direkte udvisning"*, som er **roedt kort**. Eet dansk ord, to fodboldbegreber, praecis `opstilling`-formen. Serverens `format_rules.red_card` daekker KUN den anden. Rammer `_udvisning_slut_ms` og `_udvisning_minutter` (`live.py:438`) |
 
 **`skift` er bekraeftet paa ALLE TRE SIDER.** Android fandt de 8 klientnavne;
 Backend maalte uafhaengigt, at deres `beregning.py` har samme to betydninger, og
@@ -1692,6 +1693,58 @@ aendring i tre platformes tests.
 dansk er indesluttet bag en graense. Og den naeste, der grepper efter danske
 noegler, vil finde dem: **de er ikke gaeld.**
 
+
+## A16. `oversigt` — afgjort af en RUTE, og fire defekter i mit eget instrument
+
+**Maalt 06-10 kl. 04:51-04:56 paa `PlayerData_Backend@origin/master`.**
+
+| dansk | engelsk | bevisklasse |
+|---|---|---|
+| oversigt | `overview` | **RUTEN.** `dbu.py:917` `@router.get("/player-overview")` og `dbu.py:918` `def get_spilleroversigt(...)` — handleren for ruten. Frigiver `get_spilleroversigt` og `compute_spilleroversigt` til `get_player_overview` / `compute_player_overview` |
+
+Det er fjerde ord afgjort paa en rute (`#171` -> `/me`, `kampprogram` ->
+`/fixtures`, `nu` -> `/sync-now`), og **igen havde ruten ligget der hele
+tiden.** En rute er en kontrakt: den er staerkere end et forekomsttal, fordi
+to klienter allerede kalder den.
+
+### Men det vigtigste i dette afsnit er instrumentet, ikke ordet
+
+Min foerste maaling meldte **117 blokerende ord**, med `traeningstype`,
+`minutter`, `init` og `dev` oeverst. Alle fire er **reglens eget arbejde**,
+ikke resterende arbejde:
+
+```
+traeningstype   SAMMENSAT: traening + s + type   — type er godkendt engelsk
+minutter        BOEJNING af minut -> minute      — raekke 557 i denne fil
+init            GODKENDT ENGELSK siden A14
+dev             OVERDETEKTION siden A14
+```
+
+**Fire defekter, og hver af dem fik instrumentet til at melde for meget:**
+
+```
+1  ingen boejningsregel          minutter, raekker meldt som ukendte
+2  SAMMENSAT krav: ALLE dele i   traeningstype fejlede paa sin engelske hale
+   mapningen
+3  laeste /usr/share/dict/words  de 231 godkendte ord var usynlige
+   i stedet for projektets liste
+4  sliced ved '## 2.' og kaldte  26 af 231 ord laest
+   det listen
+```
+
+Efter rettelserne: **48 navne kan omdoebes nu**, 188 er helt engelske, 13
+venter paa A5b. Og `minutter` var stadig med — fordi `minut -> minutter`
+**fordobler konsonanten**, og min boejningsregel kan ikke se en stammeaendring.
+Det er praecis Androids `regel -> regler`, og graensen staar nu maalt to steder.
+
+**Formen er dagens, paa et vaerktoej i stedet for en maaling:** et instrument,
+der er svagere end reglen, melder reglens arbejde som resterende. Og det er
+samme familie som `check-parent-cards.sh`s usorterede hentning og Androids fem
+"ligner dansk"-maalere — en kontrol, der altid siger det samme, ligner en
+kontrol, der virker.
+
+**Konsekvensen hvis den ikke var fanget:** jeg havde sendt Backend en liste med
+fire ord, som listen allerede havde afgjort, og bedt dem maale dem igen.
 
 ## B. Entydige — jeg foreslår, ingen beslutning nødvendig
 
