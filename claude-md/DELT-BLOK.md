@@ -3733,3 +3733,59 @@ kort i stedet for at vente et minut.
 > Et vaerktoej, der ikke kan skelne "nej" fra "jeg kunne ikke spoerge", svarer
 > altid nej.
 
+### En GENERERET vektor er et vidne, ikke en specifikation
+
+**Koordinatoren skrev 06-10-2026 til to sessioner: *"vektor FOERST, derefter
+koden."*** Backend rettede det, og rettelsen er vigtigere end instruktionen var.
+
+> *"En vektor genereret af den URETTEDE funktion ville have vidnet om den
+> forkerte, gamle adfaerd, saa 'vektor foerst' betoed konkret 'ret kilden,
+> generér derefter'."*
+
+```
+en vektor SKREVET i haanden     er en SPECIFIKATION — den kan komme foerst,
+                                og koden maales imod den
+en vektor GENERERET af koden    er et VIDNE — den kan kun komme BAGEFTER,
+                                og den beviser kun, hvad kilden GOER
+```
+
+**Alle vektorer i `logic/vectors/` er genereret** — det er hele pointen med
+`-fra-python`-navnet. Saa reglen er altid den anden.
+
+**Og faren er den vaerste slags:** havde vektoren vaeret genereret foerst, var
+den forkerte adfaerd blevet laast fast af en test, der blev **groen**. En fejl
+med en groen test omkring sig findes ikke igen ved et uheld.
+
+> Spoerg om en vektor: hvem skrev facit — et menneske eller koden? Svaret
+> afgoer, om den kan komme foer eller efter.
+
+### En vektor daekker den formel, der genererede den — ikke den, der ligner den
+
+**Fundet uafhaengigt af to sessioner inden for samme time, 06-10-2026.**
+
+**Backend, om serverens procent:**
+
+> *"Vektoren beviser `round(taeller/naevner)`-formen, ikke den to-trins
+> divide-saa-multiplicer-med-100-formel, `stats.py` faktisk bruger."*
+
+**iOS, om deres egen:**
+
+> *"`pyround`-vektoren er paa vejen HER kun for ren afrunding, ikke for
+> procent-udregningen."*
+
+Og de maalte foelgen: `del/helhed*100` giver `57.49999999999999` i stedet for
+`57.5`, saa `23/40` bliver `57 %` hvor eksakt halv op giver `58 %`. **40
+afvigelser blandt 501.500 par med total under 1000.**
+
+```
+bevidnet       round(a/b)            et forhold, der rundes
+faktisk brugt  round(a/b * 100)      et forhold, der ganges og SAA rundes
+```
+
+**Afrundingen er ikke hullet.** `halve_op` er pinnet og rigtig begge steder.
+**Hullet er HVOR i udtrykket man runder** — og de to udtryk ligner hinanden nok
+til, at vektoren foeles daekkende.
+
+> En vektor beviser én vej gennem koden. At en anden vej bruger samme
+> hjaelpefunktion goer den ikke bevidnet.
+
