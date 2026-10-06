@@ -3759,6 +3759,57 @@ med en groen test omkring sig findes ikke igen ved et uheld.
 > Spoerg om en vektor: hvem skrev facit — et menneske eller koden? Svaret
 > afgoer, om den kan komme foer eller efter.
 
+### En fald-tilbage-vaerdi, der er LIG med det forkerte svar, tester ingenting
+
+**Android, 06-10-2026, i sine egne testdata under `Backend#198`.**
+
+To vektorer siger `None` for spillernavnet, hvilket betyder *"brug postens egne
+gemte felter"*. **I testdataene var de gemte felter sat til `0` og `0`.**
+
+```
+en implementering, der SKAL laese de gemte felter       -> 0, 0   BESTAAR
+en forkert implementering, der taeller tidslinjen
+  og finder nul maal for et ukendt navn                 -> 0, 0   BESTAAR
+```
+
+**De to kan ikke skelnes.** Testen var groen for begge, altsaa maalte den
+ingenting.
+
+**Rettelsen var at saette de gemte felter til `7` og `9`** — vaerdier, ingen
+tidslinje-taelling kan producere ved et uheld. Nu bestaar kun den
+implementering, der faktisk laeser dem.
+
+```
+spoerg om hver testvaerdi   kan den opstaa ad en ANDEN vej end den, jeg tester
+er svaret ja                vaelg en vaerdi, hvor svaret er nej
+```
+
+**Nul er den farligste vaerdi at vaelge**, fordi nul er hvad naesten enhver
+fejlende beregning giver: en tom liste summeret, et manglende felt, et filter
+der ramte alt. **En test med nul som forventet svar bestaar ofte af den forkerte
+grund.**
+
+Samme form som `#48`s tankestreg-mod-nul og som *"En standardvaerdi, der er et
+plausibelt svar, skjuler et manglende felt"* — men her i TESTDATAENE i stedet
+for i koden.
+
+### Og en accessor, der stringificerer null, er den samme fejl ét lag nede
+
+Samme runde, samme fil:
+
+```kotlin
+?.jsonPrimitive?.content   paa JsonNull  ->  STRENGEN "null", fire bogstaver
+?.jsonPrimitive?.contentOrNull           ->  rigtig null
+```
+
+**Vektoren `intet_kendt_spillernavn_giver_None` blev fodret med bogstaverne
+`n-u-l-l` som spillernavn.** Den testede dermed et navn, der tilfaeldigvis ikke
+findes — ikke fravaeret af et navn.
+
+> En accessor, der aldrig returnerer null, har ikke fjernet null'en. Den har
+> omdoebt den til noget, der ligner data.
+
+
 ### En test, der genimplementerer reglen, maaler sig selv
 
 **iOS, 06-10-2026 under `Backend#191`.** De rettede en fejl, og fandt undervejs,
