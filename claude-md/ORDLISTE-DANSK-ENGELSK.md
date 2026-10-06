@@ -866,6 +866,7 @@ iOS' doc alene, fordi den er maalt paa de navne, der faktisk staar tilbage.
 | 9 filnavne | generer | `generate` | — | **Backends maaling 02:52: eet konsistent betydning i ~15 kaldesteder paa tvaers af 9 filer** — "genererer testvektorerne". Men FILNAVNENE flyttes ikke paa den: se kaeden i KAEDER.md |
 | **5** | fjern | `remove` | 1 | **Afgjort paa KOLLISIONEN, ikke paa tallet.** `slet` ejer allerede `delete` (36 forekomster), og de to er forskellige operationer i koden: `_fjern_token` fjerner et token fra en liste, `slet_stoevne`/`slet_min_konto` sletter en raekke. `remove` har n=1, men det er det ENESTE ord, der ikke kolliderer |
 | **5** | kampprogram | `fixtures` | 9 | **SERVEREN HAR RUTEN:** `dbu.py:497` `@router.get("/fixtures")`, og `db.py:2249` skriver selv `dbu.py::get_kampprogram (/fixtures)`. `#171`s moenster — ruten blev engelsk, `def`'en blev ikke. Se afsnittet nedenfor |
+| **2** | nu | `now` | 2 | **TO RUTER:** `dbu.py:779` `@router.post("/standings/sync-now")` og `dbu.py:968` `@router.post("/sync-now")`. Backend fandt den foerste som tie-break; den anden maalte jeg. Frigiver `tjek_kamp_nu` og `sync_nu` |
 | **8** | ekstra | `extra` | **51** | `has_extra_time` |
 | **8** | sidste | `last` | **29** | `last_sync`, `last_seen` |
 | **8** | ryd | `clear` | **18** | bydeform, som `marker` og `placer` |
@@ -1238,6 +1239,38 @@ hele tiden.
 *"forcing one would be exactly the n=1-style guess you're avoiding."* De havde
 ret i at ikke gaette — **og ingen af os slog ruten op.** Det var ikke et gaet,
 der manglede; det var en maaling.
+
+### METODE: led efter RUTEN foerst — tre gange i nat var den beviset
+
+**Maalt kl. 03:12.** Tre ord blev afgjort af en rute, og i alle tre tilfaelde var
+ruten der hele tiden:
+
+```
+#171          ruten blev /me, men `def mig` og `def admin_mig` var danske
+kampprogram   @router.get("/fixtures")              — jeg afviste ordet TO gange
+nu            @router.post("/standings/sync-now")
+              @router.post("/sync-now")             — to, ikke een
+```
+
+**En rute er det staerkeste bevis, listen kan have**, og staerkere end et
+forekomsttal:
+
+```
+en rute        er en KONTRAKT. Klienterne kalder den; ordet er afgjort
+et kolonnenavn er serverens valg, men internt
+et forekomsttal siger kun at ordet BRUGES — ikke hvad det betyder
+```
+
+Og `test_route_navngivning.py` har en **godkendelsesliste over rutenavne**, som
+er en faerdig liste af engelske ord, ingen havde brugt som kilde.
+
+**Hvorfor det blev overset tre gange:** vi maalte alle sammen ord i
+IDENTIFIKATORER og glemte, at ruterne er den ene del af kodebasen, hvor
+engelsken allerede ER afgjort — fordi en klient kalder den.
+
+**Reglen: foer et ord afvises som tvetydigt, saa grep efter det i en
+`@router`-dekorator og i rutenavne-godkendelseslisten.** Det tager fem sekunder
+og er den eneste kilde, der er bindende.
 
 ## B. Entydige — jeg foreslår, ingen beslutning nødvendig
 
