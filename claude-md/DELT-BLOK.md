@@ -923,7 +923,7 @@ Oomd's egen begrundelse:
 **Begge KERNEdraeb tog `java`, altsaa byggene.** `#40` virkede to gange. Det, der
 draebte Claude-sessionen, var den TREDJE haendelse, ni minutter senere.
 
-### Mekanismen, og den er hele pointen
+#### Mekanismen, og den er hele pointen
 
 ```
 #40 styrer      kernens OOM-killer via oom_score_adj=900
@@ -937,7 +937,7 @@ systemd-oomd    laeser IKKE oom_score_adj. Den vaelger en CGROUP paa
 forhindrer, at den vaelges **af kernen**. Saetningen var rigtig og dens
 raekkevidde for bred — samme form som alt andet den aften.
 
-### Og der er ingen knap paa vores side
+#### Og der er ingen knap paa vores side
 
 ```
 user.slice          MemoryMax/High=infinity, intet loft
@@ -954,7 +954,7 @@ En drop-in paa Claude-appens scope er maskinejerens opsaetning og en
 tredjeparts unit. **Kortet havde ret i at sige "ret ingenting" — det var ikke
 forsigtighed, der er faktisk ingen knap.**
 
-### Hvad det betyder i praksis
+#### Hvad det betyder i praksis
 
 ```
 #40 beskytter    mod kernens valg, naar en ENKELT proces skal doe   VIRKER
