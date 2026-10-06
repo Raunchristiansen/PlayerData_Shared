@@ -1,0 +1,172 @@
+{
+  "kontrakt": {
+    "kilde": "backend.app.beregning.calculate_goals_assists_from_timeline — PlayerData_Backend",
+    "genereret": "scripts/generate-goals-assists-vectors.py",
+    "maalt_ikke_rettet": [
+      "Slettede mål TÆLLES i dag af begge serverkopier og iOS' egen StatsLogik.swift:175 — Android (.aktive) udelader dem. #146s allerede låste regel for HOLD-stilling (score_from_events) udelader slettede mål; samme regel er IKKE endnu anvendt her.",
+      "Legacy-testen: serveren tester NØGLENS tilstedeværelse ('scorer_type' not in e), begge klienter tester VÆRDIEN (scorerType == nil/null) — forskelligt facit når en session har både en kendt scoring og et scorer_type:null-event, se vektoren 'null_scorer_type_SAMMEN_med_en_kendt_scoring'."
+    ]
+  },
+  "vektorer": [
+    {
+      "navn": "kendt_spiller_scorer_to_mål",
+      "input": {
+        "timeline": {
+          "events": [
+            {
+              "type": "mål",
+              "scorer_type": "eget_hold",
+              "scorer_navn": "Testspiller",
+              "deleted": false
+            },
+            {
+              "type": "mål",
+              "scorer_type": "eget_hold",
+              "scorer_navn": "Anden Spiller",
+              "deleted": false
+            },
+            {
+              "type": "mål",
+              "scorer_type": "modstander",
+              "scorer_navn": null,
+              "deleted": false
+            }
+          ]
+        },
+        "spiller_navn": "Testspiller"
+      },
+      "kilde_kald": "beregning.calculate_goals_assists_from_timeline",
+      "forventet": [
+        1,
+        0
+      ],
+      "noter": "Et grundlæggende, utvetydigt tilfælde — spilleren selv scorer ét af de tre mål."
+    },
+    {
+      "navn": "slettet_mål_af_spilleren_selv_TAELLES_I_DAG",
+      "input": {
+        "timeline": {
+          "events": [
+            {
+              "type": "mål",
+              "scorer_type": "eget_hold",
+              "scorer_navn": "Testspiller",
+              "deleted": true
+            }
+          ]
+        },
+        "spiller_navn": "Testspiller"
+      },
+      "kilde_kald": "beregning.calculate_goals_assists_from_timeline",
+      "forventet": [
+        1,
+        0
+      ],
+      "noter": "MÅLT, IKKE besluttet: nuværende serverkode tæller et SLETTET mål med — 0 ville være facit, hvis #146s allerede-låste 'et slettet mål tæller ikke'-regel (goal_side.score_from_events, HOLD-stilling) udvides til per-spiller mål/assist."
+    },
+    {
+      "navn": "aegte_legacy_noeglen_findes_slet_ikke",
+      "input": {
+        "timeline": {
+          "events": [
+            {
+              "type": "mål",
+              "scorer": "Testspiller scorede",
+              "deleted": false
+            }
+          ]
+        },
+        "spiller_navn": "Testspiller"
+      },
+      "kilde_kald": "beregning.calculate_goals_assists_from_timeline",
+      "forventet": null,
+      "noter": "Et ÆGTE ældre fritekst-mål (ingen scorer_type-nøgle) — None, alle fire kopier er enige om dette."
+    },
+    {
+      "navn": "null_scorer_type_SAMMEN_med_en_kendt_scoring",
+      "input": {
+        "timeline": {
+          "events": [
+            {
+              "type": "mål",
+              "scorer_type": null,
+              "scorer_navn": null,
+              "deleted": false
+            },
+            {
+              "type": "mål",
+              "scorer_type": "eget_hold",
+              "scorer_navn": "Testspiller",
+              "deleted": false
+            }
+          ]
+        },
+        "spiller_navn": "Testspiller"
+      },
+      "kilde_kald": "beregning.calculate_goals_assists_from_timeline",
+      "forventet": [
+        1,
+        0
+      ],
+      "noter": "MÅLT uenighed: serverens nøgle-tilstedeværelse-test tæller stadig den kendte scoring korrekt (1, 0), fordi scorer_type-NØGLEN findes på begge events. Klienternes værdi-er-null-test ville gøre HELE sessionen 'legacy' og falde tilbage på klientens egne tal i stedet — et andet facit for samme data."
+    },
+    {
+      "navn": "assist_taelles_separat_fra_maal",
+      "input": {
+        "timeline": {
+          "events": [
+            {
+              "type": "mål",
+              "scorer_type": "eget_hold",
+              "scorer_navn": "Anden Spiller",
+              "assist_type": "eget_hold",
+              "assist_navn": "Testspiller",
+              "deleted": false
+            }
+          ]
+        },
+        "spiller_navn": "Testspiller"
+      },
+      "kilde_kald": "beregning.calculate_goals_assists_from_timeline",
+      "forventet": [
+        0,
+        1
+      ],
+      "noter": "Spilleren selv assisterer (ikke scorer) — (0, 1)."
+    },
+    {
+      "navn": "intet_kendt_spillernavn_giver_None",
+      "input": {
+        "timeline": {
+          "events": [
+            {
+              "type": "mål",
+              "scorer_type": "eget_hold",
+              "scorer_navn": "Nogen Anden",
+              "deleted": false
+            }
+          ]
+        },
+        "spiller_navn": null
+      },
+      "kilde_kald": "beregning.calculate_goals_assists_from_timeline",
+      "forventet": null,
+      "noter": "Intet spillernavn valgt endnu — intet pålideligt kan udledes, None (samme som #160)."
+    },
+    {
+      "navn": "ingen_maal_overhovedet_sand_nul",
+      "input": {
+        "timeline": {
+          "events": []
+        },
+        "spiller_navn": "Testspiller"
+      },
+      "kilde_kald": "beregning.calculate_goals_assists_from_timeline",
+      "forventet": [
+        0,
+        0
+      ],
+      "noter": "Tom hændelsesliste — et SANDT (0, 0), ikke en fejlmåling."
+    }
+  ]
+}
