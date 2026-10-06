@@ -904,6 +904,72 @@ en beskrivelse, der holdt op med at stemme, uden at sige det.
 
 Fjern **aldrig** en lås uden at have kontrolleret pid'en. Og tag aldrig en lås uden at skrive pid og ærinde — ellers er den næste nødt til enten at vente i det uendelige eller at gætte.
 
+### `#40`s beskyttelse er usynlig for `systemd-oomd` — der er TO draebere
+
+**Maalt af Android 06-10-2026, da `#101` blev undersoegt. Kortets egen hypotese
+holdt ikke: det var ikke sult, noget BLEV draebt — og det var ikke kernen.**
+
+```
+18:34:07  kernens OOM    claude invoked oom-killer -> draebte java (bygget)
+18:45:43  kernens OOM    gjs invoked oom-killer    -> draebte java (bygget)
+18:54:37  systemd-oomd   draebte app-com.anthropic.Claude-8466.scope
+```
+
+Oomd's egen begrundelse:
+
+> *"due to memory pressure for user@1000.service being 55.22% > 50.00% for > 20s
+> with reclaim activity"*
+
+**Begge KERNEdraeb tog `java`, altsaa byggene.** `#40` virkede to gange. Det, der
+draebte Claude-sessionen, var den TREDJE haendelse, ni minutter senere.
+
+### Mekanismen, og den er hele pointen
+
+```
+#40 styrer      kernens OOM-killer via oom_score_adj=900
+systemd-oomd    laeser IKKE oom_score_adj. Den vaelger en CGROUP paa
+                memory-pressure og draeber den HELE
+```
+
+**To draebere, to regelsaet, og den ene kender ikke den andens beskyttelse.**
+
+`#40`s kort skrev *"beskyttelsen forhindrer, at en session bliver VALGT"*. Den
+forhindrer, at den vaelges **af kernen**. Saetningen var rigtig og dens
+raekkevidde for bred — samme form som alt andet den aften.
+
+### Og der er ingen knap paa vores side
+
+```
+user.slice          MemoryMax/High=infinity, intet loft
+user@1000.service   ManagedOOMMemoryPressure=kill   <- den der fyrede
+                    ManagedOOMPreference=none
+oomd.conf           tom -> standardvaerdier, graensen var 50 % i >20 s
+```
+
+Knappen hedder `ManagedOOMPreference`. **Men oomd har ingen "foretraek dette
+offer"-indstilling**, saa den kan ikke pege paa et byg-scope, og `avoid`/`omit`
+paa vores EGET scope ville vaere den forkerte retning.
+
+En drop-in paa Claude-appens scope er maskinejerens opsaetning og en
+tredjeparts unit. **Kortet havde ret i at sige "ret ingenting" — det var ikke
+forsigtighed, der er faktisk ingen knap.**
+
+### Hvad det betyder i praksis
+
+```
+#40 beskytter    mod kernens valg, naar en ENKELT proces skal doe   VIRKER
+intet beskytter  mod at HELE brugersessionens cgroup draebes paa
+                 vedvarende memory-pressure
+```
+
+**Saa en session kan stadig doe, uden at noget er gaaet galt i den.** Ser I en
+session forsvinde uden spor i jeres eget arbejde, saa se efter
+`systemd-oomd`-linjen i `journalctl` foer I leder efter en fejl hos jer selv.
+
+Og det er grunden til, at to KOLDE builds samtidig er en reel risiko og ikke
+pedanteri: det er praecis den vedvarende pressure, oomd maaler paa.
+
+
 ### Et loft, der rækker til alt det du MÅLTE, siger intet om det du ikke målte
 
 Koordinatoren sænkede Gradle-dæmonens heap fra 1280m til 768m den 04-10-2026
