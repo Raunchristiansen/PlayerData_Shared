@@ -2621,6 +2621,67 @@ mere: **ikke bare hvad vagten maaler, men om det den maaler er noget, arbejdet
 er designet til at flytte.**
 
 
+#### Maalingen afgoer BEGGE veje — ogsaa "byg den", ikke kun "byg den ikke"
+
+Afsnittene ovenfor har to tilfaelde, hvor en maaling fik Android til at
+FRAVAELGE en vagt: 37 ukendte JSON-noegler hvoraf faa var aegte, og 122
+streng-spejlinger hvoraf 3 var. Begge gange var tallet selv svaret.
+
+**Og det gav en skaevhed, som de selv fangede 06-10-2026.** De var paa vej til
+at fravaelge en kommentarsprog-vagt paa samme formodning — en engelsk kommentar,
+der citerer dansk brugertekst, baerer `æøå` og ville blive meldt falsk.
+
+```
+kommentarlinjer i app/src                12316
+danske paa DIAKRITTER                     8569
+danske KUN paa funktionsord               1610   en diakrit-vagt misser dem
+ENGELSKE linjer med en dansk diakrit          1   <- den ventede stoejkilde
+```
+
+**Én.** Og den er selv en blandet linje. Saa vagten blev bygget i stedet for
+fravalgt.
+
+> En vagt er vaerd at bygge, naar dens falske positiver er MAALT — ikke naar
+> dens idé er god. Og det gaar begge veje: jeg havde fravalgt denne paa en
+> formodning.
+
+**Reglen er altsaa ikke "maal foer du bygger".** Den er: **maal foer du
+afgoer** — og et fravalg paa en formodning er lige saa umaalt som et tilvalg
+paa en.
+
+### To signaler, fordi diakritter alene daekker 84 %
+
+```
+8569 af 10179 danske linjer har aeoeaa     84 %
+1610 er danske KUN paa funktionsord        ikke · skal · naar · fordi · derfor
+```
+
+Det er samme graense, afsnittet om identifikatorer allerede naevner: **en
+æ/ø/å-vagt melder groent paa 97 % af arbejdet.** Dansk uden diakritter er
+stadig dansk, og en vagt med ét signal maaler det, der er nemt at se.
+
+### Og selvproeven fandt TO fejl i vagten, foer den havde koert én gang
+
+```
+1  detektoren saa kun linjer der BEGYNDER med en kommentarmarkoer
+   -> en efterstillet `// kommentar` efter kode var USYNLIG
+   -> rettet til at bruge `spander`, hvilket giver modproeven gratis:
+      `// ikke en kommentar` inde i en STRENG taelles ikke med
+
+2  proeven fejlede paa en fixtur med `*`-linjer uden en `/*`-aabning
+   -> FIXTUREN var forkert, ikke detektoren
+```
+
+**Den anden er den, der er svaer at se.** En roed selvproeve laeses som "vagten
+er forkert", og her var proevens eget materiale ugyldigt Kotlin. At skelne de to
+kraever, at man laeser fixturen med samme mistro som koden.
+
+**Tredje gang samme nat, at en selvproeve fangede noget i den vagt, den
+tilhoerer, FOER vagten havde koert én gang.** Det er argumentet for at skrive
+selvproeven samtidig med vagten og ikke bagefter: den finder fejl, der ellers
+ville blive lagt i en groen koersel.
+
+
 ### Og maalingen af en foreslaaet vagt ER beslutningen om den
 
 Android maalte spejlrisikoen hos sig selv og fik **122** gamle navne, der stadig
