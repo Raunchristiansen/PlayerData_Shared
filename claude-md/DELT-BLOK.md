@@ -4237,3 +4237,57 @@ Android valgte det sidste. **En graense, der blokerer et rigtigt tilfaelde, er
 ikke noedvendigvis for stram** — den kan vaere praecis stram nok til at holde et
 vaerre tilfaelde ude, og saa er en dom pr. navn den billigere udvej.
 
+### `-Xmx` er ikke et loft over processen — det er et loft over HEAPEN
+
+**Android, 06-10-2026, maalt paa et koldt traee efter at maskinen froes.**
+
+```
+                Gradle-daemon   Kotlin-daemon   test-JVM   samlet   udfald
+  -Xmx 1280m       1771 MB         1261 MB       1245 MB   3097 MB  OOM-DRAEBT
+  -Xmx  768m       1284 MB         1462 MB        176 MB   2652 MB  groent, 3m39
+```
+
+**Laes den foerste kolonne igen: loftet er 768, og processen bruger 1284.**
+
+```
+INDE i -Xmx     heapen
+UDENFOR         metaspace · kodecache · traadstakke · native buffere
+                og det er her en HALV GIGABYTE
+```
+
+> En ren heap-regning kan aldrig forudsige, om maskinen holder.
+
+### Og saenkningen kostede ingen byggetid
+
+`1280m -> 768m` gik fra **draebt** til **groen paa 3m39**. Det er ikke en
+afvejning mellem hastighed og sikkerhed — det hurtigste byg er det, der ikke
+bliver draebt.
+
+**Men et YDERLIGERE loft er ikke maalt**, og den naeste sanering ville koebe
+200-300 MB.
+
+### Det, maalingen afsloerede, og som ingen spurgte om
+
+```
+Claude Desktop   3122 MB   43 % af maskinen
+oevrigt          1014 MB
+Android Studio    686 MB   aaben, men ubrugt af CI og af byggene
+GNOME-skal        204 MB
+CI-runner         203 MB
+rustdesk          126 MB
+                 -------
+brugt            4169 MB af 7289
+et koldt byg    +2652 MB
+                 -------
+                  6821 af 7289     470 MB til overs
+```
+
+**Den stoerste enkeltpost er ti gange stoerre end den gevinst, et lavere
+byggeloft kan give.** Og den er ikke byggenes.
+
+> Naar et loft allerede er maalt og saenket én gang, er naeste spoergsmaal ikke
+> "kan vi saenke det igen" — det er "hvad er der ELLERS kommet til siden".
+
+Her var svaret tre Claude-sessioner i én desktop-app. **Byggene var de samme;
+det var rummet omkring dem, der blev mindre.**
+
