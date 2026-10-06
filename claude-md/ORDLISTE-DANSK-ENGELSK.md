@@ -1385,6 +1385,14 @@ dansk ord.** `straffe` er fodboldtermen `penalty`, ikke `punish`.
 **`svar` → `response`, ikke `answer`:** det er altid et HTTP-svar i denne
 kodebase, aldrig et svar på et spørgsmål.
 
+**Endnu et, 06-10 nat, maalt af Backend ved brug af A11's egne fire frigivne
+navne:** `seneste` → `latest`. 29 forekomster i `backend/app/*.py`
+(`admin.py`/`dbu.py`/`live.py`/`db.py`/`dbu_sync.py`), samtlige betyder
+"mest nylige" (`seneste_login`, `seneste kampprogram-kørsel`, `seneste
+sendte content_state`, "seneste skriv vinder") — ingen anden betydning
+fundet nogen steder. Frigiver bl.a. `_seneste_delt_haendelse` (live.py) →
+`_latest_shared_event`.
+
 ## C. Målt, ikke spurgt — og det ene, der er farligt
 
 **Jeg havde tre spørgsmål til Morten her. Alle tre kunne måles, så de er væk.**
