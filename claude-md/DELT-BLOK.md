@@ -157,6 +157,61 @@ Beslutningsregel for hvert enkelt tilfælde:
 
 Baggrund: en spiller fik vist 71 minutter i stedet for 37, fordi klientens sortering manglede tie-break for hændelser i samme minut.
 
+### En regel, intet kalder, kan vaere UENIG med den, der kaldes
+
+**To maalte forekomster hos Android, 02-10 og 06-10, og formen er den samme
+begge gange.** Oevelsen er deres: offentlige `core/`-funktioner, som intet i
+`main/` kalder.
+
+```
+02-10   venterPaaBekraeftelse   sagde "venter stadig" ved konto_komplet=true
+                                og email_bekraeftet=false — serverens undtagelse
+                                for sine egne testkonti. naesteTrin siger FAERDIG
+06-10   restForSpiller          kortets START = endMs minus udvisningens laengde
+                                den levende vej forankrer i udvisningStartMs,
+                                ellers haendelsens time
+```
+
+**Begge var kun kaldt fra en test. Og begge var UENIGE med den funktion, skaermen
+faktisk bruger.**
+
+> Det er ikke doed kode, men **en faelde, der venter paa at blive koblet.**
+
+Og det er den rigtige maade at laese det: en funktion, intet kalder, koster
+ingenting i dag. **En funktion, intet kalder OG som svarer noget andet, er et
+forkert svar, der ligger klar** — og den naeste, der skal bruge reglen, finder
+den og kobler den.
+
+### To ting at kontrollere, FOER oevelsen bruges
+
+**1. Instrumentet.** Androids foerste maaling 02-10 svarede *"261 funktioner
+kaldes slet ikke"*, heriblandt `synlighed` og `valider`:
+
+```
+(?<![\w.])navn\s*\(     <- lookbehind'et udelukker ALT med et punktum foran
+```
+
+Altsaa hvert `Objekt.metode(...)`-kald. **Selvkontrollen skal maale navne, man
+VED er koblede, og se dem > 0** — ti navne, i deres tilfaelde.
+
+**2. Oevelsen finder BLADE, ikke kaeder.** `restAfUdvisning` var kun kaldt fra
+`restForSpiller`, altsaa **transitivt doed** — og usynlig for oevelsen, fordi
+den kun ser eet led.
+
+```
+A kaldes af intet          -> FUNDET
+B kaldes kun af A          -> IKKE fundet, selv om A er doed
+```
+
+Det er en graense, ikke en fejl. **Men den skal staa**, saa et tomt svar ikke
+laeses som "ingen ukoblet kode" — den rigtige saetning er *"ingen ukoblede
+BLADE"*.
+
+### Og den gaelder alle tre platforme
+
+Androids `main/` er iOS' `Features/` og Backends ruter. **Oevelsen koster et
+script og har fundet en faelde to gange ud af to koerninger.**
+
 ### Konfiguration og beregning er ikke det samme
 
 Reglen ovenfor spørger: *skal det virke offline?* Men den skelner ikke mellem to ting, der opfører sig helt forskelligt.
