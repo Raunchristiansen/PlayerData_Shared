@@ -4291,3 +4291,50 @@ byggeloft kan give.** Og den er ikke byggenes.
 Her var svaret tre Claude-sessioner i én desktop-app. **Byggene var de samme;
 det var rummet omkring dem, der blev mindre.**
 
+### Samme feltnavn kan vaere sikkert at fjerne ét sted og farligt et andet — HTTP-retningen afgoer det
+
+**Backend, 06-10-2026, `#156` trin 3.** De fjernede 21 af 23 danske
+wire-noegler. **`navn` var blandt dem — paa nogle stier.**
+
+```
+RETTET, fordi de er LAESE-stier
+  GET /player-name · /filters · /divisions · /lineups
+  /admin/families · /admin/features
+  -> serveren SENDER navnet. En klient, der laeser det nye, er faerdig
+
+IKKE ROERT, fordi de er SKRIVE-stier
+  POST /player-name      SpillerNavnIn.navn
+  POST /training-types   TraeningTypeIn.navn
+  -> KLIENTEN sender navnet. Fjernes det, afvises kaldet
+```
+
+> Et feltnavn er ikke farligt eller sikkert i sig selv. Det er farligt i den
+> RETNING, hvor den anden part skriver det.
+
+### Og det er tredje gang samme dag, med tre forskellige udfald
+
+```
+afbud_aarsag   SessionIn har INGEN extra='forbid'   TAVST TAB
+deltager       ruten afviser ukendte felter         422
+navn (POST)    har slet INGEN engelsk tvilling      kan ikke fjernes,
+                                                    skal foerst TILFOEJES
+```
+
+**Alle tre blev fundet ved at laese KLIENTERNES kode** — ikke ved at maale
+serverens egen kontrakt. Kontrakten viser, hvilke felter der FINDES; den viser
+ikke, hvilke klienten faktisk SENDER.
+
+### Reglen
+
+```
+foer du fjerner et feltnavn, spoerg
+  1  er det en LAESE- eller en SKRIVE-sti
+  2  hvis skrive: hvad sender klienterne FAKTISK i dag
+                 -- maalt i deres CodingKeys / @SerialName, ikke i kontrakten
+  3  hvis de sender det gamle: findes det NYE navn overhovedet
+```
+
+**Punkt 3 er det, der overraskede.** To felter havde ingen engelsk tvilling at
+skifte til — trin 1 havde aldrig daekket dem. Det er ikke en fjernelse, der
+venter paa et build; det er et trin 1, der mangler.
+
