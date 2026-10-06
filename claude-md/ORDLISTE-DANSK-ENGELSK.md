@@ -2478,6 +2478,124 @@ Og: et bloedt noegleord kan godt bruges som navn i Kotlin. Android proevede det
 — *"prøvet ved at omdøbe og OVERSÆTTE"* — frem for at antage det. **Proev det,
 foer du udelader et ord, fordi det ligner et noegleord.**
 
+## A27. ELLEVE ORD FRA iOS' BLOKERINGSLISTE — seks paa serverens egne navne
+
+**Afgjort 06-10-2026 kl. 10:30.** Grundlaget er iOS' egen maaling: de sendte de
+30 ord, der blokerer flest `Core`-navne, **med forekomsttal** — ikke en liste
+over navne. Det er den form, der kan efterproeves paa ét sted pr. ord.
+
+```
+INTERVAL  serverens 154 skemakolonner + ruterne + fejlnoeglerne i backend/app/
+          hvert kandidatord LAEST i sin fulde kolonnekontekst, ikke taelt
+```
+
+### Seks afgjort af SERVEREN — ingen beslutning, kun efterproevning
+
+| dansk | engelsk | iOS-blokeringer | serverens bevis |
+|---|---|---|---|
+| `felt` | `field` | 13 | `field_key` · ruterne `/sessions/nullable-fields`, `/live/nullable-fields` |
+| `tidslinje` | `timeline` | 11 | `timeline_json` |
+| `spilletid` | `play_duration` | 9 | `play_duration_min` — **ikke** `playtime`, som var mit foerste gaet |
+| `foelg` | `follow` | 8 | `follow_match_end_notifications` · fejlnoeglerne `error.dbu.group_not_followed`, `error.shared.group_not_followed` |
+| `ekstra` | `extra` | 7 | `extra_time` · `has_extra_time` |
+| `kilde` | `source` | 7 | `source` · `source_filename` |
+
+`spilletid` er den vigtigste af de seks: **jeg ville have skrevet `playtime`**,
+og serveren siger `play_duration`. Et gaet havde givet to navne for samme
+begreb.
+
+### Fire ENTYDIGE — ét plausibelt engelsk ord, ingen server-kolonne
+
+Serveren har **intet** navn for disse (hverken dansk eller engelsk), maalt:
+
+```
+laast · gemt · lokal · logik     nul kolonner, nul ruter, nul fejlnoegler
+```
+
+| dansk | engelsk | iOS-blokeringer |
+|---|---|---|
+| `laast` | `locked` | 9 |
+| `lokal` | `local` | 8 |
+| `logik` | `logic` | 7 |
+| `ny` | `new` | 18 |
+
+**`gemt` var den risikable, og den er MAALT, ikke antaget.** `gemme` betyder
+baade *save* og *hide* paa dansk. Laest paa seks iOS-kaldesteder:
+
+```
+AdvarselStore.swift:86   "vi har gemt en kopi"            SAVE
+AuthStore.swift:63       "tidspunktet cachen blev gemt"   SAVE
+AuthStore.swift:197      guard let gemt = cache.fetch()   SAVE
+```
+
+**`gemt -> saved`**, og det foelger `gem -> save` i afsnit B. **Android skal maale
+deres egne** — seks kaldesteder i ét traee er ikke to traeer.
+
+### EN konvention: `fjern` er IKKE `slet`
+
+```
+slet -> delete    allerede i afsnit B
+fjern -> remove   NY
+```
+
+**Begrundelsen er maalt, ikke sproglig.** iOS bruger begge ord, og de er ikke
+synonymer i koden:
+
+```
+slet-former    140 forekomster   slettet · slet · sletning · slettede
+fjern-former     74              fjern · fjernes · fjernet · fjerner
+```
+
+Engelsk skelner: **`delete` oedelaegger, `remove` tager ud af en samling.**
+Serveren har kun `delete` (ruterne `/delete`, `delete-impact`, fejlnoeglen
+`error.auth.account_deleted`), fordi den kun gor det foerste. **"Fjern fra en
+liste" er et klientbegreb**, og derfor er det en navnekonvention — min at
+afgoere, som C3.
+
+### FIRE der IKKE kan afgoeres paa listen — til A5b
+
+| ord | de to betydninger | hvorfor listen ikke kan |
+|---|---|---|
+| `gammel` | `legacy` (den udfasede form) mod `old`/`previous` (den forrige vaerdi) | serveren har `legacy_type`/`legacy_value` — men det er noget ANDET end "forrige vaerdi" |
+| `maal` | `goal` (scoring, afsnit A) mod `target` (en maalvaerdi) | `goals` findes; `target` findes ikke paa serveren |
+| `traek` | `pull` · `draw` · `feature` | `/api/features` findes, men det er funktionsflag — ikke det, `traek` daekker i klientkode |
+| `ind` | `in` er **noegleord i BAADE Python og Kotlin** | A26 gaelder: navnet skal baere sin rolle |
+
+**`gammel` er faelden her.** `legacy_type` ser ud som beviset, og det er det
+ikke: en `gammelVaerdi` i en diff er ikke en *legacy* vaerdi. **Tjek
+kaldestedet.**
+
+### OG MIN EGEN MAALING FANGEDE EN FAELDE
+
+Jeg taalte foerst `gammel -> old` som havende **to** server-kolonner. Laest:
+
+```
+old matcher   hold · holder_family_id · holder_navn · hold_label
+```
+
+**`hold` indeholder `old`.** Det er C2's substring-faelde — i mit eget
+instrument, paa den engelske side denne gang.
+
+> Et tal over forekomster er ikke et bevis. Laes navnene.
+
+Det var det, der skilte de seks afgjorte fra de fire, der ikke kan afgoeres.
+
+### Og de boejnings-moenstre, iOS bad mig melde SOM MOENSTRE
+
+Disse er **ikke ord** — de er min splitters artefakter, og de skal ikke paa
+listen:
+
+```
+matches · totals · minutter · total · stats
+  flertals-/boejningsformer af ord, der ALLEREDE er godkendt engelsk
+er · af · med · i · at · ikke · nu
+  danske smaaord i MAALT DANSK, der rammer som delstrenge
+```
+
+**`minut -> minutter` dobler konsonanten**, og `matches` er flertal af det
+godkendte `match`. Samme klasse som Androids `filterses`/`freshes`/`valids`.
+**Et instrument, der melder dem som kandidater, taeller sin egen output.**
+
 ## B. Entydige — jeg foreslår, ingen beslutning nødvendig
 
 Ingen af disse har to plausible engelske ord i denne kodebase.
