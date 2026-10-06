@@ -1518,6 +1518,89 @@ Rettelsen var at matche **andet argument til `live(`**, altså den ene form, hvo
 fragment bliver en sti, og at generere snapshottet af serverens egne stier under
 `/live/`. Det er forskellen på at rette otte tilfælde og at lukke en klasse.
 
+### En omdoebning kan SKYGGE en egenskab — og compileren siger ingenting
+
+**iOS' maaling 06-10-2026, under `#89`.** Den er den foerste fejlform i
+omdoebningsarbejdet, hvor **et vellykket build er forenelig med aendret
+adfaerd.**
+
+```
+navn   234 erklaeringer i hele traeet
+       62 var · 93 parameter · 52 label · 26 case
+```
+
+**155 af de 234 er lokale variable eller parametre.** Omdoebes en af dem til
+`name`, og det omgivende scope har en EGENSKAB `name`, **skygger den lokale for
+egenskaben**:
+
+```swift
+struct Spiller {
+    let name: String
+    func vis(name: String) {        // parameteren SKYGGER egenskaben
+        print(name)                 // -> parameteren, ikke self.name
+    }
+}
+```
+
+Kotlin har praecis samme regel for en `val` i en funktion mod en property.
+
+```
+ingen kompileringsfejl
+ingen advarsel i standardopsaetningen
+ADFAERDEN er aendret
+```
+
+### Hvorfor det er vaerre end de fejlformer, vi har samlet
+
+```
+en hybrid (gem_lineup)        SYNLIG for en laeser
+et ikke-ord (bodyPer)         SYNLIG
+et nyt navn der KOLLIDERER    compileren faelder det
+en LOKAL der SKYGGER          intet signal. Kun en test, der
+                              tilfaeldigvis daekker netop den sti
+```
+
+**Det er den eneste af formerne, hvor "1127 tests groenne" ikke er et bevis.**
+En test, der ikke rammer metoden, ser ingenting — og en test, der rammer den,
+kan bestaa, hvis parameteren og egenskaben har samme vaerdi i testens
+opsaetning.
+
+### Reglen
+
+**Et kort, generisk engelsk ord maa ikke blive navnet paa en LOKAL variabel
+eller parameter.** Rollen skal med, og den afgoeres pr. SIDE — ikke pr. ord:
+
+```
+navn paa en spiller      -> playerName
+navn paa et hold         -> teamName
+navn paa en klub         -> clubName
+navn paa et staevne      -> tournamentName
+```
+
+Det er A26's rolle-regel, men med en **anden begrundelse** end A26's egen:
+A26 findes, fordi det engelske ord var TAGET af en anden reference. Her findes
+den, fordi det engelske ord er taget af en reference i **samme scope**, og
+sproget tillader det tavst.
+
+> A26: navnet kolliderer, og compileren siger det.
+> Denne: navnet kolliderer, og compileren siger det IKKE.
+
+### Og derfor er et stort tal her ikke en mekanisk opgave
+
+iOS afviste at tage de 234 mekanisk, og det var rigtigt:
+
+> `navn` har 234 sider med forskellig rolle ... og kun compileren + tests ser en
+> del af skyggeriet. **234 vurderinger er ikke en mekanisk halvdel.**
+
+**TYPER er derimod sikre**, fordi en type ikke kan skygge en egenskab: de syv
+`Tilstand`, tre `Farve`, tre `Resultat` kan hver faa en rolle fra sin kontekst
+(`AuthState`, `LoadState`, `ColorValue`, `MatchResult`) uden skygge-risiko.
+
+```
+TYPE-navn       sikker at omdoebe i en batch
+LOKAL / PARAM   opportunistisk, én ad gangen, naar filen alligevel roeres
+```
+
 ### En splitter bruges for det, den FJERNER — og maales paa det, den BEHOLDER
 
 **Fjerde instans af samme form i omdoebningsarbejdet, og den sidste var den
