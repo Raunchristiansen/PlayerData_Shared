@@ -93,6 +93,7 @@ staar paa.** Et menneske afgoer det paa NAVNET.
   basis          kickoff        markdown       meter          neutral        offline        participated   platform       selected       slots          started        theme          trend        
    
   input          model          models         history        dependencies   duration
+  main           play           store
   types          unique         until          updated        upload         url            value        
   verification   verify         version        vocabularies   wizard       
 

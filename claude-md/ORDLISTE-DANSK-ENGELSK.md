@@ -3034,3 +3034,65 @@ Det er modsat af den fejlform, filen ellers advarer om: her meldte instrumentet
 **for lidt** daekning, ikke for meget — og et undertal faar nogen til at maale
 igen. Et overtal ville have lukket arbejdet for tidligt.
 
+## A33 — de syv, der blokerede Androids runde 2, doemt paa NAVNENE
+
+**Androids maaling 06-10-2026 under `#100`:** 21 filnavne igennem (17 paa A32,
+fire efter en rettelse i deres eget vaerktoej). **66 stadig afvist**, hyppigste
+blokkere med to forekomster hver.
+
+**Doemt ved at laese de faktiske filnavne, ikke ordene alene** — listens egen
+regel for tvetydige ord.
+
+### Tre er ENGELSKE og hoerer i godkendt-listen
+
+```
+main    MainActivity.kt · MainTabScreen.kt
+        MainActivity er Android-rammens eget navn
+play    DbuPlayDuration.kt · LineupPlayDuration.kt · PlayerOverviewDisplay.kt
+        og play_duration er allerede serverens ord (A27)
+store   AuthStore.kt · AdvarselStore.kt · FormRegelStore.kt · HoldlisteStore.kt
+        alle fire er state-store-moensteret
+```
+
+### Fire er DANSKE
+
+| dansk | engelsk | grundlag |
+|---|---|---|
+| ark | `sheet` | `KampArk.kt`, `StoevneArk.kt`. **Serverens eget ord:** `teamsheet`, `/teamsheet-players` |
+| sektion | `section` | `KampeSektion.kt`, `SamletSektion.kt`, `TraeningSektion.kt`. Entydig |
+| statistik | `stats` | `StatistikFane.kt`, `StatistikModel.kt`. **Serverens eget ord:** `stats.py`, `/api/stats` — ikke `statistics` |
+| traek | `pull` | `TraekForAtHente.kt` = "pull to refresh" — **men se nedenfor** |
+
+### `store` og `traek` er tvetydige som ORD, og det skal staa
+
+**De hoerer i afsnittet *"kan ikke afgoeres paa en liste"* sammen med `side`,
+`min`, `sort`, `point`, `by`, `for` og `post`:**
+
+```
+store   dansk  = flertal af "stor"      engelsk = et lager / at gemme
+traek   dansk  = pull · draw · feature · trait — FIRE betydninger
+```
+
+**Her er de godkendt/mappet, fordi ALLE maalte forekomster i Androids filnavne
+er entydige** — fire state-stores og én pull-to-refresh. **Det er en dom over
+DISSE navne, ikke over ordene.**
+
+> Et ord, der findes i begge sprog, afgoeres paa navnet. At det er afgjort ét
+> sted goer det ikke afgjort alle steder.
+
+**Saa: et vaerktoej maa IKKE mekanisk erstatte `traek -> pull` eller behandle
+`store` som engelsk uden for de maalte navne.** Dukker `Traek` op i en ny fil,
+skal den laeses igen — `Traek.kt` alene er ikke maalt mod sit indhold her, kun
+mod sit navn.
+
+### Og fire af Androids afviste var ikke listens skyld
+
+`Datainput` blev stadig afvist, selvom `data` og `input` begge blev godkendt i
+A32: `ord_i("Datainput")` giver ÉT token, og deres `del_sammensat` slog op i den
+DANSKE ordbog — **ordet faldt mellem to regler.**
+
+**Deres rettelse er formen, der er vaerd at kende:** reglen blev en
+ORDBOGSregel i stedet for en formregel, og dens selvkontrol er den OMVENDTE —
+alle 155 danske ord koert igennem, **0 daekket.** Kunne ét dansk ord saettes
+sammen af godkendte engelske stumper, var reglen usikker.
+
