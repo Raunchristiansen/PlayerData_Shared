@@ -3759,6 +3759,54 @@ med en groen test omkring sig findes ikke igen ved et uheld.
 > Spoerg om en vektor: hvem skrev facit — et menneske eller koden? Svaret
 > afgoer, om den kan komme foer eller efter.
 
+### En test, der genimplementerer reglen, maaler sig selv
+
+**iOS, 06-10-2026 under `Backend#191`.** De rettede en fejl, og fandt undervejs,
+at én af deres egne testhjaelpere aldrig havde maalt appen.
+
+> *"Testens 'kopi 3'-hjaelper talte hvert ikke-eget maal som 'deres' og maalte
+> dermed sin egen regel, ikke appens (`EventCard.maalTaelling`, som
+> produktionen bruger) — den var groen/roed af forkerte grunde."*
+
+```
+hjaelperen       if scorerSide != .ownTeam -> deres
+appen            EventCard.maalTaelling, via TeamSide.maalTaellerFor
+forskellen       en UKENDT side: hjaelperen gav den til modstanderen,
+                 appen giver den til INGEN
+```
+
+**Testen kunne derfor hverken bestaa eller fejle af den rigtige grund.** Den var
+groen, naar hjaelperen og facit var enige — ogsaa naar appen var uenig med
+begge.
+
+### Hvorfor den er svaerere at opdage end en forkert test
+
+```
+en forkert ASSERTION   facit er forkert -> testen fejler paa korrekt kode,
+                       og nogen undersoeger den
+en genimplementeret    hjaelperen er "aabenlyst rigtig" -> den laeses som
+REGEL                  opsaetning, ikke som en paastand, og ingen gennemgaar den
+```
+
+**Og den vokser med tiden:** appens regel aendres (her: `maalTaellerFor` fik
+selvmaals-haandtering), hjaelperen aendres ikke, og testen begynder stille at
+maale en aeldre udgave af sandheden.
+
+### Reglen
+
+> En test maa KALDE den regel, den tester — aldrig genskabe den. Genskaber den
+> den, tester den sin egen kopi.
+
+**Kendetegnet er let at se, naar man leder:** staar der en `if`, en `when` eller
+en `filter` i testen, som ogsaa findes i produktionen, er det en kopi.
+Opsaetning maa bygge DATA; den maa ikke afgoere FACIT.
+
+**Og det gaelder ogsaa de delte vektorer:** facit i `logic/vectors/` er
+genereret af serverens egen kode (se *"En GENERERET vektor er et vidne"*). En
+klient, der regner facit selv i testen i stedet for at laese filen, har samme
+fejl — bare med flere skridt imellem.
+
+
 ### En vektorfil beviser kun noget om den VEJ, den koeres igennem
 
 **Android, 06-10-2026 under `Backend#191`.** Otte delte vektorer, en groen test,
