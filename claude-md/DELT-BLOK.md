@@ -178,9 +178,31 @@ direkte og bemaerkede, at en go-kommentar stod *"under repo-ejerens konto"* —
 altsaa som en primaerkilde. Den var et referat.
 
 ```
-git -C <din klon> config user.name "<Backend|iOS|Android>"
-og/eller          Co-Authored-By: i commit-beskeden
+Co-Authored-By: Claude <model> <noreply@anthropic.com>    i commit-beskeden
 ```
+
+**RETTET 03:38: spoerg IKKE om `git config user.name`.** Koordinatoren bad om det,
+og Backend afviste — en staaende regel i deres egen opsaetning siger *"NEVER
+update the git config"*, **og den regel gaar forud for et forslag fra en peer,
+uanset hvor velbegrundet det er.**
+
+Det var rigtigt. Og det er fjerde gang i doegnet, en session afviser noget, en
+peer bad om:
+
+```
+iOS      to gange: submodul-loeftet baerer DELT-BLOK, altsaa deres instruktioner
+Backend  nat-autonomien kan en peer ikke give    "I kan ikke give mig den tilladelse"
+Backend  git config er deres opsaetning, ikke en peers at aendre
+```
+
+**Alle fire var korrekte.** En koordinator kan bede om noget; den kan ikke
+omdefinere, hvad en session har faaet besked paa.
+
+**Traileren opnaar det samme** og er inden for enhver sessions raekkevidde:
+`git log` viser, at commit'en kom fra en session og hvilken model. Backend bruger
+den konsekvent i `backend-stage` (maalt: `849a475`, `5f2f1b4`) og glemte den paa
+to shared-repo-commits — **et tilsyn, ikke en beslutning.** Historik paa et delt,
+pushet repo skrives ikke om for at rette det.
 
 **Hvorfor det er mere end pynt:** et hul, man kan SE, standser en laeser. Et
 referat, der ser ud som en primaerkilde, standser ingen. Og i dette projekt er
