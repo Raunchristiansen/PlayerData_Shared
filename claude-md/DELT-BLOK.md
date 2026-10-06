@@ -3524,3 +3524,212 @@ Backend, 2026-10-04, tre uafhængige incidenter samme nat, hver med en ANDEN kon
 **Rækkefølgen ovenfor ER en sikkerheds-rangering, ikke kun en liste.** Et kast er det BEDSTE af de tre udfald, selvom det er det mest dramatiske — det kan ikke undgås at blive set. De to andre ligner normal drift. Det er hele grunden til, at dual-keying (send BÅDE det gamle og det nye navn, se "En standardværdi, der er et plausibelt svar, skjuler et manglende felt" og "Et felt der bliver nullable er et kontraktbrud" ovenfor) er den rigtige standard-reaktion på en omdøbning, UANSET hvilken af de tre former man selv tror klienten bruger for det pågældende felt — man kan ikke vide det uden at læse klientens kode, og selv når man gør, er det let at fejlgætte (se "En ren checkout er ikke en aktuel checkout" og "Et felt kan lyve om hvad der faktisk læses" i denne fils øvrige afsnit).
 
 **Ikke at forveksle med `PlayerData_Backend#114`.** #114 handler om en ANDEN fejl på den MODSATTE side af samme spørgsmål: et delt dokument, en klient afkoder til sin egen model og SKRIVER HELE TILBAGE (`kamp_opstilling`/`kamp_kamphaendelser`) — der forsvinder et felt, modellen ikke kender, fordi afkodning→model→genkodning per definition taber det, ingen vagt kan se. De tre udfald herover handler om at LÆSE et ENKELT, server-til-klient-svar (et API-respons, en push-payload) — ingen tilbageskrivning involveret, og mekanismen, der retter det (dual-key + en planlagt fjernelse), er en anden end #114's (bær ukendte nøgler uændret igennem). Begge er ægte, begge handler om "en nøgle klienten ikke genkender" — men de er to forskellige mekanismer på to forskellige dele af kredsløbet, og en rettelse af den ene løser ikke den anden.
+
+### Byte-identisk kode er ikke identisk opfoersel
+
+**Backend maalte det 06-10-2026 under `#190`.** To funktioner skulle
+sammenlignes, og kernelogikken var **byte-for-byte identisk**.
+
+Deres egen konklusion paa det:
+
+> *"Det alene beviser intet — forskellig fald-tilbage-adfaerd ved 'intet
+> paalideligt kan udledes'."*
+
+```
+samme krop        -> samme svar PAA DE INPUT, kroppen haandterer
+forskellig kalder -> forskelligt svar, naar kroppen ikke kan svare
+```
+
+**Og en diff paa kroppen er praecis det, man griber efter**, fordi den er
+billig og foeles afgoerende. Den maaler det, der er LET at sammenligne, ikke
+det, risikoen haenger paa.
+
+**Hvad de gjorde i stedet:** kaldte begge funktioner med samme input og
+sammenlignede FACIT programmatisk — alle 7 testvektorer plus alle 62 rigtige
+sessions med en tidslinje i den koerende database, read-only. Nul uenigheder.
+
+> En sammenligning af to implementeringer skal koere dem, ikke laese dem.
+
+### En dict-noegles tredje destination: ned i en RAEKKE
+
+Filen har allerede *"En dict-noegle er intern eller PAA LEDNINGEN efter hvor
+dict'en GAAR HEN"*. **Backend fandt en tredje destination 06-10 under `#124`.**
+
+```
+intern         kan omdoebes frit
+paa ledningen  kraever dual-key og en udgivelsesrunde
+PERSISTERET    kan slet ikke omdoebes uden en MIGRERING af raekker,
+               der allerede er skrevet
+```
+
+Deres tilfaelde: `dbu_sync.py`s `stats`-dict med noeglerne `"puljer"`,
+`"kampe"`, `"klub_kampe"` — **gemt som JSON i `dbu_sync_log.detail`.**
+
+**De lod dem ligge med vilje**, og begrundelsen er den vigtige:
+
+> *"Det er lagerformat for allerede-skrevne historiske raekker, en anden og
+> mere alvorlig risikoklasse end en live wire-kontrakt."*
+
+**Og den er vaerre end ledningen paa én maade:** en wire-noegle rammer en
+klient, der koerer NU, og det ses med det samme. En lagernoegle rammer den, der
+om seks maaneder laeser en gammel raekke — og indtil da ser alt rigtigt ud.
+
+```
+spoerg ikke   "er den intern eller paa ledningen"
+spoerg        "hvor ENDER denne dict — i hukommelsen, paa ledningen,
+               eller i en raekke nogen laeser senere"
+```
+
+### Et moenster kan ikke se forskel paa en identifikator, en noegle og en kommentar
+
+**Backend ramte den to gange paa én dag (06-10) under `#124`s omdoebninger.** En
+scoped `sed` ramte:
+
+```
+1  en CITERET dict-noegle-streng — et dual-key wire-par
+2  en dansk prosakommentar, der naevnte iOS' EGET eksterne navn
+   RaekkeKampeSvar.kampe
+```
+
+**Begge fanget ved fuld diff-gennemlaesning foer commit** — ikke ved en test, og
+ikke ved at antage rettelsen rigtig.
+
+**Og det, de gjorde bagefter, er lektionen:** de skiftede metode. Fra scoped
+`sed` til **enkelt-forekomst `Edit`** for alle bare, almindelige ord.
+
+```
+sed paa et moenster   erstatter overalt moensteret passer — og et dansk ord
+                      passer lige saa godt i en kommentar og i en streng
+                      som i et navn
+Edit paa ÉN forekomst  kraever at man har set stedet
+```
+
+Nummer 2 er den farligste af de to, og ikke af den oplagte grund: en oedelagt
+kommentar braekker ingenting, saa **ingen test bliver roed** — men kommentaren
+naevnte en ANDEN platforms navn, og en forkert kommentar om en andens kode er
+praecis det, der faar naeste laeser til at maale det forkerte sted.
+
+> Et vaerktoej, der erstatter paa form, kan ikke kende betydning. Prisen for at
+> bruge det alligevel er en fuld gennemlaesning af diff'en — hver gang.
+
+### Sabotage proever BESKYTTELSEN, ikke korrektheden
+
+**Android, 06-10-2026 under `#161`.** De saboterede en regel, de havde skrevet
+og testet — og fandt ikke en fejl i reglen.
+
+> *"Sabotage B er vaerd at naevne: en `vises`, der altid svarer `true`, bestaar
+> brud-testen og laegger en permanent stribe over hver fane hele saesonen. Uden
+> den modretning ville 'vis altid' se ud som en rettelse."*
+
+```
+en test der bliver ROED uden koden     beviser at koden GOER noget
+en sabotage der bliver GROEN           beviser at ingen test holder
+                                       den slags fejl ude
+```
+
+**Og den fandt noget andet end forventet:** korrekt kode, som **ingen test
+daekkede**. Reglen var rigtig; beskyttelsen manglede.
+
+**Sabotér derfor i BEGGE retninger.** Den oplagte sabotage faar funktionen til
+at svare forkert. Den nyttige faar den til at svare *for bredt* — altid sandt,
+altid synligt, altid med — for det er den form, der ligner en forsigtig
+rettelse.
+
+### Faren laa i HVOR spoergsmaalet blev stillet
+
+**Android, samme dag, om `#161`s rettelse.** Reglen var skrevet, den var testet,
+og ledningen manglede — raekken kom aldrig frem paa skaermen.
+
+Deres rettelse flyttede ikke reglen. Den flyttede **spoergsmaalet**:
+
+```
+FOER   val showSync = sync is Venter || sync == Offline      i UI'et
+       -> en ny gren i Tilstand kraever at nogen HUSKER denne linje
+
+EFTER  val vises: Boolean   en `when` over ALLE grene        i tilstanden
+       -> compileren kraever den naeste
+       val alvor: Alvor     et kontraktbrud er FEJL, ikke et maaske
+```
+
+> *"En boolean i UI'et er det forkerte sted at stille spoergsmaalet."*
+
+**Samme skelet fandtes tre gange paa to dage:**
+
+```
+#161   showSync i UI'et            en ny Tilstand-gren bliver usynlig
+#98    typeDisplay                 fire af seks brugere klassificerede, ikke viste
+iOS#99 LiveAktivitetTilstand.seneste  et if i stedet for den ene selvmaals-regel
+```
+
+**Hver gang var reglen rigtig ÉT sted og fraværende hos sin nabo** — og hver
+gang kunne compileren have krævet den, hvis spørgsmålet havde stået et lag
+længere inde.
+
+```
+en regel i en funktion        kan pinnes mod en vektor, og en manglende
+                              anvendelse ses i kaldstedet
+samme regel i en if-saetning  kan ikke, og ingen test ser den mangle
+```
+
+### En maaling af en SORTERING siger intet om dens KILDE
+
+**Koordinatoren, 06-10-2026 paa `#195`.** Maalt: serveren sorterer historikken
+paa `created_at`, begge klienter paa `updated_at`, og begge klienters kommentar
+siger, at de matcher serveren. Maalingen var rigtig.
+
+**Konklusionen paa kortet var: "hold op med at sortere — serveren leverer
+allerede ordenen."** iOS maalte den og havde ret imod den:
+
+> *"`HistorikModel.alle` kommer fra den LOKALE database (`LokalDB.alle()` =
+> `Array(poster.values)`, en ordenloes ordbog, inkl. usynkroniserede poster) —
+> ikke serverens liste."*
+
+```
+jeg maalte      de tre sorteringsnoegler er forskellige   RIGTIGT
+jeg sluttede    altsaa skal klienten stoppe med at sortere FORKERT
+det rigtige     HVOR listen kommer fra
+```
+
+**Havde iOS fulgt kortet, havde de faaet en historikliste i ordbogsorden** — en
+tilfaeldig raekkefoelge, der skifter mellem koersler.
+
+**Rettelsen blev den rigtige af en anden grund:** behold sorteringen, skift
+noeglen til serverens. Samme facit, modsat handling.
+
+> En sortering er ikke en egenskab ved listen. Den er en egenskab ved listens
+> KILDE — og to lister med samme indhold kan have forskellig kilde.
+
+### Et throttlet svar ser ud som et tomt — ogsaa i dit EGET vaerktoej
+
+Filen og koordinatorens CLAUDE.md har begge advarslen om `gh api search/code`:
+*en hastighedsgraense giver et svar, der ikke kan skelnes fra et aegte nul.*
+
+**06-10-2026 kl. 16:07 ramte den koordinatorens eget `create-subcard.sh`:**
+
+```
+scriptet meldte   "FEJL: foraelder #81 findes ikke"
+#81 var           AABEN
+aarsagen          GitHubs SEKUNDAERE graense paa hurtig indholdsoprettelse
+gh api rate_limit viste i samme sekund core 5000/5000, graphql 4894/5000
+```
+
+**Den sekundaere graense staar ikke i `rate_limit`.** Saa den oplagte kontrol —
+"er der kvote tilbage" — svarer ja, mens kaldene afvises.
+
+**Og fejlen var i ÉN karakter af scriptet:** `>/dev/null 2>&1` smed stderr vaek,
+saa et 404 og en throttling blev samme tomme svar.
+
+```
+FORKERT  gh issue view N >/dev/null 2>&1 || "findes ikke"
+RIGTIGT  fang stderr, og SKEL:
+           "rate limit"/secondary/abuse  -> proev igen, og sig hvis du gav op
+           alt andet                      -> findes ikke, og CITÉR fejlen
+```
+
+**Den dyre del var ikke det fejlede kald.** Det var, at fejlbeskeden pegede paa
+noget forkert: en session, der laeste den, ville have ledt efter et slettet
+kort i stedet for at vente et minut.
+
+> Et vaerktoej, der ikke kan skelne "nej" fra "jeg kunne ikke spoerge", svarer
+> altid nej.
+
