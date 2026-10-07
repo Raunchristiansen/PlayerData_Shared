@@ -370,6 +370,51 @@ er din brug af den, og den skal sende værdien eksplicit.
 
 Android så det kun, fordi testene blev røde af en anden grund først.
 
+### Et felt, der SKRIVES men ikke LAESES, er samme hul som et, der laeses men ikke skrives
+
+**Androids eget fund 07-10-2026, fanget FOER det landede** — og det er den
+skarpeste udgave af afsnittet ovenfor, fordi standardvaerdien her er farlig
+**ved RETTELSE**, ikke to trin senere.
+
+```
+StoevnePatch        patcher det, der er SAT
+formularens felt    en ikke-null Int -> sendes ALTID
+kunne formularen ikke LAESE staevnets vaerdi
+                    -> den sender sin egen standard paa 2
+```
+
+**At OMDOEBE et staevne ville have NULSTILLET dets antal halvlege i stilhed.**
+Ingen fejl, ingen 422, ingen log — en bruger retter et navn og mister en regel.
+
+**Androids formulering:**
+
+> Et felt, der SKRIVES men ikke LAESES, er samme hul som et, der laeses men
+> ikke skrives.
+
+**Og de to halvdele er IKKE samme egenskab**, selvom de lyder som det:
+
+```
+"en UROERT formular skriver intet"          en egenskab ved BRUGERENS handling
+"en formular, der ikke kunne LAESE,
+ skriver intet"                             en egenskab ved DATAVEJEN
+```
+
+Den foerste kan vaere opfyldt, mens den anden ikke er. **En formular, der
+sammenligner mod "det laeste", er sikker — lige indtil laesningen fejler eller
+er tom**, og saa er dens standardvaerdi pludselig det, der sammenlignes med.
+
+**Hvad man kan goere:** i enhver patch-formular, spoerg om det ene felt, der
+kan skrives uden at vaere laest. Proeven er ikke *"sender jeg kun det
+aendrede"* men *"hvad sender jeg, hvis jeg ikke kunne laese det
+oprindelige"* — og svaret skal vaere **intet**.
+
+**Og formen er generel ud over formularer.** En kopi-ved-oprettelse (`#207`),
+en patch, en migrering og en cache har alle en LAESE- og en SKRIVE-side, og en
+standardvaerdi paa skrive-siden, der ikke findes paa laese-siden, er et tavst
+datatab. Det er samme skelnen som `LAESE og BAERE er ikke det samme`, bare paa
+den modsatte retning: dér tabes et ukendt felt ved gem, her **overskrives et
+kendt felt af en standard.**
+
 ### En standardværdi, der er et plausibelt svar, skjuler et manglende felt
 
 Klienterne ignorerer ukendte JSON-nøgler, og det skal de — ellers vælter et nyt
