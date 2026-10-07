@@ -1276,6 +1276,13 @@
       "key": "red_card",
       "legacy_value": "rødt_kort",
       "sort_order": 3
+    },
+    {
+      "active": true,
+      "display_da": "Straffespark",
+      "key": "penalty_kick",
+      "legacy_value": "penalty_kick",
+      "sort_order": 4
     }
   ],
   "match_sides": [
@@ -1474,5 +1481,5 @@
       "type_key"
     ]
   },
-  "version": "2512905c463f733d"
+  "version": "c33bf325c4d1f2c5"
 }

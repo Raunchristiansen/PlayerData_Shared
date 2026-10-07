@@ -1,0 +1,661 @@
+{
+  "contract": {
+    "event_shape": {
+      "type": "penalty_kick",
+      "spiller_type": "SPARKERENS side: 'eget_hold' | 'modstander'",
+      "spiller_navn": "sparkeren",
+      "scored": "true | false",
+      "penalty_order": "spark-nummer (heltal), sat ved registreringen og ALDRIG ændret af en rettelse",
+      "deleted": "slet = en FEJLTASTNING; ret = skriv samme id igen med nye felter og ny updated_at"
+    },
+    "rules": [
+      "Et penalty_kick sorterer ALTID efter enhver anden hændelse, uanset klokkeslæt",
+      "Sparkene indbyrdes: penalty_order stigende. Uden den: updated_at (kun kilde IN (null,'live','opstilling')), så array-indeks",
+      "'Kampen slut'-linjen i en log er en afledt markør, ikke en hændelse: den står efter den sidste ikke-spark-hændelse og FØR det første penalty_kick",
+      "Straffestilling = antal ikke-slettede penalty_kick med scored==true pr. spiller_type; null hvis der slet ingen ikke-slettede penalty_kick er (IKKE 0-0); et misset spark giver 0-0, ikke null",
+      "Et penalty_kick er ALDRIG et mål: det ændrer aldrig mål-stillingen og tæller ikke på spilleren",
+      "Et straffespark i ordinær/forlænget tid er fortsat et almindeligt 'mål' med straffe=true"
+    ],
+    "source": "backend.app.beregning.sort_events + backend.app.goal_side.penalty_score_from_events/score_from_events, PlayerData_Backend",
+    "generated_by": "scripts/generate-penalty-kick-vectors.py"
+  },
+  "ordering": [
+    {
+      "description": "Et spark sorterer EFTER et mål, selvom sparket har det TIDLIGSTE klokkeslæt og står først i inputtet",
+      "periods": [
+        {
+          "start": "10:00",
+          "end": "10:35"
+        },
+        {
+          "start": "10:50",
+          "end": "11:25"
+        }
+      ],
+      "events": [
+        {
+          "id": "K1",
+          "type": "penalty_kick",
+          "time": "10:05",
+          "kilde": "live",
+          "updated_at": "2026-10-07T11:40:00+00:00",
+          "spiller_type": "eget_hold",
+          "spiller_navn": "Spiller",
+          "scored": true,
+          "penalty_order": 1,
+          "deleted": false
+        },
+        {
+          "id": "G",
+          "type": "mål",
+          "time": "11:20",
+          "kilde": "live",
+          "updated_at": "2026-10-07T10:20:00+00:00",
+          "scorer_type": "eget_hold",
+          "deleted": false
+        }
+      ],
+      "expected_order": [
+        "G",
+        "K1"
+      ]
+    },
+    {
+      "description": "Sparkene indbyrdes: penalty_order afgør — IKKE updated_at. K2 er RETTET (nyeste updated_at) og skal stadig stå som nr. 2, ikke bagerst",
+      "periods": [
+        {
+          "start": "10:00",
+          "end": "10:35"
+        },
+        {
+          "start": "10:50",
+          "end": "11:25"
+        }
+      ],
+      "events": [
+        {
+          "id": "K3",
+          "type": "penalty_kick",
+          "time": "11:40",
+          "kilde": "live",
+          "updated_at": "2026-10-07T11:42:00+00:00",
+          "spiller_type": "modstander",
+          "spiller_navn": "Spiller",
+          "scored": false,
+          "penalty_order": 3,
+          "deleted": false
+        },
+        {
+          "id": "K2",
+          "type": "penalty_kick",
+          "time": "11:40",
+          "kilde": "live",
+          "updated_at": "2026-10-07T11:50:00+00:00",
+          "spiller_type": "modstander",
+          "spiller_navn": "Spiller",
+          "scored": true,
+          "penalty_order": 2,
+          "deleted": false
+        },
+        {
+          "id": "K1",
+          "type": "penalty_kick",
+          "time": "11:40",
+          "kilde": "live",
+          "updated_at": "2026-10-07T11:40:00+00:00",
+          "spiller_type": "eget_hold",
+          "spiller_navn": "Spiller",
+          "scored": true,
+          "penalty_order": 1,
+          "deleted": false
+        }
+      ],
+      "expected_order": [
+        "K1",
+        "K2",
+        "K3"
+      ]
+    },
+    {
+      "description": "Selv en hændelse UDEN læsbart klokkeslæt (sorteres ellers sidst) står FØR sparkene",
+      "periods": [
+        {
+          "start": "10:00",
+          "end": "10:35"
+        },
+        {
+          "start": "10:50",
+          "end": "11:25"
+        }
+      ],
+      "events": [
+        {
+          "id": "K1",
+          "type": "penalty_kick",
+          "time": "11:40",
+          "kilde": "live",
+          "updated_at": "2026-10-07T11:40:00+00:00",
+          "spiller_type": "eget_hold",
+          "spiller_navn": "Spiller",
+          "scored": true,
+          "penalty_order": 1,
+          "deleted": false
+        },
+        {
+          "id": "U",
+          "type": "mål",
+          "time": null,
+          "kilde": null,
+          "updated_at": null
+        }
+      ],
+      "expected_order": [
+        "U",
+        "K1"
+      ]
+    },
+    {
+      "description": "Spark mellem en udskiftning og et mål i inputtet — alle ikke-spark først (ud < mål ved samme minut), sparket sidst",
+      "periods": [
+        {
+          "start": "10:00",
+          "end": "10:35"
+        },
+        {
+          "start": "10:50",
+          "end": "11:25"
+        }
+      ],
+      "events": [
+        {
+          "id": "G",
+          "type": "mål",
+          "time": "11:20",
+          "kilde": "live",
+          "updated_at": "2026-10-07T10:20:00+00:00",
+          "scorer_type": "eget_hold",
+          "deleted": false
+        },
+        {
+          "id": "K1",
+          "type": "penalty_kick",
+          "time": "11:40",
+          "kilde": "live",
+          "updated_at": "2026-10-07T11:40:00+00:00",
+          "spiller_type": "eget_hold",
+          "spiller_navn": "Spiller",
+          "scored": true,
+          "penalty_order": 1,
+          "deleted": false
+        },
+        {
+          "id": "UD",
+          "type": "ud",
+          "time": "11:20",
+          "kilde": null,
+          "updated_at": null
+        }
+      ],
+      "expected_order": [
+        "UD",
+        "G",
+        "K1"
+      ]
+    },
+    {
+      "description": "Uden penalty_order (en klient der ikke sætter den): updated_at afgør, så det oprindelige indeks",
+      "periods": [
+        {
+          "start": "10:00",
+          "end": "10:35"
+        },
+        {
+          "start": "10:50",
+          "end": "11:25"
+        }
+      ],
+      "events": [
+        {
+          "id": "B",
+          "type": "penalty_kick",
+          "time": "11:40",
+          "kilde": "live",
+          "updated_at": "2026-10-07T11:41:00+00:00",
+          "spiller_type": "eget_hold",
+          "spiller_navn": "Spiller",
+          "scored": true,
+          "penalty_order": null,
+          "deleted": false
+        },
+        {
+          "id": "A",
+          "type": "penalty_kick",
+          "time": "11:40",
+          "kilde": "live",
+          "updated_at": "2026-10-07T11:40:00+00:00",
+          "spiller_type": "eget_hold",
+          "spiller_navn": "Spiller",
+          "scored": true,
+          "penalty_order": null,
+          "deleted": false
+        }
+      ],
+      "expected_order": [
+        "A",
+        "B"
+      ]
+    },
+    {
+      "description": "Uden penalty_order OG kilde='efterregistreret' (updated_at kun indtastningstidspunkt, ignoreres): det oprindelige indeks afgør",
+      "periods": [
+        {
+          "start": "10:00",
+          "end": "10:35"
+        },
+        {
+          "start": "10:50",
+          "end": "11:25"
+        }
+      ],
+      "events": [
+        {
+          "id": "B",
+          "type": "penalty_kick",
+          "time": "11:40",
+          "kilde": "efterregistreret",
+          "updated_at": "2026-10-07T11:40:00+00:00",
+          "spiller_type": "eget_hold",
+          "spiller_navn": "Spiller",
+          "scored": true,
+          "penalty_order": null,
+          "deleted": false
+        },
+        {
+          "id": "A",
+          "type": "penalty_kick",
+          "time": "11:40",
+          "kilde": "efterregistreret",
+          "updated_at": "2026-10-07T11:41:00+00:00",
+          "spiller_type": "eget_hold",
+          "spiller_navn": "Spiller",
+          "scored": true,
+          "penalty_order": null,
+          "deleted": false
+        }
+      ],
+      "expected_order": [
+        "B",
+        "A"
+      ]
+    },
+    {
+      "description": "Kun spark, ingen perioder",
+      "periods": [],
+      "events": [
+        {
+          "id": "K2",
+          "type": "penalty_kick",
+          "time": "11:40",
+          "kilde": "live",
+          "updated_at": "2026-10-07T11:40:00+00:00",
+          "spiller_type": "modstander",
+          "spiller_navn": "Spiller",
+          "scored": true,
+          "penalty_order": 2,
+          "deleted": false
+        },
+        {
+          "id": "K1",
+          "type": "penalty_kick",
+          "time": "11:40",
+          "kilde": "live",
+          "updated_at": "2026-10-07T11:40:00+00:00",
+          "spiller_type": "eget_hold",
+          "spiller_navn": "Spiller",
+          "scored": false,
+          "penalty_order": 1,
+          "deleted": false
+        }
+      ],
+      "expected_order": [
+        "K1",
+        "K2"
+      ]
+    }
+  ],
+  "penalty_score": [
+    {
+      "description": "Ingen hændelser — ingen konkurrence (null, IKKE 0-0)",
+      "events": [],
+      "expected_penalty_score": null,
+      "expected_goal_score": {
+        "own": 0,
+        "opponent": 0
+      }
+    },
+    {
+      "description": "Kun mål — ingen konkurrence (null); mål-stillingen er uændret",
+      "events": [
+        {
+          "id": "G1",
+          "type": "mål",
+          "time": "10:20",
+          "kilde": "live",
+          "updated_at": "2026-10-07T10:20:00+00:00",
+          "scorer_type": "eget_hold",
+          "deleted": false
+        },
+        {
+          "id": "G2",
+          "type": "mål",
+          "time": "10:30",
+          "kilde": "live",
+          "updated_at": "2026-10-07T10:20:00+00:00",
+          "scorer_type": "modstander",
+          "deleted": false
+        }
+      ],
+      "expected_penalty_score": null,
+      "expected_goal_score": {
+        "own": 1,
+        "opponent": 1
+      }
+    },
+    {
+      "description": "3-2 til eget hold; et misset spark giver intet; mål-stillingen (1-0) påvirkes IKKE af sparkene",
+      "events": [
+        {
+          "id": "G",
+          "type": "mål",
+          "time": "10:20",
+          "kilde": "live",
+          "updated_at": "2026-10-07T10:20:00+00:00",
+          "scorer_type": "eget_hold",
+          "deleted": false
+        },
+        {
+          "id": "K1",
+          "type": "penalty_kick",
+          "time": "11:40",
+          "kilde": "live",
+          "updated_at": "2026-10-07T11:40:00+00:00",
+          "spiller_type": "eget_hold",
+          "spiller_navn": "Spiller",
+          "scored": true,
+          "penalty_order": 1,
+          "deleted": false
+        },
+        {
+          "id": "K2",
+          "type": "penalty_kick",
+          "time": "11:40",
+          "kilde": "live",
+          "updated_at": "2026-10-07T11:40:00+00:00",
+          "spiller_type": "modstander",
+          "spiller_navn": "Spiller",
+          "scored": true,
+          "penalty_order": 2,
+          "deleted": false
+        },
+        {
+          "id": "K3",
+          "type": "penalty_kick",
+          "time": "11:40",
+          "kilde": "live",
+          "updated_at": "2026-10-07T11:40:00+00:00",
+          "spiller_type": "eget_hold",
+          "spiller_navn": "Spiller",
+          "scored": true,
+          "penalty_order": 3,
+          "deleted": false
+        },
+        {
+          "id": "K4",
+          "type": "penalty_kick",
+          "time": "11:40",
+          "kilde": "live",
+          "updated_at": "2026-10-07T11:40:00+00:00",
+          "spiller_type": "modstander",
+          "spiller_navn": "Spiller",
+          "scored": false,
+          "penalty_order": 4,
+          "deleted": false
+        },
+        {
+          "id": "K5",
+          "type": "penalty_kick",
+          "time": "11:40",
+          "kilde": "live",
+          "updated_at": "2026-10-07T11:40:00+00:00",
+          "spiller_type": "eget_hold",
+          "spiller_navn": "Spiller",
+          "scored": true,
+          "penalty_order": 5,
+          "deleted": false
+        },
+        {
+          "id": "K6",
+          "type": "penalty_kick",
+          "time": "11:40",
+          "kilde": "live",
+          "updated_at": "2026-10-07T11:40:00+00:00",
+          "spiller_type": "modstander",
+          "spiller_navn": "Spiller",
+          "scored": true,
+          "penalty_order": 6,
+          "deleted": false
+        }
+      ],
+      "expected_penalty_score": {
+        "own": 3,
+        "opponent": 2
+      },
+      "expected_goal_score": {
+        "own": 1,
+        "opponent": 0
+      }
+    },
+    {
+      "description": "Et SLETTET spark tæller ikke; de to levende giver 1-0",
+      "events": [
+        {
+          "id": "K1",
+          "type": "penalty_kick",
+          "time": "11:40",
+          "kilde": "live",
+          "updated_at": "2026-10-07T11:40:00+00:00",
+          "spiller_type": "eget_hold",
+          "spiller_navn": "Spiller",
+          "scored": true,
+          "penalty_order": 1,
+          "deleted": false
+        },
+        {
+          "id": "K2",
+          "type": "penalty_kick",
+          "time": "11:40",
+          "kilde": "live",
+          "updated_at": "2026-10-07T11:40:00+00:00",
+          "spiller_type": "modstander",
+          "spiller_navn": "Spiller",
+          "scored": true,
+          "penalty_order": 2,
+          "deleted": true
+        },
+        {
+          "id": "K3",
+          "type": "penalty_kick",
+          "time": "11:40",
+          "kilde": "live",
+          "updated_at": "2026-10-07T11:40:00+00:00",
+          "spiller_type": "modstander",
+          "spiller_navn": "Spiller",
+          "scored": false,
+          "penalty_order": 3,
+          "deleted": false
+        }
+      ],
+      "expected_penalty_score": {
+        "own": 1,
+        "opponent": 0
+      },
+      "expected_goal_score": {
+        "own": 0,
+        "opponent": 0
+      }
+    },
+    {
+      "description": "Kun slettede spark — ingen konkurrence (null)",
+      "events": [
+        {
+          "id": "K1",
+          "type": "penalty_kick",
+          "time": "11:40",
+          "kilde": "live",
+          "updated_at": "2026-10-07T11:40:00+00:00",
+          "spiller_type": "eget_hold",
+          "spiller_navn": "Spiller",
+          "scored": true,
+          "penalty_order": 1,
+          "deleted": true
+        }
+      ],
+      "expected_penalty_score": null,
+      "expected_goal_score": {
+        "own": 0,
+        "opponent": 0
+      }
+    },
+    {
+      "description": "Kun misses — konkurrencen FINDES, stillingen er 0-0 (ikke null)",
+      "events": [
+        {
+          "id": "K1",
+          "type": "penalty_kick",
+          "time": "11:40",
+          "kilde": "live",
+          "updated_at": "2026-10-07T11:40:00+00:00",
+          "spiller_type": "eget_hold",
+          "spiller_navn": "Spiller",
+          "scored": false,
+          "penalty_order": 1,
+          "deleted": false
+        },
+        {
+          "id": "K2",
+          "type": "penalty_kick",
+          "time": "11:40",
+          "kilde": "live",
+          "updated_at": "2026-10-07T11:40:00+00:00",
+          "spiller_type": "modstander",
+          "spiller_navn": "Spiller",
+          "scored": false,
+          "penalty_order": 2,
+          "deleted": false
+        }
+      ],
+      "expected_penalty_score": {
+        "own": 0,
+        "opponent": 0
+      },
+      "expected_goal_score": {
+        "own": 0,
+        "opponent": 0
+      }
+    },
+    {
+      "description": "Ukendt side (spiller_type mangler) giver et point til INGEN — samme regel som et mål med ukendt side",
+      "events": [
+        {
+          "id": "K1",
+          "type": "penalty_kick",
+          "time": "11:40",
+          "kilde": "live",
+          "updated_at": "2026-10-07T11:40:00+00:00",
+          "spiller_type": null,
+          "spiller_navn": "Spiller",
+          "scored": true,
+          "penalty_order": 1,
+          "deleted": false
+        },
+        {
+          "id": "K2",
+          "type": "penalty_kick",
+          "time": "11:40",
+          "kilde": "live",
+          "updated_at": "2026-10-07T11:40:00+00:00",
+          "spiller_type": "eget_hold",
+          "spiller_navn": "Spiller",
+          "scored": true,
+          "penalty_order": 2,
+          "deleted": false
+        }
+      ],
+      "expected_penalty_score": {
+        "own": 1,
+        "opponent": 0
+      },
+      "expected_goal_score": {
+        "own": 0,
+        "opponent": 0
+      }
+    },
+    {
+      "description": "scored mangler (uafgjort udfald) giver INTET point — ikke et gæt",
+      "events": [
+        {
+          "id": "K1",
+          "type": "penalty_kick",
+          "time": "11:40",
+          "kilde": "live",
+          "updated_at": "2026-10-07T11:40:00+00:00",
+          "spiller_type": "eget_hold",
+          "spiller_navn": "Spiller",
+          "scored": null,
+          "penalty_order": 1,
+          "deleted": false
+        },
+        {
+          "id": "K2",
+          "type": "penalty_kick",
+          "time": "11:40",
+          "kilde": "live",
+          "updated_at": "2026-10-07T11:40:00+00:00",
+          "spiller_type": "modstander",
+          "spiller_navn": "Spiller",
+          "scored": true,
+          "penalty_order": 2,
+          "deleted": false
+        }
+      ],
+      "expected_penalty_score": {
+        "own": 0,
+        "opponent": 1
+      },
+      "expected_goal_score": {
+        "own": 0,
+        "opponent": 0
+      }
+    },
+    {
+      "description": "Et straffespark i ORDINAER tid er et almindeligt MÅL (straffe=true) — tæller i mål-stillingen, IKKE i straffestillingen (som forbliver null uden konkurrence)",
+      "events": [
+        {
+          "id": "G",
+          "type": "mål",
+          "time": "10:20",
+          "kilde": "live",
+          "updated_at": "2026-10-07T10:20:00+00:00",
+          "scorer_type": "eget_hold",
+          "deleted": false,
+          "straffe": true
+        }
+      ],
+      "expected_penalty_score": null,
+      "expected_goal_score": {
+        "own": 1,
+        "opponent": 0
+      }
+    }
+  ]
+}
