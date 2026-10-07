@@ -283,8 +283,8 @@
       "has_yellow_cards": true,
       "period_minutes": 45,
       "periods": 2,
-      "source": "confirmed",
-      "unambiguous": true
+      "source": "guess",
+      "unambiguous": false
     }
   ],
   "environments": [
@@ -1481,5 +1481,5 @@
       "type_key"
     ]
   },
-  "version": "c33bf325c4d1f2c5"
+  "version": "6255a3e464e8ff49"
 }
