@@ -2886,6 +2886,82 @@ Samme familie som denne fils egne afsnit om et filter, der ikke rammer noget ("E
 
 **Reglen, generaliseret:** et instrument, der kan se en DELMÆNGDE af det, det påstår at dække (en side af resultater, en tidsgrænse, et filter), skal sige HVILKEN delmængde det så — ikke kun hvad den fandt i den.
 
+### En sammenligning mellem to platforme skal maale BEGGE veje — en manglende noegle er ogsaa en divergens
+
+**Maalt 07-10-2026 af Androids `tekster_mod_ios.py`, bygget under `#115`.**
+
+Koordinatorens kort pegede paa **to tekster, der var forskellige.** Vaerktoejet
+fandt tre ting, og den dyreste var ikke en tekst:
+
+```
+to afvigende tekster   som kortet sagde
+ni ens                 bekraeftet, ikke antaget
+ÉN MANGLENDE NOEGLE    -- den kortet ikke kunne beskrive
+```
+
+#### Den dyre form: samme besked, kun ét sted med en noegle
+
+```
+iOS#113    match.lineup.error
+           "Opstillingen kunne ikke hentes lige nu. Prøv igen om lidt."
+Android#109 en LITERAL i foelge-visningen
+           "Opstillingen kunne ikke hentes."
+```
+
+**Samme besked, samme nat, uafhaengigt.** Og:
+
+```
+iOS   HAVDE noeglen, kunne ikke se Androids tekstfil
+de    HAVDE strengen, kendte ikke iOS' noegle
+```
+
+> *"Et menneske, der sammenlignede de to skaerme, ville have kaldt dem ens."*
+
+**To uafhaengige implementeringer konvergerer ofte paa samme ord** — det er et
+tegn paa, at ordet er rigtigt. Men konvergens UDEN en faelles noegle er en
+divergens for en oversaetter: ét id paa den ene side, en haardkodet streng paa
+den anden.
+
+#### Hvorfor ingen af siderne kan finde den alene
+
+```
+hver side ser kun sin egen halvdel
+en kontrol, der koerer paa ÉN side, kan maale at dens egne noegler er der
+-> men ikke at modparten har samme tekst uden en noegle
+```
+
+**Det er derfor sammenligningen skal koere paa BEGGE kataloger**, og hvorfor den
+skal spoerge to spoergsmaal:
+
+```
+1  har vi samme tekst paa samme noegle?            den aabenlyse
+2  har én af os en TEKST, hvor den anden har en LITERAL?
+```
+
+#### Og den omvendte maaling er lige saa vigtig
+
+Samme koersel gav **nul** den anden vej: iOS' fem literals (`"Kommende"`,
+`"Spillede"`, `"Tilfoej kamp"`, `"Nyt staevne"`, `"Ret staevne"`) er literals hos
+Android ogsaa.
+
+**Et maalt nul er et resultat.** Uden den halvdel ville *"vi har ikke fundet
+noget"* ikke kunne skelnes fra *"vi har ikke kigget den vej"*.
+
+#### Og vaerktoejet hoerer IKKE i gaten
+
+Androids egen begrundelse:
+
+```
+den kraever modpartens klon -> og dermed nettet
+en FORAELDET klon ville sammenligne mod GAMLE tekster og melde GROENT
+```
+
+**Saa den henter selv og returnerer 2 — ikke 0 — naar den ikke kunne laese
+modparten.**
+
+> Et svar om ingenting er ikke "ingen afvigelser".
+
+
 ### "Jeg kan ikke efterproeve det" — aldrig "det findes ikke" — naar du kun har maalt din egen laesevej
 
 **Androids egen formulering, 06-10-2026 kl. 22:05, efter at de havde meldt et
