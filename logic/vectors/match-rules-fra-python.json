@@ -18,6 +18,9 @@
       "mix_no_readable_age_is_empty",
       "no_rule_for_age_is_empty",
       "own_team_blank_age_group_is_read_from_division_name",
+      "own_team_senior_has_its_own_rule",
+      "own_team_oldboys_read_from_division_name",
+      "own_team_pool_called_unknown_has_no_rule",
       "own_team_set_age_group_without_rule_does_not_read_division_name",
       "own_team_set_non_age_group_does_not_read_division_name",
       "own_team_unreadable_age_is_empty",
@@ -32,10 +35,11 @@
     "scope": {
       "measures": "LOGIKKEN, der vaelger en alder (hvilken pulje/alder gaelder) og hvad der kommer efter en fase",
       "does_not_measure": "hvordan REGLEN HENTES for den alder: `minutes_by_age_group` foeres ind som DATA. En klient, hvis opslag falder til et forkert svar naar alderen ikke findes, kan dermed ikke ses af sagerne — medmindre dataen SELV indeholder fald-tilbage-raekken. Derfor indeholder HVER half_length-sag en `UNKNOWN`-noegle (serverens egen pladsholder, source='guess', Backend#223): en klient der falder til den ved et opslag uden fund giver 45 i stedet for null, og de sager der forventer null er required. Det lukker `UNKNOWN`-faldet, IKKE alle opslag-fejl: en adapter der GENTAGER opslagslogikken (fx fjerner et 'U' og regner med et tal) kan stadig ikke falde den levende funktion — en adapter, der KALDER den levende funktion, kan (Android#123, Backend#225)",
+      "old_adapter_example": "den gamle Android-adapter slog op paa et TAL (`removePrefix('U').toInt()`) og kunne derfor ikke se `own_team_age_from_division_name` OVERHOVEDET: sagen handler om at laese en alder ud af et RAEKKENAVN, ikke om at slaa et tal op. Sagen bestod, fordi adapteren og koden var uenige paa en maade, der gav samme svar (Android#123, Backend#225). Den skarpeste udgave af graensen: en adapter, der gentager logikken, maaler sin EGEN gentagelse. Reglen om at kalde den levende funktion (Android: `Aldersnoegle.i` paa et noeglesaet) er derfor ikke en bekvemmelighed",
       "injection_cost": "en vektor, der injicerer en afhaengighed som data, maaler logikken der bruger dataen — aldrig vejen dataen blev hentet ad. Samme familie som en groen vektor, der intet beviste om skaermen, et lag dybere"
     },
     "tooling_notes": [
-      "Et SHALLOW submodul (`--depth N`) giver `git merge --ff-only origin/main` -> 'refusing to merge unrelated histories' og `git show <pin>:<fil>` fejler: det ligner en aegte divergens, og er en afkortet historik. Koer `git fetch --unshallow` FOERST (Android + Koordinator ramte det 07-10; et `0 afsnit` var instrumentets tal, ikke virkelighedens)"
+      "MAAL om submodulet er shallow LIGE FOER du stoler paa en ancestor-test eller et `git show <pin>:<fil>` — HVER gang, ikke én gang pr. session. `git fetch --unshallow` er IKKE nok af sig selv: Android koerte den, fik `is-shallow-repository = false`, loeftede pinnen, og naeste `git fetch` var SHALLOW IGEN ('unrelated histories') fordi `.git/modules/<navn>/shallow` stadig laa der med to graefter. Et shallow submodul ligner en aegte divergens og er en afkortet historik; et `0 afsnit` er instrumentets tal, ikke virkelighedens (Koordinator + Android ramte det 07-10). Raadet 'koer --unshallow foerst' var en engangshandling paa noget, der kan vende tilbage"
     ],
     "required_ids_meaning": "Sager hvor en FORKERT regel (ren string-minimum for Mix; en parser der kun laeser age_group; fald-tilbage til naeste yngste alder; straffe kun efter forlaenget) giver et ANDET svar. En klients test SKAL kraeve, at disse id'er findes i filen, saa en foraeldet kopi bliver roed af sig selv i stedet for at bestaa.",
     "inputs": {
@@ -52,7 +56,7 @@
       "extra_time_possible": "kamptypen (Stævnekamp/Pokalkamp — `forlaengetMulig`/`straffesparkMulig`) er en ANDEN regel og gater ADGANGEN, ikke rækkefølgen; sagerne forudsætter at typen tillader det",
       "penalty_null_transition": "`straffespark ?: forlaenget` — null betyder 'ikke valgt endnu', og saa gaelder den GAMLE regel (forlaenget medfoerte straffespark). Det er en OVERGANG, ikke en regel: en vektor der pinnede den, skulle laves om naar overgangen er ovre. `penalty_shootout` i sagerne er allerede det AFGJORTE valg. Et NULL er altsaa IKKE daekket med vilje",
       "shootout_result": "hvem der vinder konkurrencen — se penalty-kick-fra-python.json",
-      "own_team_senior_half_length": "ÅBEN, ikke pinnet (Backend#224, målt 07-10): halvlængden for en EGET-HOLD-pulje, hvis age_group er Senior/Oldboys/Veteran (har en række i age_rules, men intet U-nummer). iOS giver rækkens minutter (2x45), Android null (minutterFor tager et U-nummer). Vektoren har ingen sag for det: reference-implementeringen følger Android"
+      "unknown_word_inside_text": "ÅBEN, ikke pinnet (målt 07-10 ved at portere begge matchere): en TEKST, der indeholder ordet 'UNKNOWN' ved siden af en rigtig nøgle ('UNKNOWN Senior'). Android udelader UNKNOWN fra nøglesættet FØR søgningen og finder Senior; iOS finder det første ord (UNKNOWN) og kasserer det EFTERFØLGENDE og giver ingen regel. Forekommer ikke i data; ikke en sag"
     }
   },
   "mix_pool": [
@@ -273,6 +277,9 @@
         "U12": 25,
         "U13": 25,
         "U15": 30,
+        "Senior": 45,
+        "Oldboys": 45,
+        "Veteran": 45,
         "UNKNOWN": 45
       },
       "expected_minutes": 30
@@ -294,6 +301,9 @@
         "U12": 25,
         "U13": 25,
         "U15": 30,
+        "Senior": 45,
+        "Oldboys": 45,
+        "Veteran": 45,
         "UNKNOWN": 45
       },
       "expected_minutes": 20
@@ -325,6 +335,9 @@
         "U12": 25,
         "U13": 25,
         "U15": 30,
+        "Senior": 45,
+        "Oldboys": 45,
+        "Veteran": 45,
         "UNKNOWN": 45
       },
       "expected_minutes": 25
@@ -351,6 +364,9 @@
         "U12": 25,
         "U13": 25,
         "U15": 30,
+        "Senior": 45,
+        "Oldboys": 45,
+        "Veteran": 45,
         "UNKNOWN": 45
       },
       "expected_minutes": 25
@@ -377,6 +393,9 @@
         "U12": 25,
         "U13": 25,
         "U15": 30,
+        "Senior": 45,
+        "Oldboys": 45,
+        "Veteran": 45,
         "UNKNOWN": 45
       },
       "expected_minutes": null
@@ -398,6 +417,9 @@
         "U12": 25,
         "U13": 25,
         "U15": 30,
+        "Senior": 45,
+        "Oldboys": 45,
+        "Veteran": 45,
         "UNKNOWN": 45
       },
       "expected_minutes": null
@@ -419,9 +441,132 @@
         "U12": 25,
         "U13": 25,
         "U15": 30,
+        "Senior": 45,
+        "Oldboys": 45,
+        "Veteran": 45,
         "UNKNOWN": 45
       },
       "expected_minutes": 25
+    },
+    {
+      "id": "own_team_senior_has_its_own_rule",
+      "description": "Eget hold, age_group 'Senior' (har en række i age_rules, men intet U-nummer): reglen er SENIORS egen række → 45 (Mortens valg 07-10: forudfyld 45 fra serverens række). Kan ikke rangeres (Mix), men HAR en regel. En implementering, der kræver et U-nummer for at finde en regel, giver null",
+      "groups": [
+        {
+          "puljeid": "600100",
+          "age_group": "Senior",
+          "division_name": "Herrer Serie 3"
+        }
+      ],
+      "puljeid": "600100",
+      "is_mix": false,
+      "minutes_by_age_group": {
+        "U11": 20,
+        "U12": 25,
+        "U13": 25,
+        "U15": 30,
+        "Senior": 45,
+        "Oldboys": 45,
+        "Veteran": 45,
+        "UNKNOWN": 45
+      },
+      "expected_minutes": 45
+    },
+    {
+      "id": "own_team_oldboys_read_from_division_name",
+      "description": "Eget hold, age_group mangler og rækkenavnet er 'Oldboys 35+': rækkenavnets ORD er en regelnøgle → Oldboys → 45",
+      "groups": [
+        {
+          "puljeid": "600200",
+          "age_group": null,
+          "division_name": "Oldboys 35+"
+        }
+      ],
+      "puljeid": "600200",
+      "is_mix": false,
+      "minutes_by_age_group": {
+        "U11": 20,
+        "U12": 25,
+        "U13": 25,
+        "U15": 30,
+        "Senior": 45,
+        "Oldboys": 45,
+        "Veteran": 45,
+        "UNKNOWN": 45
+      },
+      "expected_minutes": 45
+    },
+    {
+      "id": "own_team_key_word_inside_long_division_name",
+      "description": "Eget hold, age_group mangler: 'Senior Herrer Serie 3' → det første ORD, der er en regelnøgle (Senior) → 45. Tredje forsøg i rækkefølge: selve teksten → et U-nummer i den → et ord, der er en nøgle",
+      "groups": [
+        {
+          "puljeid": "600300",
+          "age_group": null,
+          "division_name": "Senior Herrer Serie 3"
+        }
+      ],
+      "puljeid": "600300",
+      "is_mix": false,
+      "minutes_by_age_group": {
+        "U11": 20,
+        "U12": 25,
+        "U13": 25,
+        "U15": 30,
+        "Senior": 45,
+        "Oldboys": 45,
+        "Veteran": 45,
+        "UNKNOWN": 45
+      },
+      "expected_minutes": 45
+    },
+    {
+      "id": "own_team_lowercase_u_number_in_division_name",
+      "description": "Eget hold, age_group mangler: 'u13 drenge' → U13 (store/små bogstaver er ligegyldige) → 25",
+      "groups": [
+        {
+          "puljeid": "500200",
+          "age_group": null,
+          "division_name": "u13 drenge"
+        }
+      ],
+      "puljeid": "500200",
+      "is_mix": false,
+      "minutes_by_age_group": {
+        "U11": 20,
+        "U12": 25,
+        "U13": 25,
+        "U15": 30,
+        "Senior": 45,
+        "Oldboys": 45,
+        "Veteran": 45,
+        "UNKNOWN": 45
+      },
+      "expected_minutes": 25
+    },
+    {
+      "id": "own_team_pool_called_unknown_has_no_rule",
+      "description": "Eget hold, en pulje hvis age_group SELV hedder 'UNKNOWN': ingen regel → null, ikke serverens pladsholder (45). UNKNOWN er aldrig et match, ikke engang når navnet er det",
+      "groups": [
+        {
+          "puljeid": "600400",
+          "age_group": "UNKNOWN",
+          "division_name": "Hold"
+        }
+      ],
+      "puljeid": "600400",
+      "is_mix": false,
+      "minutes_by_age_group": {
+        "U11": 20,
+        "U12": 25,
+        "U13": 25,
+        "U15": 30,
+        "Senior": 45,
+        "Oldboys": 45,
+        "Veteran": 45,
+        "UNKNOWN": 45
+      },
+      "expected_minutes": null
     },
     {
       "id": "own_team_set_age_group_without_rule_does_not_read_division_name",
@@ -440,6 +585,9 @@
         "U12": 25,
         "U13": 25,
         "U15": 30,
+        "Senior": 45,
+        "Oldboys": 45,
+        "Veteran": 45,
         "UNKNOWN": 45
       },
       "expected_minutes": null
@@ -461,6 +609,9 @@
         "U12": 25,
         "U13": 25,
         "U15": 30,
+        "Senior": 45,
+        "Oldboys": 45,
+        "Veteran": 45,
         "UNKNOWN": 45
       },
       "expected_minutes": null
@@ -482,6 +633,9 @@
         "U12": 25,
         "U13": 25,
         "U15": 30,
+        "Senior": 45,
+        "Oldboys": 45,
+        "Veteran": 45,
         "UNKNOWN": 45
       },
       "expected_minutes": null
@@ -503,6 +657,9 @@
         "U12": 25,
         "U13": 25,
         "U15": 30,
+        "Senior": 45,
+        "Oldboys": 45,
+        "Veteran": 45,
         "UNKNOWN": 45
       },
       "expected_minutes": null
@@ -529,6 +686,9 @@
         "U12": 25,
         "U13": 25,
         "U15": 30,
+        "Senior": 45,
+        "Oldboys": 45,
+        "Veteran": 45,
         "UNKNOWN": 45
       },
       "expected_minutes": null
