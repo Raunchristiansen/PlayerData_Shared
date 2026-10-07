@@ -4165,6 +4165,82 @@ advarsel om, at praecisionen er for lav til at afgoere den.** Ser du en
 knivsaeg i en tabel, saa maal den igen med flere decimaler, foer du laaser den.
 
 
+### Et harness, der ikke komponerer skaermens egen BEHOLDER, kan ikke vaere uenigt med koden
+
+**Androids fund 07-10-2026: `#108` crashede appen, og 1227 tests var groenne.**
+
+```
+EventTimeline    er en LazyColumn               EventTimeline.kt:84
+MatchesTab       Column(verticalScroll)         :198
+
+-> "Vertically scrollable component was measured with an infinity
+    maximum height constraints, which is disallowed."
+```
+
+**Funktionen kunne ikke bruges ÉN gang.** Et nedbrud ved foerste tryk — ikke en
+skaev tekst, ikke en graensesag.
+
+#### Hvorfor hverken tests eller SEKS skaermbilleder saa det
+
+```
+billedtesten komponerede listen i en PLAIN Column, UDEN scroll
+```
+
+**Harness'et adskilte sig fra den rigtige skaerm i praecis den forskel, der
+betoed noget.** Alt andet var ens: de rigtige kort, de rigtige farver, den
+rigtige tekst. Kun beholderen var forskellig, og beholderen var fejlen.
+
+> Et instrument, der ikke kan vaere uenigt med koden om det ene, der er galt,
+> maaler ikke det.
+
+Og de fandt det **kun fordi de skrev en billedtest for en ANDEN skaerm.**
+
+#### Spoergsmaalet, der afgoer det
+
+Ikke *"har jeg en test af denne komponent?"* men:
+
+> **Komponerer harness'et komponenten i den SAMME beholder, som appen bruger?**
+
+```
+scroll inde i scroll        Compose KASTER · SwiftUI opfoerer sig uforudsigeligt
+en liste uden sin foraelder maales med andre begraensninger
+et ark uden sin praesentation faar en anden stoerrelse
+```
+
+**Det er ikke en Compose-detalje.** En `List` i en `ScrollView`, en
+`RecyclerView` i en `NestedScrollView`, et `<div>` med `overflow` i et andet —
+samme klasse, forskellige sprog.
+
+#### Og den er vaerre end et forkert tal
+
+Samme aften fandt de en trin-test, der fodrede sig sine egne afrundede tal:
+
+```
+trin-testen   svaret var forkert i ÉN celle
+beholderen    funktionen virkede SLET IKKE
+```
+
+**Samme skelet — et instrument, der ikke kan vaere uenigt — og to meget
+forskellige priser.**
+
+#### Formen paa rettelsen
+
+```
+EventTimelineRows   samme kort, INGEN egen scrollende beholder
+```
+
+> *"a composable that is not a container emits its rows into the caller's
+> scope, and the caller owns the scrolling."*
+
+**En komposabel, der ikke er en beholder, udsender sine raekker i kalderens
+scope.** Saa kan den samme liste bo baade i en scrollende og en ikke-scrollende
+skaerm uden to udgaver.
+
+Og billedtesten fik `verticalScroll`. **Saboteret: rullet tilbage -> to tests
+roede.** Det er den proeve, der goer rettelsen varig — uden den ville harness'et
+kunne glide tilbage i tavshed.
+
+
 ### Hvorfor den er svaerere at opdage end en forkert test
 
 ```
