@@ -1,0 +1,475 @@
+{
+  "contract": {
+    "source": "backend.app.match_rules, PlayerData_Backend. Reglerne er hentet fra Android MatchesLogic.kt/LiveLogic.kt og iOS FaellesKampRegler.swift/LiveLogik.swift — facit er skrevet efter BEGGE, ikke efter den ene",
+    "generated_by": "scripts/generate-match-rules-vectors.py",
+    "required_ids": [
+      "mix_youngest_alone",
+      "mix_tie_inside_age_group",
+      "mix_tie_break_is_string_order",
+      "mix_age_only_in_division_name",
+      "mix_all_unreadable",
+      "mix_one_unreadable_one_readable",
+      "own_team_uses_selected_pools_age",
+      "mix_uses_youngest_followed",
+      "mix_ignores_unreadable_pool_not_zero",
+      "no_rule_for_age_is_empty",
+      "mix_youngest_without_rule_is_empty_not_next_youngest",
+      "tie_regular_extra_on",
+      "tie_after_extra_shootout_on",
+      "tie_regular_extra_off_shootout_on",
+      "tie_regular_both_off",
+      "decided_after_regular_extra_on"
+    ],
+    "required_ids_meaning": "Sager hvor en FORKERT regel (ren string-minimum for Mix; en parser der kun laeser age_group; fald-tilbage til naeste yngste alder; straffe kun efter forlaenget) giver et ANDET svar. En klients test SKAL kraeve, at disse id'er findes i filen, saa en foraeldet kopi bliver roed af sig selv i stedet for at bestaa.",
+    "inputs": {
+      "groups": "[{puljeid, age_group, division_name}] — samme noegler som /api/v1/dbu/groups; age_group og division_name kan vaere null",
+      "minutes_by_age_group": "aldersreglerne som DATA ({'U13': 25}), IKKE et opslag; vaerdierne er ILLUSTRATIVE",
+      "phase_transition": "extra_time/penalty_shootout er de AFGJORTE valg; completed_phase er 'regular_time' eller 'extra_time' ('extra_time' kraever extra_time=true)"
+    },
+    "rules": {
+      "mix_pool": "yngste alder blandt fulgte puljer; flere i gruppen -> mindste puljeid som STRENG; alder laeses ogsaa af division_name naar age_group er null; ulaeselig alder konkurrerer kun naar INGEN kan laeses; nul puljer -> null",
+      "half_length": "eget hold -> den valgte puljes alder; Mix -> yngste LAESELIGE alder; ingen regel -> null (feltet staar tomt); ingen fald-tilbage til naeste yngste alder",
+      "phase_transition": "ikke uafgjort -> end; uafgjort efter ordinaer tid: forlaenget TIL -> extra_time, ellers straffe TIL -> penalty_shootout (DIREKTE), ellers end; uafgjort efter forlaenget: straffe TIL -> penalty_shootout, ellers end"
+    },
+    "not_pinned": {
+      "extra_time_possible": "kamptypen (Stævnekamp/Pokalkamp — `forlaengetMulig`/`straffesparkMulig`) er en ANDEN regel; sagerne forudsaetter at typen tillader det",
+      "penalty_null_transition": "`straffespark ?: forlaenget` — null betyder 'ikke valgt endnu', og saa gaelder den GAMLE regel (forlaenget medfoerte straffespark). Det er en OVERGANG, ikke en regel: en vektor der pinnede den, skulle laves om naar overgangen er ovre. `penalty_shootout` i sagerne er allerede det AFGJORTE valg. Et NULL er altsaa IKKE daekket med vilje",
+      "shootout_result": "hvem der vinder konkurrencen — se penalty-kick-fra-python.json",
+      "unreadable_age_group_rule": "hvad halvlaengden er for en pulje med ULAESELIG alder (eget hold) eller uden valgt pulje: Android giver null, iOS slaar UNKNOWN-raekken op (`Aldersregler.aargang(for:)`). UAFKLARET — ikke pinnet; se Backend-kortets kommentar",
+      "age_group_set_but_unreadable": "age_group sat men ulaeselig (fx 'Senior') OG division_name laesbar: Android laeser IKKE division_name, iOS goer. Ikke pinnet",
+      "age_outside_age_rules": "en alder uden raekke i age_rules (fx U3): ikke pinnet — sagerne bruger U11-U15"
+    }
+  },
+  "mix_pool": [
+    {
+      "id": "mix_youngest_alone",
+      "description": "U11 + U15: den YNGSTE pulje vinder. Den ældre har den mindste puljeid, så ren string-minimum ville vælge den FORKERTE",
+      "groups": [
+        {
+          "puljeid": "501000",
+          "age_group": "U15",
+          "division_name": null
+        },
+        {
+          "puljeid": "502000",
+          "age_group": "U11",
+          "division_name": null
+        }
+      ],
+      "expected_puljeid": "502000"
+    },
+    {
+      "id": "mix_tie_inside_age_group",
+      "description": "A1 og A2 er begge U13: alderen navngiver et SÆT, ikke én pulje — string-minimum af DE TO. En ældre pulje med mindre id (500100) deltager ikke",
+      "groups": [
+        {
+          "puljeid": "500300",
+          "age_group": "U13",
+          "division_name": "U13 A1"
+        },
+        {
+          "puljeid": "500200",
+          "age_group": "U13",
+          "division_name": "U13 A2"
+        },
+        {
+          "puljeid": "500100",
+          "age_group": "U15",
+          "division_name": null
+        }
+      ],
+      "expected_puljeid": "500200"
+    },
+    {
+      "id": "mix_tie_break_is_string_order",
+      "description": "Tie-break er STRENG-orden, ikke tal-orden: '100000' < '99999' som strenge (men ikke som tal). To apper, der sammenligner forskelligt, vælger to forskellige puljer",
+      "groups": [
+        {
+          "puljeid": "99999",
+          "age_group": "U13",
+          "division_name": null
+        },
+        {
+          "puljeid": "100000",
+          "age_group": "U13",
+          "division_name": null
+        }
+      ],
+      "expected_puljeid": "100000"
+    },
+    {
+      "id": "mix_age_only_in_division_name",
+      "description": "age_group MANGLER (null) men rækkenavnet siger U11: U11 vinder stadig over U15. En parser, der kun læser age_group, ville se puljen ALDERSLØS og tabe",
+      "groups": [
+        {
+          "puljeid": "502000",
+          "age_group": null,
+          "division_name": "U11 Drenge Række 1"
+        },
+        {
+          "puljeid": "501000",
+          "age_group": "U15",
+          "division_name": null
+        }
+      ],
+      "expected_puljeid": "502000"
+    },
+    {
+      "id": "mix_age_in_name_is_case_insensitive",
+      "description": "Alderen i rækkenavnet læses uafhængigt af store/små bogstaver ('u12')",
+      "groups": [
+        {
+          "puljeid": "502000",
+          "age_group": null,
+          "division_name": "u12 Drenge"
+        },
+        {
+          "puljeid": "501000",
+          "age_group": "U14",
+          "division_name": null
+        }
+      ],
+      "expected_puljeid": "502000"
+    },
+    {
+      "id": "mix_all_unreadable",
+      "description": "ALLE puljer har ulæselig alder: et svar, ikke null — den mindste puljeid som streng",
+      "groups": [
+        {
+          "puljeid": "600200",
+          "age_group": null,
+          "division_name": "Oldboys 35+"
+        },
+        {
+          "puljeid": "600100",
+          "age_group": "Senior",
+          "division_name": null
+        }
+      ],
+      "expected_puljeid": "600100"
+    },
+    {
+      "id": "mix_one_unreadable_one_readable",
+      "description": "En ulæselig + en læsbar: den LÆSBARE vinder, selvom den ulæselige har den mindste puljeid",
+      "groups": [
+        {
+          "puljeid": "500100",
+          "age_group": "Senior",
+          "division_name": null
+        },
+        {
+          "puljeid": "501000",
+          "age_group": "U15",
+          "division_name": null
+        }
+      ],
+      "expected_puljeid": "501000"
+    },
+    {
+      "id": "mix_single_pool",
+      "description": "Én pulje: den",
+      "groups": [
+        {
+          "puljeid": "501000",
+          "age_group": "U15",
+          "division_name": null
+        }
+      ],
+      "expected_puljeid": "501000"
+    },
+    {
+      "id": "mix_no_pools",
+      "description": "Nul puljer: null",
+      "groups": [],
+      "expected_puljeid": null
+    }
+  ],
+  "half_length": [
+    {
+      "id": "own_team_uses_selected_pools_age",
+      "description": "Eget hold: den VALGTE puljes alder, ikke den yngste",
+      "groups": [
+        {
+          "puljeid": "500200",
+          "age_group": "U13",
+          "division_name": null
+        },
+        {
+          "puljeid": "501000",
+          "age_group": "U15",
+          "division_name": null
+        }
+      ],
+      "puljeid": "501000",
+      "is_mix": false,
+      "minutes_by_age_group": {
+        "U11": 20,
+        "U12": 25,
+        "U13": 25,
+        "U15": 30
+      },
+      "expected_minutes": 30
+    },
+    {
+      "id": "own_team_age_from_division_name",
+      "description": "Eget hold, age_group mangler: alderen læses af rækkenavnet (U11 → 20)",
+      "groups": [
+        {
+          "puljeid": "502000",
+          "age_group": null,
+          "division_name": "U11 Drenge Række 1"
+        }
+      ],
+      "puljeid": "502000",
+      "is_mix": false,
+      "minutes_by_age_group": {
+        "U11": 20,
+        "U12": 25,
+        "U13": 25,
+        "U15": 30
+      },
+      "expected_minutes": 20
+    },
+    {
+      "id": "mix_uses_youngest_followed",
+      "description": "Mix: den YNGSTE fulgte alder (U12 → 25), og den valgte puljeid (en U15) ignoreres",
+      "groups": [
+        {
+          "puljeid": "501000",
+          "age_group": "U15",
+          "division_name": null
+        },
+        {
+          "puljeid": "500400",
+          "age_group": "U12",
+          "division_name": null
+        },
+        {
+          "puljeid": "500200",
+          "age_group": "U13",
+          "division_name": null
+        }
+      ],
+      "puljeid": "501000",
+      "is_mix": true,
+      "minutes_by_age_group": {
+        "U11": 20,
+        "U12": 25,
+        "U13": 25,
+        "U15": 30
+      },
+      "expected_minutes": 25
+    },
+    {
+      "id": "mix_ignores_unreadable_pool_not_zero",
+      "description": "Mix: en pulje med ulæselig alder tages UD af sammenligningen — den er ikke 0 og gør ikke holdet 'yngre'",
+      "groups": [
+        {
+          "puljeid": "600100",
+          "age_group": "Senior",
+          "division_name": null
+        },
+        {
+          "puljeid": "500200",
+          "age_group": "U13",
+          "division_name": null
+        }
+      ],
+      "puljeid": null,
+      "is_mix": true,
+      "minutes_by_age_group": {
+        "U11": 20,
+        "U12": 25,
+        "U13": 25,
+        "U15": 30
+      },
+      "expected_minutes": 25
+    },
+    {
+      "id": "mix_no_readable_age_is_empty",
+      "description": "Mix, ingen læselig alder: ingen regel → null (feltet står TOMT)",
+      "groups": [
+        {
+          "puljeid": "600100",
+          "age_group": "Senior",
+          "division_name": null
+        },
+        {
+          "puljeid": "600200",
+          "age_group": null,
+          "division_name": "Oldboys 35+"
+        }
+      ],
+      "puljeid": null,
+      "is_mix": true,
+      "minutes_by_age_group": {
+        "U11": 20,
+        "U12": 25,
+        "U13": 25,
+        "U15": 30
+      },
+      "expected_minutes": null
+    },
+    {
+      "id": "no_rule_for_age_is_empty",
+      "description": "Alderen (U14) findes, men reglerne har ingen halvlænge for den: null — IKKE nærmeste årgang",
+      "groups": [
+        {
+          "puljeid": "500500",
+          "age_group": "U14",
+          "division_name": null
+        }
+      ],
+      "puljeid": "500500",
+      "is_mix": false,
+      "minutes_by_age_group": {
+        "U11": 20,
+        "U12": 25,
+        "U13": 25,
+        "U15": 30
+      },
+      "expected_minutes": null
+    },
+    {
+      "id": "mix_youngest_without_rule_is_empty_not_next_youngest",
+      "description": "Mix: den yngste (U14) har ingen regel, men U15 har: svaret er null, der falder IKKE tilbage til næste yngste",
+      "groups": [
+        {
+          "puljeid": "500500",
+          "age_group": "U14",
+          "division_name": null
+        },
+        {
+          "puljeid": "501000",
+          "age_group": "U15",
+          "division_name": null
+        }
+      ],
+      "puljeid": null,
+      "is_mix": true,
+      "minutes_by_age_group": {
+        "U11": 20,
+        "U12": 25,
+        "U13": 25,
+        "U15": 30
+      },
+      "expected_minutes": null
+    }
+  ],
+  "phase_transition": [
+    {
+      "id": "tie_regular_extra_on",
+      "description": "1: uafgjort efter ordinær tid + forlænget TIL → forlænget",
+      "extra_time": true,
+      "penalty_shootout": true,
+      "completed_phase": "regular_time",
+      "score": {
+        "own": 1,
+        "opponent": 1
+      },
+      "expected_phase": "extra_time",
+      "transition": 1
+    },
+    {
+      "id": "tie_regular_extra_on_no_shootout",
+      "description": "Uafgjort efter ordinær tid + forlænget TIL, straffe FRA → stadig forlænget",
+      "extra_time": true,
+      "penalty_shootout": false,
+      "completed_phase": "regular_time",
+      "score": {
+        "own": 2,
+        "opponent": 2
+      },
+      "expected_phase": "extra_time",
+      "transition": 1
+    },
+    {
+      "id": "tie_after_extra_shootout_on",
+      "description": "2: uafgjort efter forlænget + straffe TIL → straffesparkskonkurrence",
+      "extra_time": true,
+      "penalty_shootout": true,
+      "completed_phase": "extra_time",
+      "score": {
+        "own": 1,
+        "opponent": 1
+      },
+      "expected_phase": "penalty_shootout",
+      "transition": 2
+    },
+    {
+      "id": "tie_regular_extra_off_shootout_on",
+      "description": "3: forlænget FRA + straffe TIL → DIREKTE til straffespark. Den gamle regel (straffe kun efter forlænget) giver 'end'",
+      "extra_time": false,
+      "penalty_shootout": true,
+      "completed_phase": "regular_time",
+      "score": {
+        "own": 0,
+        "opponent": 0
+      },
+      "expected_phase": "penalty_shootout",
+      "transition": 3
+    },
+    {
+      "id": "tie_regular_both_off",
+      "description": "4: begge FRA → slut",
+      "extra_time": false,
+      "penalty_shootout": false,
+      "completed_phase": "regular_time",
+      "score": {
+        "own": 1,
+        "opponent": 1
+      },
+      "expected_phase": "end",
+      "transition": 4
+    },
+    {
+      "id": "tie_after_extra_shootout_off",
+      "description": "Uafgjort efter forlænget, straffe FRA → slut",
+      "extra_time": true,
+      "penalty_shootout": false,
+      "completed_phase": "extra_time",
+      "score": {
+        "own": 2,
+        "opponent": 2
+      },
+      "expected_phase": "end",
+      "transition": 4
+    },
+    {
+      "id": "decided_after_regular_extra_on",
+      "description": "Ikke uafgjort efter ordinær tid → slut, også med forlænget TIL (ingen forlænget tilbydes)",
+      "extra_time": true,
+      "penalty_shootout": true,
+      "completed_phase": "regular_time",
+      "score": {
+        "own": 2,
+        "opponent": 1
+      },
+      "expected_phase": "end"
+    },
+    {
+      "id": "decided_after_regular_shootout_on",
+      "description": "Ikke uafgjort efter ordinær tid → slut, også med straffe TIL",
+      "extra_time": false,
+      "penalty_shootout": true,
+      "completed_phase": "regular_time",
+      "score": {
+        "own": 0,
+        "opponent": 1
+      },
+      "expected_phase": "end"
+    },
+    {
+      "id": "decided_after_extra",
+      "description": "Ikke uafgjort efter forlænget → slut, også med straffe TIL",
+      "extra_time": true,
+      "penalty_shootout": true,
+      "completed_phase": "extra_time",
+      "score": {
+        "own": 3,
+        "opponent": 2
+      },
+      "expected_phase": "end"
+    }
+  ]
+}
