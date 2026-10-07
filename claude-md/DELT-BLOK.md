@@ -2651,6 +2651,62 @@ Fundet på iOS 2026-10-01 (#19): en `fatalError` i en `static let`, der skulle l
 
 **Konsekvensen, der er værd at huske:** en test, der aldrig rører koden, der læser fra bundlen/konteksten, beviser intet om DEN kode — kun om den rene logik ved siden af. Og en kodesti, der virker fint lokalt, fordi testen aldrig når den linje, kan stadig indeholde en rigtig fejl, som kun en kørende app (eller en hostet test) ville finde — se næste afsnit.
 
+### Et facit maaler den funktion, det SPOERGER — ikke den, appen BRUGER
+
+**Androids fund 07-10-2026, da de lukkede `Android#122`. Det er samme skelet
+som afsnittene ovenfor, men ét lag laengere ude: her koerer testen koden, og
+koden er rigtig — og skaermen bruger den ikke.**
+
+Fasereglen (uafgjort -> forlaenget -> straffespark) var skrevet **TO gange**
+hos dem:
+
+```
+skalSpilleForlaenget
+afventerStraffesparkskonkurrence
+  hver besvarede sin BID fra en kladdes perioder
+  reglen blev aldrig sagt ÉN gang -- og Android#112 fandt, at den ene
+  var drevet
+```
+
+De samlede den i `naesteFase`, og den delte vektor spoerger den. **Alle sager
+groenne ved foerste koersel.**
+
+**Og saa saa de faelden i deres eget resultat:**
+
+> En groen vektor beviser ikke, at appen foelger reglen. Skaermen spoerger ikke
+> `naesteFase`; den spoerger de to gamle. **Hvis facit rammer en regel, og
+> skaermen gaar udenom den, er groent stadig groent.**
+
+**Deres rettelse var ikke at aendre skaermen.** Det var en EKSTRA test, der
+maaler, at `skalSpilleForlaenget` er enig med reglen paa alle otte
+kombinationer — altsaa en maaling af, at de to lag siger det samme.
+
+```
+facit er groent         reglen, som den er skrevet i naesteFase, er rigtig
+appen foelger reglen    en SELVSTAENDIG egenskab
+                        -- og den er ikke maalt af facit
+```
+
+**Hvorfor det er farligere end en manglende test:** et groent facit foeles som
+daekning. Det er den stoerste tillid, en delt regel kan have — og hvis den
+rammer et lag, skaermen ikke bruger, er den **sand og ubrugelig paa samme
+tid.** Ingen gaar tilbage og spoerger, om den funktion, facit spoerger, er den,
+der koerer.
+
+**Hvad man kan goere, naar man indfoerer et facit for en regel, der FANDTES i
+forvejen:**
+
+```
+1  find kaldestederne for den NYE samlede funktion
+2  er de NUL -- altsaa er den kun kaldt af testen -- saa maal, at de
+   GAMLE veje er enige med den, paa hele kombinationsrummet
+3  og skriv paa kortet, hvilken af de to man gjorde
+```
+
+**Og det gaelder begge veje over en platformgraense:** spoerg, om den anden
+klients skaerm kalder det samme lag. To apper kan vaere enige med facit og
+uenige med hinanden, hvis den ene har facit paa et lag, skaermen ikke bruger.
+
 ### Det eneste, ingen enhedstest roerer, er SAMMENSAETNINGEN
 
 **Afsnittet ovenfor handler om en test, der ikke KOERER koden. Dette handler om,
