@@ -18,6 +18,8 @@
       "mix_no_readable_age_is_empty",
       "no_rule_for_age_is_empty",
       "own_team_blank_age_group_is_read_from_division_name",
+      "own_team_set_age_group_without_rule_does_not_read_division_name",
+      "own_team_set_non_age_group_does_not_read_division_name",
       "own_team_unreadable_age_is_empty",
       "no_selected_pool_is_empty",
       "mix_youngest_without_rule_is_empty_not_next_youngest",
@@ -50,8 +52,7 @@
       "extra_time_possible": "kamptypen (Stævnekamp/Pokalkamp — `forlaengetMulig`/`straffesparkMulig`) er en ANDEN regel og gater ADGANGEN, ikke rækkefølgen; sagerne forudsætter at typen tillader det",
       "penalty_null_transition": "`straffespark ?: forlaenget` — null betyder 'ikke valgt endnu', og saa gaelder den GAMLE regel (forlaenget medfoerte straffespark). Det er en OVERGANG, ikke en regel: en vektor der pinnede den, skulle laves om naar overgangen er ovre. `penalty_shootout` i sagerne er allerede det AFGJORTE valg. Et NULL er altsaa IKKE daekket med vilje",
       "shootout_result": "hvem der vinder konkurrencen — se penalty-kick-fra-python.json",
-      "own_team_senior_half_length": "ÅBEN, ikke pinnet (Backend#224, målt 07-10): halvlængden for en EGET-HOLD-pulje, hvis age_group er Senior/Oldboys/Veteran (har en række i age_rules, men intet U-nummer). iOS giver rækkens minutter (2x45), Android null (minutterFor tager et U-nummer). Vektoren har ingen sag for det: reference-implementeringen følger Android",
-      "age_group_set_not_a_rule_key_half_length": "ÅBEN, ikke pinnet: for HALVLÆNGDEN (ikke Mix) falder iOS' `aargang(for:)` stadig videre til division_name, når age_group er sat men ikke en nøgle i age_rules (Mix er rettet, iOS#119). Android læser kun age_group, når den er sat"
+      "own_team_senior_half_length": "ÅBEN, ikke pinnet (Backend#224, målt 07-10): halvlængden for en EGET-HOLD-pulje, hvis age_group er Senior/Oldboys/Veteran (har en række i age_rules, men intet U-nummer). iOS giver rækkens minutter (2x45), Android null (minutterFor tager et U-nummer). Vektoren har ingen sag for det: reference-implementeringen følger Android"
     }
   },
   "mix_pool": [
@@ -421,6 +422,48 @@
         "UNKNOWN": 45
       },
       "expected_minutes": 25
+    },
+    {
+      "id": "own_team_set_age_group_without_rule_does_not_read_division_name",
+      "description": "Eget hold: age_group er SAT (U14) men har ingen række i reglerne, og rækkenavnet siger U13 — INGEN regel → null, IKKE U13's 25 fra rækkenavnet. Rækkenavnet læses kun, når age_group MANGLER (iOS 51d747d måler halfMin, ikke kun Mix; Android læser aldrig rækkenavnet når age_group er sat)",
+      "groups": [
+        {
+          "puljeid": "502000",
+          "age_group": "U14",
+          "division_name": "U13 Drenge Række 1"
+        }
+      ],
+      "puljeid": "502000",
+      "is_mix": false,
+      "minutes_by_age_group": {
+        "U11": 20,
+        "U12": 25,
+        "U13": 25,
+        "U15": 30,
+        "UNKNOWN": 45
+      },
+      "expected_minutes": null
+    },
+    {
+      "id": "own_team_set_non_age_group_does_not_read_division_name",
+      "description": "Samme regel for en SAT aldersgruppe, der hverken er en regelnøgle eller har et U-nummer ('Ungdom'): ingen regel → null, ikke U13's 25 fra rækkenavnet",
+      "groups": [
+        {
+          "puljeid": "502000",
+          "age_group": "Ungdom",
+          "division_name": "U13 Drenge Række 1"
+        }
+      ],
+      "puljeid": "502000",
+      "is_mix": false,
+      "minutes_by_age_group": {
+        "U11": 20,
+        "U12": 25,
+        "U13": 25,
+        "U15": 30,
+        "UNKNOWN": 45
+      },
+      "expected_minutes": null
     },
     {
       "id": "own_team_unreadable_age_is_empty",
