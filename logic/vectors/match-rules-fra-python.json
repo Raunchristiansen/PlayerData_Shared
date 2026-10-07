@@ -11,16 +11,29 @@
       "mix_one_unreadable_one_readable",
       "mix_set_but_unreadable_age_group_does_not_read_division_name",
       "mix_age_without_rule_row_still_competes",
+      "mix_blank_age_group_is_read_from_division_name",
       "own_team_uses_selected_pools_age",
       "mix_uses_youngest_followed",
       "mix_ignores_unreadable_pool_not_zero",
+      "mix_no_readable_age_is_empty",
       "no_rule_for_age_is_empty",
+      "own_team_blank_age_group_is_read_from_division_name",
+      "own_team_unreadable_age_is_empty",
+      "no_selected_pool_is_empty",
       "mix_youngest_without_rule_is_empty_not_next_youngest",
       "tie_regular_extra_on",
       "tie_after_extra_shootout_on",
       "tie_regular_extra_off_shootout_on",
       "tie_regular_both_off",
       "decided_after_regular_extra_on"
+    ],
+    "scope": {
+      "measures": "LOGIKKEN, der vaelger en alder (hvilken pulje/alder gaelder) og hvad der kommer efter en fase",
+      "does_not_measure": "hvordan REGLEN HENTES for den alder: `minutes_by_age_group` foeres ind som DATA. En klient, hvis opslag falder til et forkert svar naar alderen ikke findes, kan dermed ikke ses af sagerne — medmindre dataen SELV indeholder fald-tilbage-raekken. Derfor indeholder HVER half_length-sag en `UNKNOWN`-noegle (serverens egen pladsholder, source='guess', Backend#223): en klient der falder til den ved et opslag uden fund giver 45 i stedet for null, og de sager der forventer null er required. Det lukker `UNKNOWN`-faldet, IKKE alle opslag-fejl: en adapter der GENTAGER opslagslogikken (fx fjerner et 'U' og regner med et tal) kan stadig ikke falde den levende funktion — en adapter, der KALDER den levende funktion, kan (Android#123, Backend#225)",
+      "injection_cost": "en vektor, der injicerer en afhaengighed som data, maaler logikken der bruger dataen — aldrig vejen dataen blev hentet ad. Samme familie som en groen vektor, der intet beviste om skaermen, et lag dybere"
+    },
+    "tooling_notes": [
+      "Et SHALLOW submodul (`--depth N`) giver `git merge --ff-only origin/main` -> 'refusing to merge unrelated histories' og `git show <pin>:<fil>` fejler: det ligner en aegte divergens, og er en afkortet historik. Koer `git fetch --unshallow` FOERST (Android + Koordinator ramte det 07-10; et `0 afsnit` var instrumentets tal, ikke virkelighedens)"
     ],
     "required_ids_meaning": "Sager hvor en FORKERT regel (ren string-minimum for Mix; en parser der kun laeser age_group; fald-tilbage til naeste yngste alder; straffe kun efter forlaenget) giver et ANDET svar. En klients test SKAL kraeve, at disse id'er findes i filen, saa en foraeldet kopi bliver roed af sig selv i stedet for at bestaa.",
     "inputs": {
@@ -38,8 +51,7 @@
       "penalty_null_transition": "`straffespark ?: forlaenget` — null betyder 'ikke valgt endnu', og saa gaelder den GAMLE regel (forlaenget medfoerte straffespark). Det er en OVERGANG, ikke en regel: en vektor der pinnede den, skulle laves om naar overgangen er ovre. `penalty_shootout` i sagerne er allerede det AFGJORTE valg. Et NULL er altsaa IKKE daekket med vilje",
       "shootout_result": "hvem der vinder konkurrencen — se penalty-kick-fra-python.json",
       "own_team_senior_half_length": "ÅBEN, ikke pinnet (Backend#224, målt 07-10): halvlængden for en EGET-HOLD-pulje, hvis age_group er Senior/Oldboys/Veteran (har en række i age_rules, men intet U-nummer). iOS giver rækkens minutter (2x45), Android null (minutterFor tager et U-nummer). Vektoren har ingen sag for det: reference-implementeringen følger Android",
-      "age_group_set_not_a_rule_key_half_length": "ÅBEN, ikke pinnet: for HALVLÆNGDEN (ikke Mix) falder iOS' `aargang(for:)` stadig videre til division_name, når age_group er sat men ikke en nøgle i age_rules (Mix er rettet, iOS#119). Android læser kun age_group, når den er sat",
-      "age_group_empty_string": "ÅBEN, ikke pinnet: en TOM age_group ('' eller blanke) — iOS læser division_name, Android (`?:` kun ved null) gør ikke. Sagerne bruger null, aldrig ''"
+      "age_group_set_not_a_rule_key_half_length": "ÅBEN, ikke pinnet: for HALVLÆNGDEN (ikke Mix) falder iOS' `aargang(for:)` stadig videre til division_name, når age_group er sat men ikke en nøgle i age_rules (Mix er rettet, iOS#119). Android læser kun age_group, når den er sat"
     }
   },
   "mix_pool": [
@@ -202,6 +214,23 @@
       "expected_puljeid": "501500"
     },
     {
+      "id": "mix_blank_age_group_is_read_from_division_name",
+      "description": "age_group er en TOM/blank streng ('  '), ikke null: det er 'mangler', ikke 'sat' — rækkenavnet læses (U11 vinder over U15). Android#123: `isNotBlank`; iOS: trim → tom. En implementering, der kun ser på null, ville se pulje 502000 som aldersløs og vælge U15's ('501000')",
+      "groups": [
+        {
+          "puljeid": "502000",
+          "age_group": "  ",
+          "division_name": "U11 Drenge Række 1"
+        },
+        {
+          "puljeid": "501000",
+          "age_group": "U15",
+          "division_name": null
+        }
+      ],
+      "expected_puljeid": "502000"
+    },
+    {
       "id": "mix_single_pool",
       "description": "Én pulje: den",
       "groups": [
@@ -242,7 +271,8 @@
         "U11": 20,
         "U12": 25,
         "U13": 25,
-        "U15": 30
+        "U15": 30,
+        "UNKNOWN": 45
       },
       "expected_minutes": 30
     },
@@ -262,7 +292,8 @@
         "U11": 20,
         "U12": 25,
         "U13": 25,
-        "U15": 30
+        "U15": 30,
+        "UNKNOWN": 45
       },
       "expected_minutes": 20
     },
@@ -292,7 +323,8 @@
         "U11": 20,
         "U12": 25,
         "U13": 25,
-        "U15": 30
+        "U15": 30,
+        "UNKNOWN": 45
       },
       "expected_minutes": 25
     },
@@ -317,7 +349,8 @@
         "U11": 20,
         "U12": 25,
         "U13": 25,
-        "U15": 30
+        "U15": 30,
+        "UNKNOWN": 45
       },
       "expected_minutes": 25
     },
@@ -342,7 +375,8 @@
         "U11": 20,
         "U12": 25,
         "U13": 25,
-        "U15": 30
+        "U15": 30,
+        "UNKNOWN": 45
       },
       "expected_minutes": null
     },
@@ -362,9 +396,31 @@
         "U11": 20,
         "U12": 25,
         "U13": 25,
-        "U15": 30
+        "U15": 30,
+        "UNKNOWN": 45
       },
       "expected_minutes": null
+    },
+    {
+      "id": "own_team_blank_age_group_is_read_from_division_name",
+      "description": "Eget hold, age_group er en TOM streng ('') og rækkenavnet siger U13: 'mangler', ikke 'sat' → rækkenavnet læses → 25 (Android#123 + iOS). En implementering, der kun ser på null, giver intet — og en der falder til UNKNOWN giver 45",
+      "groups": [
+        {
+          "puljeid": "502000",
+          "age_group": "",
+          "division_name": "U13 Drenge Række 1"
+        }
+      ],
+      "puljeid": "502000",
+      "is_mix": false,
+      "minutes_by_age_group": {
+        "U11": 20,
+        "U12": 25,
+        "U13": 25,
+        "U15": 30,
+        "UNKNOWN": 45
+      },
+      "expected_minutes": 25
     },
     {
       "id": "own_team_unreadable_age_is_empty",
@@ -382,7 +438,8 @@
         "U11": 20,
         "U12": 25,
         "U13": 25,
-        "U15": 30
+        "U15": 30,
+        "UNKNOWN": 45
       },
       "expected_minutes": null
     },
@@ -402,7 +459,8 @@
         "U11": 20,
         "U12": 25,
         "U13": 25,
-        "U15": 30
+        "U15": 30,
+        "UNKNOWN": 45
       },
       "expected_minutes": null
     },
@@ -427,7 +485,8 @@
         "U11": 20,
         "U12": 25,
         "U13": 25,
-        "U15": 30
+        "U15": 30,
+        "UNKNOWN": 45
       },
       "expected_minutes": null
     }
