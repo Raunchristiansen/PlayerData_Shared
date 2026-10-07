@@ -17,6 +17,9 @@
       "Et penalty_kick er ALDRIG et mål: det ændrer aldrig mål-stillingen og tæller ikke på spilleren",
       "Et straffespark i ordinær/forlænget tid er fortsat et almindeligt 'mål' med straffe=true"
     ],
+    "not_pinned": {
+      "penalty_order_not_an_integer": "et penalty_order der ikke er et HELTAL (streng/float/bool) behandler serveren som 'uden penalty_order'. Et DATAFORSVAR, ikke en kontrakt: de typede klienter kan ikke repraesentere en ikke-heltalsvaerdi, saa at pinne den ville tvinge dem til noget, de aldrig moeder (Backend#224)"
+    },
     "source": "backend.app.beregning.sort_events + backend.app.goal_side.penalty_score_from_events/score_from_events, PlayerData_Backend",
     "generated_by": "scripts/generate-penalty-kick-vectors.py"
   },

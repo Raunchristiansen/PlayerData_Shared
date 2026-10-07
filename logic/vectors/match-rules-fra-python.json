@@ -9,6 +9,8 @@
       "mix_age_only_in_division_name",
       "mix_all_unreadable",
       "mix_one_unreadable_one_readable",
+      "mix_set_but_unreadable_age_group_does_not_read_division_name",
+      "mix_age_without_rule_row_still_competes",
       "own_team_uses_selected_pools_age",
       "mix_uses_youngest_followed",
       "mix_ignores_unreadable_pool_not_zero",
@@ -32,12 +34,12 @@
       "phase_transition": "ikke uafgjort -> end; uafgjort efter ordinaer tid: forlaenget TIL -> extra_time, ellers straffe TIL -> penalty_shootout (DIREKTE), ellers end; uafgjort efter forlaenget: straffe TIL -> penalty_shootout, ellers end"
     },
     "not_pinned": {
-      "extra_time_possible": "kamptypen (Stævnekamp/Pokalkamp — `forlaengetMulig`/`straffesparkMulig`) er en ANDEN regel; sagerne forudsaetter at typen tillader det",
+      "extra_time_possible": "kamptypen (Stævnekamp/Pokalkamp — `forlaengetMulig`/`straffesparkMulig`) er en ANDEN regel og gater ADGANGEN, ikke rækkefølgen; sagerne forudsætter at typen tillader det",
       "penalty_null_transition": "`straffespark ?: forlaenget` — null betyder 'ikke valgt endnu', og saa gaelder den GAMLE regel (forlaenget medfoerte straffespark). Det er en OVERGANG, ikke en regel: en vektor der pinnede den, skulle laves om naar overgangen er ovre. `penalty_shootout` i sagerne er allerede det AFGJORTE valg. Et NULL er altsaa IKKE daekket med vilje",
       "shootout_result": "hvem der vinder konkurrencen — se penalty-kick-fra-python.json",
-      "unreadable_age_group_rule": "hvad halvlaengden er for en pulje med ULAESELIG alder (eget hold) eller uden valgt pulje: Android giver null, iOS slaar UNKNOWN-raekken op (`Aldersregler.aargang(for:)`). UAFKLARET — ikke pinnet; se Backend-kortets kommentar",
-      "age_group_set_but_unreadable": "age_group sat men ulaeselig (fx 'Senior') OG division_name laesbar: Android laeser IKKE division_name, iOS goer. Ikke pinnet",
-      "age_outside_age_rules": "en alder uden raekke i age_rules (fx U3): ikke pinnet — sagerne bruger U11-U15"
+      "own_team_senior_half_length": "ÅBEN, ikke pinnet (Backend#224, målt 07-10): halvlængden for en EGET-HOLD-pulje, hvis age_group er Senior/Oldboys/Veteran (har en række i age_rules, men intet U-nummer). iOS giver rækkens minutter (2x45), Android null (minutterFor tager et U-nummer). Vektoren har ingen sag for det: reference-implementeringen følger Android",
+      "age_group_set_not_a_rule_key_half_length": "ÅBEN, ikke pinnet: for HALVLÆNGDEN (ikke Mix) falder iOS' `aargang(for:)` stadig videre til division_name, når age_group er sat men ikke en nøgle i age_rules (Mix er rettet, iOS#119). Android læser kun age_group, når den er sat",
+      "age_group_empty_string": "ÅBEN, ikke pinnet: en TOM age_group ('' eller blanke) — iOS læser division_name, Android (`?:` kun ved null) gør ikke. Sagerne bruger null, aldrig ''"
     }
   },
   "mix_pool": [
@@ -164,6 +166,40 @@
         }
       ],
       "expected_puljeid": "501000"
+    },
+    {
+      "id": "mix_set_but_unreadable_age_group_does_not_read_division_name",
+      "description": "age_group er SAT men har intet U-nummer ('Senior' er en rigtig aldersgruppe, der bevidst ikke er et U-nummer): division_name læses IKKE videre — at lede efter 'U11' i en seniorrækkes navn ville rangere den som U11. Kun NULL/manglende age_group læses af rækkenavnet (se mix_age_only_in_division_name). Pulje '501000' ville vinde som U11, hvis rækkenavnet blev læst; rigtigt svar er den læsbare U15 ('502000')",
+      "groups": [
+        {
+          "puljeid": "501000",
+          "age_group": "Senior",
+          "division_name": "U11 Drenge"
+        },
+        {
+          "puljeid": "502000",
+          "age_group": "U15",
+          "division_name": null
+        }
+      ],
+      "expected_puljeid": "502000"
+    },
+    {
+      "id": "mix_age_without_rule_row_still_competes",
+      "description": "En alder UDEN række i age_rules (her U14, mens de illustrative regler kun har U11/U12/U13/U15) er stadig LÆSELIG og den yngste: Mix vælger dens pulje, ikke den næstyngstes. En implementering, der kræver en regelrække for at læse en alder, ville vælge U15's pulje ('501000')",
+      "groups": [
+        {
+          "puljeid": "501500",
+          "age_group": "U14",
+          "division_name": null
+        },
+        {
+          "puljeid": "501000",
+          "age_group": "U15",
+          "division_name": null
+        }
+      ],
+      "expected_puljeid": "501500"
     },
     {
       "id": "mix_single_pool",
@@ -321,6 +357,46 @@
         }
       ],
       "puljeid": "500500",
+      "is_mix": false,
+      "minutes_by_age_group": {
+        "U11": 20,
+        "U12": 25,
+        "U13": 25,
+        "U15": 30
+      },
+      "expected_minutes": null
+    },
+    {
+      "id": "own_team_unreadable_age_is_empty",
+      "description": "Eget hold, pulje uden læsbar alder (age_group null og et rækkenavn uden U-nummer): INGEN regel → null, feltet står tomt. IKKE serverens UNKNOWN-række (en kopi af seniorreglen, source='guess', Backend#223) — iOS#121 er rettet til det",
+      "groups": [
+        {
+          "puljeid": "600100",
+          "age_group": null,
+          "division_name": "Hold uden alder"
+        }
+      ],
+      "puljeid": "600100",
+      "is_mix": false,
+      "minutes_by_age_group": {
+        "U11": 20,
+        "U12": 25,
+        "U13": 25,
+        "U15": 30
+      },
+      "expected_minutes": null
+    },
+    {
+      "id": "no_selected_pool_is_empty",
+      "description": "Eget hold, men puljeid findes ikke blandt de fulgte: null (ingen regel at slå op), ikke en gættet årgang",
+      "groups": [
+        {
+          "puljeid": "500200",
+          "age_group": "U13",
+          "division_name": null
+        }
+      ],
+      "puljeid": "999999",
       "is_mix": false,
       "minutes_by_age_group": {
         "U11": 20,
