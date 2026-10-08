@@ -894,6 +894,93 @@ og faldt på deres egne KDoc'er, altså en kontrol, der målte noget andet end d
 samme form som `Et "kill", der returnerer 0, beviser kun at NOGET fik signalet`
 nedenfor: et exitnummer er ikke en diagnose.
 
+
+### Og en sabotage, der ikke faelder noget, beviser INTET
+
+**Afsnittet ovenfor siger: faa testen til at fejle, foer du stoler paa at den
+bestaar. Men en koersel, der ikke RAMTE noget, ser ud som en koersel, der ikke
+kunne faeldes.**
+
+**Maalt 08-10-2026 af iOS, paa deres egen sabotage af `iOS#133`:**
+
+```
+-only-testing:FodboldTrackerTests/DatasikkerhedTests
+-> ramte INGEN tests (gruppen laa indlejret under ModelFlow)
+-> "TEST SUCCEEDED" UDEN en "Test run with"-linje
+```
+
+**Gentaget med det rigtige navn (`…/ModelFlow`, 93 tests) faldt begge tests.
+Vagten var aegte hele tiden — men den foerste koersel havde "bevist" det
+modsatte lige saa overbevisende.**
+
+#### Android maalte det samme hos sig selv, og svaret var DELT
+
+```
+gradle --tests "*FindesIkke*"
+  -> "No tests found for given includes"       BUILD FAILED     hoejlydt
+
+instrumenteret class=KlasseDerIkkeFindes
+  -> runneren laver en initializationError     FAILED           hoejlydt
+
+instrumenteret EnRigtigKlasse#metodeDerIkkeFindes
+  -> "Starting 0 tests"                        BUILD SUCCESSFUL  TAVST
+```
+
+> **En forkert KLASSE fejler hoejlydt. En rigtig klasse med en forkert METODE
+> giver en groen, TOM koersel.**
+
+**Androids egen note:** *"Havde jeg kun maalt de to foerste, havde jeg svaret
+'vi har den ikke' — og det havde vaeret lige saa overbevisende som iOS' foerste
+koersel."*
+
+#### Og CI'en daekkede det ikke
+
+`ci.sh` laeste testrapportens XML og tjekkede `failures > 0` — **men ikke om
+ANTALLET var nul.** En koersel, der ikke kunne koere, blev meldt som
+*"0 instrumenterede groenne"*.
+
+```
+NU   "0 unit-tests koerte — en TOM koersel, ikke en groen.
+      Ramte filteret noget?"
+     .scripts/ci.sh:65, kaldt for baade unit og instrumenterede
+     efterproevet ved at lade taelleren svare 0
+```
+
+### Fejlformen, maalt FEM gange paa to doegn
+
+**Alle fem kom igennem en GROEN kontrol:**
+
+```
+grep -c paa ingenting            0, der ligner et aegte nul
+et ufyldt dmesg                  tomt vindue laest som "ingen OOM"
+et lookbehind, der udelukkede
+  ALLE kvalificerede kald        nul traef, der lignede nul forekomster
+et flag, der aldrig blev sat
+  uden for live-pollet           false, der lignede "ikke afsluttet"
+et testfilter, der ikke ramte    GROEN, tom koersel
+```
+
+**Androids formulering, og den er den generelle:**
+
+> **Det er ikke tests, der mangler. Det er instrumenter, der ikke kan skelne
+> "intet fundet" fra "kunne ikke koere".**
+
+#### Hvad det betyder i praksis
+
+**Hver gang et instrument kan svare NUL, skal det kunne sige HVORFOR.**
+
+```
+nul fordi der INTET var        et resultat
+nul fordi maalingen ikke koerte  en FEJL
+```
+
+**Og de to maa aldrig have samme udseende.** En kontrol, der rapporterer sit
+eget INTERVAL — *"100 kort set, #6-#137"*, *"93 tests koert"* — afsloerer sig
+selv. En, der kun siger *"ingen problemer"*, goer ikke.
+
+**Billigste proeve, naar du saboterer:** se efter ANTALLET i koerslen. Staar der
+ikke et tal stoerre end nul, har du ikke maalt noget.
+
 ### Repo-navn og mappenavn er ikke det samme
 
 Repoerne blev omdøbt til `PlayerData_*`, og mapperne flyttet til `~/PlayerData/code/` — men **ikke samtidig**. I timerne imellem hed repo og mappe forskelligt, og en søg-og-erstat på det gamle navn ville have ødelagt enhver sti, mens den rettede reponavnene.
